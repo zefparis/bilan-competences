@@ -57,8 +57,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error("Erreur lors de l'inscription:", error)
+    const errorMessage = error instanceof Error ? error.message : String(error)
     return NextResponse.json(
-      { message: "Une erreur est survenue lors de la création du compte" },
+      { message: "Une erreur est survenue lors de la création du compte", error: errorMessage },
       { status: 500 }
     )
   }
