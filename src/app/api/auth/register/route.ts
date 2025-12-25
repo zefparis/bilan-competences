@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { db, generateId } from "@/lib/db"
+import { getDb, generateId } from "@/lib/db"
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,6 +20,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const db = getDb()
+    
     // Check if user exists
     const existingResult = await db.execute({
       sql: "SELECT id FROM users WHERE email = ?",

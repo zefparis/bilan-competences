@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import { db } from "@/lib/db"
+import { getDb } from "@/lib/db"
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-key"
 
@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const db = getDb()
     const result = await db.execute({
       sql: "SELECT * FROM users WHERE email = ?",
       args: [email]

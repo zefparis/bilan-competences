@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import crypto from "crypto"
-import { db } from "@/lib/db"
+import { getDb } from "@/lib/db"
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const db = getDb()
     const result = await db.execute({
       sql: "SELECT id FROM users WHERE email = ?",
       args: [email]

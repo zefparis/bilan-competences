@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import jwt from "jsonwebtoken"
-import { db } from "@/lib/db"
+import { getDb } from "@/lib/db"
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-key"
 
@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
 
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: string }
 
+    const db = getDb()
     const result = await db.execute({
       sql: "SELECT id, email, firstName, lastName, role, createdAt FROM users WHERE id = ?",
       args: [decoded.userId]
