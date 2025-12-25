@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,7 +57,5 @@ export async function POST(request: NextRequest) {
       { message: "Une erreur est survenue lors de la réinitialisation du mot de passe" },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }

@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { PrismaClient } from "@prisma/client"
 import jwt from "jsonwebtoken"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-key"
 
@@ -74,7 +72,5 @@ export async function POST(request: NextRequest) {
       { message: "Une erreur est survenue lors de la connexion" },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }

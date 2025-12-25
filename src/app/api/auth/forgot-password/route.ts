@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
 import crypto from "crypto"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 export async function POST(request: NextRequest) {
   try {
@@ -50,7 +48,5 @@ export async function POST(request: NextRequest) {
       { message: "Une erreur est survenue lors de la demande de réinitialisation" },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
