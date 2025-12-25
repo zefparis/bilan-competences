@@ -151,8 +151,8 @@ export default function ExperiencesModulePage() {
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground space-y-3">
               <p>
-                « Ta présentation d'expérience est très claire, on ressent ta progression. Ajoute une
-                preuve chiffrée sur la réduction des délais pour renforcer l'impact. »
+                « Ta présentation d&apos;expérience est très claire, on ressent ta progression. Ajoute une
+                preuve chiffrée sur la réduction des délais pour renforcer l&apos;impact. »
               </p>
               <div className="flex items-center gap-2 text-primary text-xs uppercase tracking-wider">
                 <ClipboardList className="h-4 w-4" />
@@ -161,7 +161,7 @@ export default function ExperiencesModulePage() {
             </CardContent>
             <CardFooter>
               <Button variant="secondary" size="sm" className="w-full">
-                Voir l'historique
+                Voir l&apos;historique
               </Button>
             </CardFooter>
           </Card>

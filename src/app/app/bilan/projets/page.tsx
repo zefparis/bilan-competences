@@ -29,7 +29,7 @@ const projects = [
     horizon: "3-6 mois",
     desirability: 74,
     feasibility: 55,
-    actions: ["Tester un side project", "Structurer l'offre", "Vérifier le statut juridique"],
+    actions: ["Faciliter des ateliers innovation", "Écrire/structurer des frameworks", "Coacher des juniors", "Vérifier le statut juridique"],
   },
 ]
 

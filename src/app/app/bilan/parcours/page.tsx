@@ -108,8 +108,8 @@ export default function ParcoursModulePage() {
                 Finaliser la ligne de vie (2 créneaux restants)
               </p>
               <p className="flex items-center gap-2">
-                <Flag className="h-4 w-4 text-primary" />
-                Préparer les questions pour l'entretien CEP
+                « Ta présentation d&apos;expérience est très claire, on ressent ta progression. Ajoute une
+                preuve chiffrée sur la réduction des délais pour renforcer l&apos;impact. »
               </p>
             </CardContent>
           </Card>
