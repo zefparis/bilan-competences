@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import { prisma } from "@/lib/prisma"
+import { db } from "@/lib/db"
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-key"
 
@@ -16,15 +16,26 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email }
+    const result = await db.execute({
+      sql: "SELECT * FROM users WHERE email = ?",
+      args: [email]
     })
 
-    if (!user) {
+    const row = result.rows[0]
+    if (!row) {
       return NextResponse.json(
         { message: "Email ou mot de passe incorrect" },
         { status: 401 }
       )
+    }
+
+    const user = {
+      id: row.id as string,
+      email: row.email as string,
+      passwordHash: row.passwordHash as string,
+      firstName: row.firstName as string,
+      lastName: row.lastName as string,
+      role: row.role as string,
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash)

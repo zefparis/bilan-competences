@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import jwt from "jsonwebtoken"
-import { prisma } from "@/lib/prisma"
+import { db } from "@/lib/db"
+
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-key"
 
 export async function GET(request: NextRequest) {
@@ -14,25 +15,28 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as any
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string }
 
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        role: true,
-        createdAt: true,
-      }
+    const result = await db.execute({
+      sql: "SELECT id, email, firstName, lastName, role, createdAt FROM users WHERE id = ?",
+      args: [decoded.userId]
     })
 
-    if (!user) {
+    const row = result.rows[0]
+    if (!row) {
       return NextResponse.json(
         { message: "Utilisateur non trouvé" },
         { status: 401 }
       )
+    }
+
+    const user = {
+      id: row.id as string,
+      email: row.email as string,
+      firstName: row.firstName as string,
+      lastName: row.lastName as string,
+      role: row.role as string,
+      createdAt: row.createdAt as string,
     }
 
     return NextResponse.json({ user })

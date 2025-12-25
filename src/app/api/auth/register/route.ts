@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { prisma } from "@/lib/prisma"
+import { db, generateId } from "@/lib/db"
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,11 +20,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
+    // Check if user exists
+    const existingResult = await db.execute({
+      sql: "SELECT id FROM users WHERE email = ?",
+      args: [email]
     })
 
-    if (existingUser) {
+    if (existingResult.rows.length > 0) {
       return NextResponse.json(
         { message: "Un compte avec cet email existe déjà" },
         { status: 400 }
@@ -32,28 +34,25 @@ export async function POST(request: NextRequest) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
+    const id = generateId()
+    const now = new Date().toISOString()
 
-    const user = await prisma.user.create({
-      data: {
-        email,
-        passwordHash: hashedPassword,
-        firstName,
-        lastName,
-        role: "BENEFICIAIRE",
-      },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        role: true,
-        createdAt: true,
-      }
+    await db.execute({
+      sql: `INSERT INTO users (id, email, passwordHash, firstName, lastName, role, createdAt, updatedAt) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [id, email, hashedPassword, firstName, lastName, "BENEFICIAIRE", now, now]
     })
 
     return NextResponse.json({
       message: "Compte créé avec succès",
-      user
+      user: {
+        id,
+        email,
+        firstName,
+        lastName,
+        role: "BENEFICIAIRE",
+        createdAt: now
+      }
     })
 
   } catch (error) {
