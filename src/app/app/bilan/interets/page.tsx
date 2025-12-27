@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { Textarea } from "@/components/ui/textarea"
 
 const interestAreas = [
   {
@@ -110,6 +111,46 @@ export default function InteretsModulePage() {
             </CardContent>
           </Card>
         </aside>
+      </section>
+
+      <section className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Questionnaire complémentaire</CardTitle>
+            <CardDescription>
+              Approfondissez votre profil avec ces questions optionnelles
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Quelles activités vous procurent le plus d'énergie ?</p>
+              <Textarea placeholder="Décrivez 2-3 situations récentes..." />
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Quels sujets pourriez-vous discuter pendant des heures ?</p>
+              <Textarea placeholder="Listez vos sujets de prédilection..." />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button variant="outline" className="w-full">
+              Enregistrer les réponses
+            </Button>
+          </CardFooter>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Évolution des centres d'intérêt</CardTitle>
+            <CardDescription>
+              Comparez vos réponses actuelles avec votre profil initial
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            <p>
+              Votre intérêt pour la pédagogie a augmenté de 22% depuis le début du bilan.
+            </p>
+          </CardContent>
+        </Card>
       </section>
     </div>
   )

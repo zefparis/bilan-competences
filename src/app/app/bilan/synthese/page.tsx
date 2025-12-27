@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
 
 const sections = [
   {
@@ -80,6 +81,25 @@ export default function SyntheseModulePage() {
               <Button variant="ghost">Prévisualiser</Button>
             </CardFooter>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Plan d'action</CardTitle>
+              <CardDescription>
+                Définissez les étapes concrètes pour les 3 prochains mois
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <Input placeholder="Action" />
+                <Input placeholder="Échéance" type="date" />
+              </div>
+              <Textarea placeholder="Ressources nécessaires, personnes à contacter..." />
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full">Ajouter au plan</Button>
+            </CardFooter>
+          </Card>
         </div>
 
         <aside className="space-y-4">
@@ -114,6 +134,42 @@ export default function SyntheseModulePage() {
                 <ShieldCheck className="h-4 w-4 text-primary" />
                 Document verrouillé après validation
               </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Ressources clés</CardTitle>
+              <CardDescription>
+                Documents et contacts utiles pour votre projet
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {[
+                "Modèle de CV adapté",
+                "Liste des réseaux professionnels",
+                "Contacts CEP"
+              ].map(item => (
+                <p key={item} className="flex items-center gap-2">
+                  <FileSignature className="h-4 w-4 text-primary" />
+                  {item}
+                </p>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Historique des versions</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground space-y-2">
+              <p className="flex items-center gap-2">
+                <span className="font-medium">V1.2</span> - 10 déc. 2025
+              </p>
+              <p>Ajout section compétences transverses</p>
+              <p className="flex items-center gap-2">
+                <span className="font-medium">V1.1</span> - 5 déc. 2025
+              </p>
+              <p>Première version partagée avec CEP</p>
             </CardContent>
           </Card>
         </aside>

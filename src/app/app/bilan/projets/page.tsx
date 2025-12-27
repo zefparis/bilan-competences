@@ -56,103 +56,106 @@ export default function ProjetsModulePage() {
                 <CardTitle>{project.title}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Désirabilité</span>
-                      <span className="font-semibold">{project.desirability}%</span>
-                    </div>
-                    <Progress value={project.desirability} />
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Désirabilité</span>
+                    <span className="font-medium">{project.desirability}%</span>
                   </div>
-                  <div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Faisabilité</span>
-                      <span className="font-semibold">{project.feasibility}%</span>
-                    </div>
-                    <Progress value={project.feasibility} />
-                  </div>
+                  <Progress value={project.desirability} />
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Facteurs clés</p>
-                  {project.actions.map((action) => (
-                    <div
-                      key={action}
-                      className="flex items-center justify-between rounded-md border border-border/60 px-3 py-2 text-sm"
-                    >
-                      <span>{action}</span>
-                      <ClipboardCheck className="h-4 w-4 text-primary" />
-                    </div>
-                  ))}
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Faisabilité</span>
+                    <span className="font-medium">{project.feasibility}%</span>
+                  </div>
+                  <Progress value={project.feasibility} />
                 </div>
+              </CardContent>
+              <CardContent className="space-y-3">
+                <h4 className="text-sm font-medium">Actions clés</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {project.actions.map((action) => (
+                    <li key={action} className="flex items-center gap-2">
+                      <ClipboardCheck className="h-4 w-4 text-primary" />
+                      {action}
+                    </li>
+                  ))}
+                </ul>
               </CardContent>
               <CardFooter className="flex gap-2">
                 <Button variant="outline" size="sm">
-                  Ajuster
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Partager
                 </Button>
                 <Button variant="ghost" size="sm">
-                  Simuler
+                  <CalendarRange className="h-4 w-4 mr-2" />
+                  Planifier
                 </Button>
               </CardFooter>
             </Card>
           ))}
+          <Card>
+            <CardHeader>
+              <CardTitle>Nouveau scénario</CardTitle>
+              <CardDescription>
+                Formalisez une nouvelle piste professionnelle à explorer
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Input placeholder="Intitulé du projet" />
+              <div className="grid grid-cols-2 gap-4">
+                <Input placeholder="Horizon (ex: 3-6 mois)" />
+                <Input placeholder="Organisation (optionnel)" />
+              </div>
+              <Textarea placeholder="Description, motivations, critères..." />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm text-muted-foreground">Désirabilité</label>
+                  <Input type="number" min="0" max="100" placeholder="0-100" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-muted-foreground">Faisabilité</label>
+                  <Input type="number" min="0" max="100" placeholder="0-100" />
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full">
+                <Compass className="h-4 w-4 mr-2" />
+                Enregistrer ce scénario
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
 
         <aside className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Ajouter un projet</CardTitle>
-              <CardDescription>Décrivez votre scénario target</CardDescription>
+              <CardTitle>Matrice d'évaluation</CardTitle>
+              <CardDescription>
+                Comparez vos projets selon vos critères personnels
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <Input placeholder="Intitulé" />
-              <Input placeholder="Horizon temporel" />
-              <Textarea placeholder="Motivations, environnement de travail idéal..." />
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs text-muted-foreground">Désirabilité (%)</label>
-                  <Input type="number" min={0} max={100} defaultValue={70} />
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground">Faisabilité (%)</label>
-                  <Input type="number" min={0} max={100} defaultValue={50} />
-                </div>
-              </div>
+            <CardContent className="text-sm text-muted-foreground space-y-3">
+              <p>Priorité 1: Alignement valeurs</p>
+              <p>Priorité 2: Équilibre vie pro/perso</p>
+              <p>Priorité 3: Potentiel d'impact</p>
             </CardContent>
-            <CardFooter>
-              <Button className="w-full">Enregistrer</Button>
-            </CardFooter>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Plan d'expérimentation</CardTitle>
-              <CardDescription>3 micro-actions par projet</CardDescription>
+              <CardTitle>Prochaines étapes</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 text-sm text-muted-foreground">
+            <CardContent className="text-sm text-muted-foreground space-y-2">
               <p className="flex items-center gap-2">
-                <CalendarRange className="h-4 w-4 text-primary" />
-                Bloquer 2 demi-journées pour prototyper l'offre
+                <ClipboardCheck className="h-4 w-4 text-primary" />
+                Rencontrer 3 personnes du secteur d'ici janvier
               </p>
               <p className="flex items-center gap-2">
-                <Share2 className="h-4 w-4 text-primary" />
-                Pitcher le scénario à 2 personnes de confiance
+                <ClipboardCheck className="h-4 w-4 text-primary" />
+                Tester 1 journée dans une coopérative
               </p>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">
-                Ajouter un test
-              </Button>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Boussole</CardTitle>
-              <CardDescription>Ce qui doit rester vrai</CardDescription>
-            </CardHeader>
-            <CardContent className="flex items-center gap-3 text-sm text-muted-foreground">
-              <Compass className="h-5 w-5 text-primary" />
-              Garder un rôle hybride création + facilitation pour rester aligné.
             </CardContent>
           </Card>
         </aside>
