@@ -37,6 +37,7 @@ model User {
   cognitiveProfile CognitiveProfile?
   cognitiveInsights CognitiveInsight[]
   cognitiveTestResponses CognitiveTestResponse[]
+  cognitiveTestSessions CognitiveTestSession[]
 }
 
 model Account {
@@ -225,4 +226,63 @@ model ActionStep {
   status      String    @default("TODO") // TODO, DONE
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+// ============================================
+// COGNITIVE ASSESSMENT MODULE (Proprietary)
+// ============================================
+
+model CognitiveTestSession {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      String   @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
+  
+  // Test completion flags
+  stroopCompleted       Boolean @default(false)
+  reactionTimeCompleted Boolean @default(false)
+  trailMakingCompleted  Boolean @default(false)
+  ranVisualCompleted    Boolean @default(false)
+  
+  // Raw test data (JSON)
+  stroopData       Json?
+  reactionTimeData Json?
+  trailMakingData  Json?
+  ranVisualData    Json?
+  
+  // Computed signature
+  signature   CognitiveSignature?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  completedAt DateTime?
+}
+
+model CognitiveSignature {
+  id        String   @id @default(cuid())
+  sessionId String   @unique
+  session   CognitiveTestSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  // Core cognitive dimensions (normalized 0-100)
+  inhibitoryControl   Float
+  processingSpeed     Float
+  cognitiveFlexibility Float
+  accessFluency       Float
+  
+  // Stability metrics
+  reactionVariance    Float
+  attentionDrift      Float
+  
+  // Error profile
+  conflictErrors      Float
+  sequencingErrors    Float
+  
+  // Raw metrics for detailed analysis
+  rawMetrics          Json
+  
+  // Textual interpretation
+  interpretation      String? @db.Text
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
