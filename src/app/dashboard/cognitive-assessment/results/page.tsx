@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -75,7 +75,7 @@ function ScoreBar({ label, value, icon: Icon, color = "primary" }: {
   )
 }
 
-export default function CognitiveResultsPage() {
+function CognitiveResultsContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session")
   
@@ -333,5 +333,17 @@ export default function CognitiveResultsPage() {
         </Link>
       </div>
     </div>
+  )
+}
+
+export default function CognitiveResultsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <CognitiveResultsContent />
+    </Suspense>
   )
 }
