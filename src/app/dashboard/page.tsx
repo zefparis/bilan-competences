@@ -293,6 +293,26 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
+          <Card className="hover:border-primary transition-colors border-primary/50 bg-primary/5">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Rapport d'Orientation</CardTitle>
+                <span className="px-2 py-0.5 text-xs font-medium bg-primary/20 text-primary rounded">Premium</span>
+              </div>
+              <CardDescription>Dossier complet • 10 sections • Export PDF</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-center">
+                <span className="text-primary font-medium">Nouveau</span>
+                <Link href="/dashboard/report">
+                  <Button variant="default" size="sm">
+                    Générer
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="hover:border-primary transition-colors">
             <CardHeader>
               <CardTitle>Synthèse Finale</CardTitle>

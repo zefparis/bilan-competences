@@ -253,6 +253,9 @@ model CognitiveTestSession {
   // Computed signature
   signature   CognitiveSignature?
   
+  // Generated report (JSON)
+  generatedReport Json?
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   completedAt DateTime?
