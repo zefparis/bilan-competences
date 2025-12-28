@@ -40,27 +40,38 @@ export async function POST(req: NextRequest) {
     }
 
     // Fetch cognitive session
-    const cognitiveSession = await (prisma as any).cognitiveTestSession.findFirst({
-      where: { userId, status: "COMPLETED" },
-      orderBy: { completedAt: "desc" },
-      include: { signature: true },
-    })
+    let cognitiveSession = null
+    let assessment = null
+    
+    try {
+      cognitiveSession = await (prisma as any).cognitiveTestSession.findFirst({
+        where: { userId, status: "COMPLETED" },
+        orderBy: { completedAt: "desc" },
+        include: { signature: true },
+      })
+    } catch (e: any) {
+      console.error("[Report] Error fetching cognitive session:", e?.message)
+    }
 
     // Fetch assessment data (RIASEC, values, experiences are linked to Assessment)
-    const assessment = await (prisma as any).assessment.findFirst({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-      include: {
-        riasecResult: true,
-        userValues: { orderBy: { order: "asc" }, take: 10 },
-        experiences: { orderBy: { createdAt: "desc" }, take: 5 },
-        lifePath: {
-          include: {
-            events: { orderBy: { year: "desc" }, take: 10 },
+    try {
+      assessment = await (prisma as any).assessment.findFirst({
+        where: { userId },
+        orderBy: { createdAt: "desc" },
+        include: {
+          riasecResult: true,
+          userValues: { orderBy: { order: "asc" }, take: 10 },
+          experiences: { orderBy: { createdAt: "desc" }, take: 5 },
+          lifePath: {
+            include: {
+              events: { orderBy: { year: "desc" }, take: 10 },
+            },
           },
         },
-      },
-    })
+      })
+    } catch (e: any) {
+      console.error("[Report] Error fetching assessment:", e?.message)
+    }
 
     const riasecResult = assessment?.riasecResult
     const values = assessment?.userValues
@@ -69,7 +80,7 @@ export async function POST(req: NextRequest) {
 
     if (!cognitiveSession?.signature) {
       return NextResponse.json(
-        { message: "Évaluation cognitive non complétée" },
+        { message: "Évaluation cognitive non complétée. Veuillez d'abord compléter les 4 tests cognitifs." },
         { status: 400 }
       )
     }
@@ -165,10 +176,10 @@ export async function POST(req: NextRequest) {
     })
 
     return NextResponse.json(report)
-  } catch (error) {
-    console.error("[Report Generate] Error:", error)
+  } catch (error: any) {
+    console.error("[Report Generate] Error:", error?.message || error)
     return NextResponse.json(
-      { message: "Erreur lors de la génération du rapport" },
+      { message: error?.message || "Erreur lors de la génération du rapport" },
       { status: 500 }
     )
   }
