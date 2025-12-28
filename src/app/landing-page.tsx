@@ -140,10 +140,10 @@ export default function LandingPage() {
           <div 
             className="absolute inset-0 transition-colors duration-300"
             style={{ 
-              backgroundColor: darkMode ? 'rgba(15, 15, 15, 0.15)' : 'rgba(250, 248, 245, 0.25)',
+              backgroundColor: darkMode ? 'rgba(15, 15, 15, 0.55)' : 'rgba(250, 248, 245, 0.65)',
               backgroundImage: darkMode 
-                ? 'linear-gradient(to right, rgba(15, 15, 15, 0.4) 0%, rgba(15, 15, 15, 0) 100%)'
-                : 'linear-gradient(to right, rgba(250, 248, 245, 0.45) 0%, rgba(250, 248, 245, 0) 100%)'
+                ? 'linear-gradient(to right, rgba(15, 15, 15, 0.8) 0%, rgba(15, 15, 15, 0.2) 100%)'
+                : 'linear-gradient(to right, rgba(250, 248, 245, 0.85) 0%, rgba(250, 248, 245, 0.25) 100%)'
             }}
           />
         </div>
