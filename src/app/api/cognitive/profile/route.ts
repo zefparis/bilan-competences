@@ -4,6 +4,7 @@ import { getUserIdFromRequest } from "@/lib/auth-user"
 import { analyzeCognitiveProfile, CognitiveAnalysis } from "@/lib/cognitive-engine"
 
 export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
 
 export async function GET(req: NextRequest) {
   console.log("[API/Cognitive/Profile] GET request START")

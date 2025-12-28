@@ -5,6 +5,7 @@ import { getUserIdFromRequest } from "@/lib/auth-user"
 import { analyzeCognitiveProfile, CognitiveAnalysis } from "@/lib/cognitive-engine"
 
 export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
 
 type Summary = {
   assessmentId: string

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { getUserIdFromRequest } from "@/lib/auth-user"
 
 export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
 
 type ModuleStatus = "locked" | "pending" | "in_progress" | "completed"
 

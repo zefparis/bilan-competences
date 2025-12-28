@@ -17,7 +17,6 @@ const nextConfig = {
   },
   experimental: {
     serverComponentsExternalPackages: ['pdf-lib'],
-    optimizeCss: true,
     scrollRestoration: true
   },
   transpilePackages: ['lucide-react']
