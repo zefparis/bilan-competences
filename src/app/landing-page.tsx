@@ -150,7 +150,7 @@ export default function LandingPage() {
 
         <div className="max-w-4xl mx-auto relative z-10">
           <div className="space-y-8">
-            <p className="text-sm uppercase tracking-widest font-medium" style={{ color: theme.accent }}>
+            <p className="text-xs md:text-sm uppercase tracking-[0.2em] font-bold" style={{ color: theme.accent }}>
               Bilan de compétences cognitif
             </p>
             
