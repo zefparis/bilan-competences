@@ -30,8 +30,8 @@ export default function LandingPage() {
     textMuted: darkMode ? "#999999" : "#6B6B6B",
     textFaint: darkMode ? "#666666" : "#999999",
     border: darkMode ? "#2A2A2A" : "#E8E4DE",
-    accent: "#B3733B",
-    accentHover: "#8C5A2B",
+    accent: "#8C5A2B",
+    accentHover: "#7A4E25",
   }
 
   return (
