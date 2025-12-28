@@ -128,8 +128,27 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-24 px-6">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative pt-32 pb-24 px-6 overflow-hidden min-h-[80vh] flex items-center">
+        {/* Background Image with Overlay */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: `url('/image/unnamed%20(1).jpg')`,
+          }}
+        >
+          {/* Overlay dynamique pour la lisibilité */}
+          <div 
+            className="absolute inset-0 transition-colors duration-300"
+            style={{ 
+              backgroundColor: darkMode ? 'rgba(15, 15, 15, 0.75)' : 'rgba(250, 248, 245, 0.85)',
+              backgroundImage: darkMode 
+                ? 'linear-gradient(to right, rgba(15, 15, 15, 0.9) 0%, rgba(15, 15, 15, 0.4) 100%)'
+                : 'linear-gradient(to right, rgba(250, 248, 245, 0.95) 0%, rgba(250, 248, 245, 0.6) 100%)'
+            }}
+          />
+        </div>
+
+        <div className="max-w-4xl mx-auto relative z-10">
           <div className="space-y-8">
             <p className="text-sm uppercase tracking-widest font-medium" style={{ color: theme.accent }}>
               Bilan de compétences cognitif
@@ -159,7 +178,11 @@ export default function LandingPage() {
               <a 
                 href="#methode"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 border rounded transition-colors hover:opacity-80"
-                style={{ borderColor: theme.border, color: theme.textMuted }}
+                style={{ 
+                  borderColor: theme.border, 
+                  color: theme.textMuted,
+                  backgroundColor: `${theme.bg}80` // semi-transparent background for button
+                }}
               >
                 Découvrir la méthode
               </a>
