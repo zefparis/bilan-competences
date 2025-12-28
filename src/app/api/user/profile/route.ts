@@ -28,6 +28,8 @@ export async function GET(req: NextRequest) {
         portfolio: true,
         role: true,
         createdAt: true,
+        hasPaid: true,
+        paidAt: true,
         cognitiveProfile: {
           select: {
             profile_code: true,

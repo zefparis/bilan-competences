@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { ModulePageHeader } from "@/components/module-page-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { User, Mail, Shield, Calendar, Save, Loader2, Briefcase, Lock, Fingerprint, Settings, Linkedin, Github, Globe, Sparkles, Upload, ImageIcon } from "lucide-react"
+import { User, Mail, Shield, Calendar, Save, Loader2, Briefcase, Lock, Fingerprint, Settings, Linkedin, Github, Globe, Sparkles, Upload, ImageIcon, CheckCircle, AlertCircle, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 type UserProfile = {
   id: string
@@ -28,6 +29,8 @@ type UserProfile = {
   portfolio: string | null
   role: string
   createdAt: string
+  hasPaid?: boolean
+  paidAt?: string | null
   cognitiveProfile?: {
     profile_code: string
     dominant_cognition: string
@@ -230,6 +233,53 @@ export default function ProfilePage() {
         title="Mon Profil"
         description="Gérez vos informations personnelles et vos préférences de compte."
       />
+
+      {/* Statut du bilan */}
+      {user?.hasPaid ? (
+        <Card className="bg-primary/5 border-primary/20">
+          <CardContent className="flex items-center justify-between py-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-semibold text-foreground">Bilan complet activé</p>
+                <p className="text-sm text-muted-foreground">
+                  Accès illimité à tous les modules et à votre synthèse stratégique
+                </p>
+              </div>
+            </div>
+            <Link href="/dashboard">
+              <Button variant="outline" size="sm" className="gap-2">
+                Consulter mon rapport
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="bg-muted/50 border-border">
+          <CardContent className="flex items-center justify-between py-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                <AlertCircle className="w-5 h-5 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="font-semibold text-foreground">Accès limité</p>
+                <p className="text-sm text-muted-foreground">
+                  Votre analyse est en cours. Le bilan complet sera accessible après validation.
+                </p>
+              </div>
+            </div>
+            <Link href="/pricing">
+              <Button size="sm" className="gap-2">
+                Débloquer mon bilan — 49 €
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Résumé du compte (Sidebar) */}

@@ -74,6 +74,13 @@ export default function LandingPage() {
               </button>
 
               <Link 
+                href="/pricing" 
+                className="text-sm px-4 py-2 border rounded transition-colors hover:opacity-80"
+                style={{ color: theme.text, borderColor: theme.border }}
+              >
+                Tarifs
+              </Link>
+              <Link 
                 href="/auth/login" 
                 className="text-sm px-4 py-2 border rounded transition-colors hover:opacity-80"
                 style={{ color: theme.text, borderColor: theme.border }}

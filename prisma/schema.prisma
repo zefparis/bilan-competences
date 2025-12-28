@@ -25,6 +25,10 @@ model User {
   role              String    @default("BENEFICIAIRE")
   resetToken        String?   @unique
   resetTokenExpiry  DateTime?
+  // Stripe payment
+  hasPaid           Boolean   @default(false)
+  stripeCustomerId  String?   @unique
+  paidAt            DateTime?
   createdAt         DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
