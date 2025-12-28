@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './cyber-theme.postcss';
+
 @layer base {
   :root {
     /* PERSPECTA Light Mode - Warm professional palette */
