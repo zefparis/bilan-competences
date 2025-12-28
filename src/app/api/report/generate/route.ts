@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Fetch cognitive session
+    console.log("[REPORT-GEN] Fetching COMPLETED cognitive session for user:", userId);
     let cognitiveSession = null
     let assessment = null
     
@@ -49,11 +50,13 @@ export async function POST(req: NextRequest) {
         orderBy: { completedAt: "desc" },
         include: { signature: true },
       })
+      console.log("[REPORT-GEN] Cognitive session found:", !!cognitiveSession, "Signature:", !!cognitiveSession?.signature);
     } catch (e: any) {
-      console.error("[Report] Error fetching cognitive session:", e?.message)
+      console.error("[REPORT-GEN] Error fetching cognitive session:", e?.message)
     }
 
-    // Fetch assessment data (RIASEC, values, experiences are linked to Assessment)
+    // Fetch assessment data
+    console.log("[REPORT-GEN] Fetching assessment data...");
     try {
       assessment = await (prisma as any).assessment.findFirst({
         where: { userId },
@@ -69,8 +72,9 @@ export async function POST(req: NextRequest) {
           },
         },
       })
+      console.log("[REPORT-GEN] Assessment found:", !!assessment);
     } catch (e: any) {
-      console.error("[Report] Error fetching assessment:", e?.message)
+      console.error("[REPORT-GEN] Error fetching assessment:", e?.message)
     }
 
     const riasecResult = assessment?.riasecResult
@@ -79,6 +83,7 @@ export async function POST(req: NextRequest) {
     const lifeEvents = assessment?.lifePath?.events
 
     if (!cognitiveSession?.signature) {
+      console.warn("[REPORT-GEN] Missing cognitive signature, aborting.");
       return NextResponse.json(
         { message: "Évaluation cognitive non complétée. Veuillez d'abord compléter les 4 tests cognitifs." },
         { status: 400 }
@@ -86,6 +91,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Prepare input data
+    console.log("[REPORT-GEN] Preparing report input...");
     const reportInput: ReportInput = {
       userName: user.name || "Utilisateur",
       cognitiveSignature: {
@@ -132,10 +138,11 @@ export async function POST(req: NextRequest) {
       })),
     }
 
-    let report: GeneratedReport
+    let report: GeneratedReport | null = null;
 
     // Try to generate with OpenAI
     if (process.env.OPENAI_API_KEY) {
+      console.log("[REPORT-GEN] Using OpenAI GPT-4o...");
       try {
         const completion = await openai.chat.completions.create({
           model: "gpt-4o",
@@ -144,7 +151,7 @@ export async function POST(req: NextRequest) {
             { role: "user", content: generateUserPrompt(reportInput) },
           ],
           temperature: 0.7,
-          max_tokens: 8000,
+          max_tokens: 4000,
           response_format: { type: "json_object" },
         })
 
@@ -156,25 +163,30 @@ export async function POST(req: NextRequest) {
             generatedAt: new Date().toISOString(),
             version: "1.0.0-ai",
           }
-        } else {
-          report = generateFallbackReport(reportInput)
+          console.log("[REPORT-GEN] AI report generated successfully.");
         }
-      } catch (aiError) {
-        console.error("[Report] OpenAI error, using fallback:", aiError)
-        report = generateFallbackReport(reportInput)
+      } catch (aiError: any) {
+        console.error("[REPORT-GEN] OpenAI error:", aiError?.message || aiError)
+        console.log("[REPORT-GEN] Falling back to static report generation.");
       }
-    } else {
+    }
+
+    // Fallback if AI failed or no key
+    if (!report) {
+      console.log("[REPORT-GEN] Generating fallback static report.");
       report = generateFallbackReport(reportInput)
     }
 
     // Store the report
+    console.log("[REPORT-GEN] Storing report in database for session:", cognitiveSession.id);
     await (prisma as any).cognitiveTestSession.update({
       where: { id: cognitiveSession.id },
       data: {
-        generatedReport: report,
+        generatedReport: JSON.parse(JSON.stringify(report)), // Ensure it's a plain object
       },
     })
 
+    console.log("[REPORT-GEN] Generation complete.");
     return NextResponse.json(report)
   } catch (error: any) {
     console.error("[Report Generate] Error:", error?.message || error)
