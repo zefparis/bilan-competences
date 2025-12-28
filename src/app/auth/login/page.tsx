@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -20,29 +21,29 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl: "/dashboard",
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        toast({
-          title: "Connexion réussie",
-          description: "Bienvenue sur Bilan de Compétences",
-        })
-        router.push("/app")
-      } else {
-        const error = await response.json()
+      if (result?.error) {
         toast({
           title: "Erreur de connexion",
-          description: error.message || "Email ou mot de passe incorrect",
+          description: "Email ou mot de passe incorrect",
           variant: "destructive",
         })
+        return
       }
+
+      toast({
+        title: "Connexion réussie",
+        description: "Bienvenue sur Bilan de Compétences",
+      })
+
+      // Le middleware protège /dashboard via NextAuth: on force une navigation propre.
+      router.replace("/dashboard")
     } catch (error) {
       toast({
         title: "Erreur",

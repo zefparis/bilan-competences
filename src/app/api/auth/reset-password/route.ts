@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { getDb } from "@/lib/db"
+import { prisma } from "@/lib/prisma"
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,15 +20,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const db = getDb()
-    const now = new Date().toISOString()
-    const result = await db.execute({
-      sql: "SELECT id FROM users WHERE resetToken = ? AND resetTokenExpiry > ?",
-      args: [token, now]
+    const now = new Date()
+    const user = await (prisma as any).user.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpiry: {
+          gt: now
+        }
+      }
     })
 
-    const row = result.rows[0]
-    if (!row) {
+    if (!user) {
       return NextResponse.json(
         { message: "Token invalide ou expiré" },
         { status: 400 }
@@ -37,9 +39,13 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    await db.execute({
-      sql: "UPDATE users SET passwordHash = ?, resetToken = NULL, resetTokenExpiry = NULL, updatedAt = ? WHERE id = ?",
-      args: [hashedPassword, now, row.id as string]
+    await (prisma as any).user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash: hashedPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      }
     })
 
     return NextResponse.json({

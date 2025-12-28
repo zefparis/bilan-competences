@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import crypto from "crypto"
-import { getDb } from "@/lib/db"
+import { prisma } from "@/lib/prisma"
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,14 +13,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const db = getDb()
-    const result = await db.execute({
-      sql: "SELECT id FROM users WHERE email = ?",
-      args: [email]
+    const user = await (prisma as any).user.findUnique({
+      where: { email },
+      select: { id: true }
     })
 
-    const row = result.rows[0]
-    if (!row) {
+    if (!user) {
       return NextResponse.json(
         { message: "Si un compte avec cet email existe, un email de réinitialisation sera envoyé" },
         { status: 200 }
@@ -28,11 +26,14 @@ export async function POST(request: NextRequest) {
     }
 
     const resetToken = crypto.randomBytes(32).toString("hex")
-    const resetTokenExpiry = new Date(Date.now() + 3600000).toISOString() // 1 hour
+    const resetTokenExpiry = new Date(Date.now() + 3600000) // 1 hour
 
-    await db.execute({
-      sql: "UPDATE users SET resetToken = ?, resetTokenExpiry = ? WHERE id = ?",
-      args: [resetToken, resetTokenExpiry, row.id as string]
+    await (prisma as any).user.update({
+      where: { id: user.id },
+      data: {
+        resetToken,
+        resetTokenExpiry,
+      }
     })
 
     console.log(`Token de réinitialisation pour ${email}: ${resetToken}`)

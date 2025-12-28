@@ -3,6 +3,9 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
+import { Toaster as SonnerToaster } from 'sonner'
+import { AuthSessionProvider } from '@/components/session-provider'
+import { ReactQueryProvider } from '@/components/query-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,16 +20,19 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr" className="dark">
+    <html lang="fr" className="dark" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem
+          enableSystem={false}
           disableTransitionOnChange
         >
-          {children}
+          <AuthSessionProvider>
+            <ReactQueryProvider>{children}</ReactQueryProvider>
+          </AuthSessionProvider>
           <Toaster />
+          <SonnerToaster richColors />
         </ThemeProvider>
       </body>
     </html>

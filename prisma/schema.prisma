@@ -1,24 +1,224 @@
-generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-datasource db {
-  provider = "sqlite"
-  url      = env("TURSO_DATABASE_URL")
+generator client {
+  provider = "prisma-client-js"
 }
 
 model User {
-  id               String    @id @default(cuid())
-  email            String    @unique
-  passwordHash     String
-  role             String    @default("BENEFICIAIRE")
-  firstName        String
-  lastName         String
-  resetToken       String?
-  resetTokenExpiry DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  firstName     String?
+  lastName          String?
+  title             String?
+  bio               String?
+  skills            String?
+  linkedin          String?
+  github            String?
+  portfolio         String?
+  role              String    @default("BENEFICIAIRE")
+  resetToken        String?   @unique
+  resetTokenExpiry  DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  assessments   Assessment[]
+  cognitiveProfile CognitiveProfile?
+  cognitiveInsights CognitiveInsight[]
+  cognitiveTestResponses CognitiveTestResponse[]
+}
 
-  @@map("users")
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Assessment {
+  id        String      @id @default(cuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    String      @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // Relations Modules
+  lifePath    LifePath?
+  experiences Experience[]
+  values      UserValue[]
+  riasecResult RiasecResult?
+  projects    Project[]
+}
+
+model LifePath {
+  id          String    @id @default(cuid())
+  assessmentId String   @unique
+  assessment  Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  events      LifeEvent[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model LifeEvent {
+  id          String    @id @default(cuid())
+  lifePathId  String
+  lifePath    LifePath  @relation(fields: [lifePathId], references: [id], onDelete: Cascade)
+  year        Int
+  title       String
+  type        String    // PRO, PERSO, FORMATION
+  sentiment   Int       // Echelle -10 à +10
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Experience {
+  id          String    @id @default(cuid())
+  assessmentId String
+  assessment  Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  title       String
+  company     String
+  startDate   DateTime
+  endDate     DateTime?
+  // Méthode STAR
+  situation   String?
+  task        String?
+  action      String?
+  result      String?
+  skills      String    // Liste de tags (ex: "Management", "Java")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model UserValue {
+  id          String    @id @default(cuid())
+  assessmentId String
+  assessment  Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  valueName   String
+  order       Int       // 1 à 10
+  gapScore    Int?      // Satisfaction actuelle (1-5)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model RiasecResult {
+  id          String    @id @default(cuid())
+  assessmentId String   @unique
+  assessment  Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  scoreR      Int
+  scoreI      Int
+  scoreA      Int
+  scoreS      Int
+  scoreE      Int
+  scoreC      Int
+  topCode     String    // Ex: "RIS"
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model CognitiveProfile {
+  id                 String   @id
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  form_score         Int
+  color_score        Int
+  volume_score       Int
+  sound_score        Int
+  dominant_cognition String
+  profile_code       String
+  communication_style String?
+  detail_level       String?
+  learning_preference String?
+  completed_at       DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model CognitiveInsight {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  insight_type String
+  title       String
+  description String
+  priority    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CognitiveTestResponse {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId    Int
+  selectedOption String
+  dimension     String
+  weight        Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, questionId])
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  assessmentId String
+  assessment  Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  strengths   String? // SWOT
+  weaknesses  String?
+  opportunities String?
+  threats     String?
+  actionPlan  ActionStep[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ActionStep {
+  id          String    @id @default(cuid())
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  action      String
+  deadline    DateTime?
+  status      String    @default("TODO") // TODO, DONE
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
