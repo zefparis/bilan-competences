@@ -326,7 +326,7 @@
   }
 
   .cyber-nav-link.active {
-    @apply text-cyber-neon bg-cyber-neon/10 shadow-neon;
+    @apply text-cyber-neon bg-cyber-neon/10;
   }
 
   /* Dashboard cyberpunk */
@@ -439,22 +439,18 @@
 @layer utilities {
   .text-cyber-neon {
     color: #00ff88;
-    text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88;
   }
 
   .text-cyber-pink {
     color: #ff00ff;
-    text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
   }
 
   .text-cyber-blue {
     color: #00ffff;
-    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
   }
 
   .text-cyber-purple {
     color: #8b00ff;
-    text-shadow: 0 0 10px #8b00ff, 0 0 20px #8b00ff;
   }
 
   .border-cyber-neon {
@@ -607,12 +603,11 @@
 
   /* Links cyberpunk */
   a {
-    @apply text-cyber-neon transition-all duration-300;
+    @apply text-cyber-silver transition-all duration-300;
   }
 
   a:hover {
-    @apply text-cyber-cyan;
-    text-shadow: 0 0 10px #00ffff;
+    @apply text-cyber-neon;
   }
 
   /* Headings cyberpunk */
