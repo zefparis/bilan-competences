@@ -1,0 +1,148 @@
+"use client"
+
+import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
+
+export default function CGU() {
+  return (
+    <div className="min-h-screen bg-[#FAF8F5] text-[#2C2C2C]">
+      <div className="container mx-auto px-6 py-12 max-w-4xl">
+        <Link 
+          href="/" 
+          className="inline-flex items-center gap-2 text-[#8C5A2B] hover:underline mb-8"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Retour à l'accueil
+        </Link>
+
+        <h1 className="text-3xl font-bold mb-8">Conditions Générales d'Utilisation</h1>
+
+        <div className="space-y-8 text-[#2C2C2C]">
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">1. Objet</h2>
+            <p>
+              Les présentes Conditions Générales d'Utilisation (CGU) ont pour objet de définir les modalités 
+              et conditions d'utilisation des services proposés sur le site PERSPECTA, ainsi que de définir 
+              les droits et obligations des parties dans ce cadre.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">2. Mentions légales</h2>
+            <p>
+              Le site PERSPECTA est édité par ia-solution, dont le siège social est situé à Alès, France. 
+              Contact : <a href="mailto:contact@ia-solution.fr" className="text-[#8C5A2B] hover:underline">contact@ia-solution.fr</a>
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">3. Accès au site</h2>
+            <p className="mb-4">
+              Le site est accessible gratuitement à tout utilisateur disposant d'un accès à Internet. 
+              Tous les coûts afférents à l'accès au service, que ce soient les frais matériels, logiciels 
+              ou d'accès à Internet sont exclusivement à la charge de l'utilisateur.
+            </p>
+            <p>
+              L'utilisateur est seul responsable du bon fonctionnement de son équipement informatique 
+              ainsi que de son accès à Internet.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">4. Inscription et compte utilisateur</h2>
+            <p className="mb-4">
+              L'accès à certains services nécessite une inscription préalable. L'utilisateur s'engage à 
+              fournir des informations exactes et à les maintenir à jour.
+            </p>
+            <p className="mb-4">
+              L'utilisateur est responsable de la confidentialité de ses identifiants de connexion. 
+              Toute utilisation de son compte est présumée faite par lui-même.
+            </p>
+            <p>
+              ia-solution se réserve le droit de suspendre ou supprimer tout compte en cas de non-respect 
+              des présentes CGU.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">5. Description des services</h2>
+            <p className="mb-4">
+              PERSPECTA propose des services d'évaluation cognitive et de bilan de compétences, incluant :
+            </p>
+            <ul className="list-disc ml-6 space-y-2">
+              <li>Des tests d'évaluation cognitive personnalisés</li>
+              <li>Des analyses de profil professionnel</li>
+              <li>Des recommandations de développement</li>
+              <li>Des rapports de synthèse détaillés</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">6. Propriété intellectuelle</h2>
+            <p className="mb-4">
+              L'ensemble des éléments du site (textes, images, logiciels, méthodologies, tests, etc.) 
+              sont protégés par le droit de la propriété intellectuelle et appartiennent à ia-solution.
+            </p>
+            <p>
+              Toute reproduction, représentation ou exploitation non autorisée de ces éléments est 
+              strictement interdite et constitue une contrefaçon.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">7. Responsabilité</h2>
+            <p className="mb-4">
+              ia-solution s'efforce de fournir des services de qualité mais ne peut garantir l'absence 
+              d'erreurs ou d'interruptions. Les résultats des évaluations sont fournis à titre indicatif 
+              et ne constituent pas un diagnostic professionnel.
+            </p>
+            <p>
+              L'utilisateur reconnaît utiliser les services à ses propres risques et sous sa seule 
+              responsabilité.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">8. Données personnelles</h2>
+            <p>
+              Le traitement des données personnelles est régi par notre 
+              <Link href="/politique-confidentialite" className="text-[#8C5A2B] hover:underline ml-1">
+                Politique de Confidentialité
+              </Link>
+              , conforme au RGPD.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">9. Modification des CGU</h2>
+            <p>
+              ia-solution se réserve le droit de modifier les présentes CGU à tout moment. 
+              Les utilisateurs seront informés de toute modification substantielle. 
+              La poursuite de l'utilisation du service après modification vaut acceptation des nouvelles CGU.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">10. Droit applicable et juridiction</h2>
+            <p>
+              Les présentes CGU sont régies par le droit français. En cas de litige, et après tentative 
+              de résolution amiable, les tribunaux français seront seuls compétents.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">11. Contact</h2>
+            <p>
+              Pour toute question concernant ces CGU : 
+              <a href="mailto:contact@ia-solution.fr" className="text-[#8C5A2B] hover:underline ml-1">contact@ia-solution.fr</a>
+            </p>
+          </section>
+        </div>
+
+        <p className="mt-12 text-sm text-[#6B6B6B]">
+          Dernière mise à jour : Décembre 2024
+        </p>
+      </div>
+    </div>
+  )
+}

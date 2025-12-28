@@ -462,19 +462,44 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="py-12 px-6 border-t transition-colors duration-300" style={{ backgroundColor: theme.bgAlt, borderColor: theme.border }}>
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold" style={{ color: theme.text }}>PERSPECTA</span>
-            </div>
-            
-            <div className="flex items-center gap-6 text-sm" style={{ color: theme.textMuted }}>
-              <a href="#" className="hover:opacity-80 transition-opacity">Mentions légales</a>
-              <a href="#" className="hover:opacity-80 transition-opacity">Confidentialité</a>
-              <a href="#" className="hover:opacity-80 transition-opacity">Contact</a>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            {/* Logo et description */}
+            <div>
+              <span className="font-semibold text-lg" style={{ color: theme.text }}>PERSPECTA</span>
+              <p className="mt-2 text-sm" style={{ color: theme.textMuted }}>
+                Plateforme d'évaluation cognitive et de bilan de compétences.
+              </p>
             </div>
 
+            {/* Liens légaux */}
+            <div>
+              <h4 className="font-medium mb-3" style={{ color: theme.text }}>Informations légales</h4>
+              <div className="flex flex-col gap-2 text-sm" style={{ color: theme.textMuted }}>
+                <Link href="/mentions-legales" className="hover:opacity-80 transition-opacity">Mentions légales</Link>
+                <Link href="/politique-confidentialite" className="hover:opacity-80 transition-opacity">Politique de confidentialité</Link>
+                <Link href="/cgu" className="hover:opacity-80 transition-opacity">Conditions générales d'utilisation</Link>
+              </div>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h4 className="font-medium mb-3" style={{ color: theme.text }}>Contact</h4>
+              <div className="flex flex-col gap-2 text-sm" style={{ color: theme.textMuted }}>
+                <p>ia-solution</p>
+                <p>Alès, France</p>
+                <a href="mailto:contact@ia-solution.fr" className="hover:opacity-80 transition-opacity" style={{ color: theme.accent }}>
+                  contact@ia-solution.fr
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: theme.border }}>
             <p className="text-xs" style={{ color: theme.textFaint }}>
               © 2025 PERSPECTA. Tous droits réservés.
+            </p>
+            <p className="text-xs" style={{ color: theme.textFaint }}>
+              Développé par <a href="mailto:contact@ia-solution.fr" className="hover:underline" style={{ color: theme.accent }}>ia-solution</a>
             </p>
           </div>
         </div>
