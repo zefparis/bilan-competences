@@ -39,33 +39,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Accès non autorisé" }, { status: 403 })
     }
 
-    // Fetch all user data
-    const [cognitiveSession, riasecResult, values, experiences, lifeEvents] = await Promise.all([
-      (prisma as any).cognitiveTestSession.findFirst({
-        where: { userId, status: "COMPLETED" },
-        orderBy: { completedAt: "desc" },
-        include: { signature: true },
-      }),
-      (prisma as any).riasecResult.findFirst({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
-      }),
-      (prisma as any).userValue.findMany({
-        where: { userId },
-        orderBy: { priority: "asc" },
-        take: 10,
-      }),
-      (prisma as any).experience.findMany({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      }),
-      (prisma as any).lifeEvent.findMany({
-        where: { userId },
-        orderBy: { date: "desc" },
-        take: 10,
-      }),
-    ])
+    // Fetch cognitive session
+    const cognitiveSession = await (prisma as any).cognitiveTestSession.findFirst({
+      where: { userId, status: "COMPLETED" },
+      orderBy: { completedAt: "desc" },
+      include: { signature: true },
+    })
+
+    // Fetch assessment data (RIASEC, values, experiences are linked to Assessment)
+    const assessment = await (prisma as any).assessment.findFirst({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      include: {
+        riasecResult: true,
+        userValues: { orderBy: { order: "asc" }, take: 10 },
+        experiences: { orderBy: { createdAt: "desc" }, take: 5 },
+        lifePath: {
+          include: {
+            events: { orderBy: { year: "desc" }, take: 10 },
+          },
+        },
+      },
+    })
+
+    const riasecResult = assessment?.riasecResult
+    const values = assessment?.userValues
+    const experiences = assessment?.experiences
+    const lifeEvents = assessment?.lifePath?.events
 
     if (!cognitiveSession?.signature) {
       return NextResponse.json(
@@ -89,19 +89,19 @@ export async function POST(req: NextRequest) {
       },
       riasec: riasecResult
         ? {
-            realistic: riasecResult.realistic || 0,
-            investigative: riasecResult.investigative || 0,
-            artistic: riasecResult.artistic || 0,
-            social: riasecResult.social || 0,
-            enterprising: riasecResult.enterprising || 0,
-            conventional: riasecResult.conventional || 0,
-            dominantCode: riasecResult.dominantCode || "N/A",
+            realistic: riasecResult.scoreR || 0,
+            investigative: riasecResult.scoreI || 0,
+            artistic: riasecResult.scoreA || 0,
+            social: riasecResult.scoreS || 0,
+            enterprising: riasecResult.scoreE || 0,
+            conventional: riasecResult.scoreC || 0,
+            dominantCode: riasecResult.topCode || "N/A",
           }
         : undefined,
       values: values?.map((v: any) => ({
         id: v.id,
-        name: v.name,
-        priority: v.priority,
+        name: v.valueName,
+        priority: v.order,
       })),
       experiences: experiences?.map((e: any) => ({
         id: e.id,
@@ -110,12 +110,12 @@ export async function POST(req: NextRequest) {
         task: e.task || "",
         action: e.action || "",
         result: e.result || "",
-        competences: e.competences || [],
+        competences: e.skills ? e.skills.split(",").map((s: string) => s.trim()) : [],
       })),
       lifeEvents: lifeEvents?.map((e: any) => ({
         id: e.id,
         title: e.title,
-        date: e.date?.toISOString?.() || e.date || "",
+        date: String(e.year) || "",
         type: e.type || "",
         description: e.description || "",
       })),
