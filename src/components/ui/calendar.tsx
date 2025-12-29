@@ -24,6 +24,25 @@ function Calendar({
   buttonVariant?: React.ComponentProps<typeof Button>["variant"]
 }) {
   const defaultClassNames = getDefaultClassNames()
+  const [month, setMonth] = React.useState(props.month || new Date())
+
+  const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      setMonth(prevMonth => {
+        const newMonth = new Date(prevMonth)
+        newMonth.setMonth(newMonth.getMonth() - 1)
+        return newMonth
+      })
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      setMonth(prevMonth => {
+        const newMonth = new Date(prevMonth)
+        newMonth.setMonth(newMonth.getMonth() + 1)
+        return newMonth
+      })
+    }
+  }, [])
 
   return (
     <DayPicker
@@ -35,6 +54,8 @@ function Calendar({
         className
       )}
       captionLayout={captionLayout}
+      month={month}
+      onMonthChange={setMonth}
       formatters={{
         formatMonthDropdown: (date) =>
           date.toLocaleString("default", { month: "short" }),
@@ -131,6 +152,8 @@ function Calendar({
               data-slot="calendar"
               ref={rootRef}
               className={cn(className)}
+              tabIndex={0}
+              onKeyDown={handleKeyDown}
               {...props}
             />
           )

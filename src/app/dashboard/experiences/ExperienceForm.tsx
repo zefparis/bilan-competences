@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { experienceSchema, ExperienceData } from "@/lib/schemas"
@@ -24,6 +25,8 @@ import { CalendarIcon } from "lucide-react"
 
 export function ExperienceForm() {
   const { data: activeAssessment, isLoading: isLoadingAssessment } = useActiveAssessment()
+  const [startDateOpen, setStartDateOpen] = useState(false)
+  const [endDateOpen, setEndDateOpen] = useState(false)
   const form = useForm<ExperienceData>({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
@@ -93,10 +96,10 @@ export function ExperienceForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Date de début</FormLabel>
-              <Popover>
+              <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>
-                    <Button variant="outline">
+                    <Button variant="outline" className="w-full justify-start text-left font-normal">
                       {field.value ? format(field.value, "PPP") : "Sélectionner une date"}
                       <CalendarIcon className="ml-2 h-4 w-4 opacity-50" />
                     </Button>
@@ -106,9 +109,11 @@ export function ExperienceForm() {
                   <Calendar
                     mode="single"
                     selected={field.value}
-                    onSelect={field.onChange}
+                    onSelect={(date) => {
+                      field.onChange(date)
+                      setStartDateOpen(false)
+                    }}
                     disabled={(date) => date > new Date()}
-                    initialFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -123,10 +128,10 @@ export function ExperienceForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Date de fin (optionnel)</FormLabel>
-              <Popover>
+              <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>
-                    <Button variant="outline">
+                    <Button variant="outline" className="w-full justify-start text-left font-normal">
                       {field.value ? format(field.value, "PPP") : "Sélectionner une date"}
                       <CalendarIcon className="ml-2 h-4 w-4 opacity-50" />
                     </Button>
@@ -136,9 +141,11 @@ export function ExperienceForm() {
                   <Calendar
                     mode="single"
                     selected={field.value}
-                    onSelect={field.onChange}
+                    onSelect={(date) => {
+                      field.onChange(date)
+                      setEndDateOpen(false)
+                    }}
                     disabled={(date) => date > new Date()}
-                    initialFocus
                   />
                 </PopoverContent>
               </Popover>
