@@ -509,6 +509,7 @@ export default function LandingPage() {
                 <Link href="/politique-confidentialite" className="hover:opacity-80 transition-opacity">Politique de confidentialité</Link>
                 <Link href="/cgu" className="hover:opacity-80 transition-opacity">Conditions générales d'utilisation</Link>
                 <Link href="/methodologie" className="hover:opacity-80 transition-opacity">Cadre méthodologique</Link>
+                <Link href="/ai-act" className="hover:opacity-80 transition-opacity">Conformité IA (AI Act)</Link>
               </div>
             </div>
 
