@@ -508,6 +508,7 @@ export default function LandingPage() {
                 <Link href="/mentions-legales" className="hover:opacity-80 transition-opacity">Mentions légales</Link>
                 <Link href="/politique-confidentialite" className="hover:opacity-80 transition-opacity">Politique de confidentialité</Link>
                 <Link href="/cgu" className="hover:opacity-80 transition-opacity">Conditions générales d'utilisation</Link>
+                <Link href="/methodologie" className="hover:opacity-80 transition-opacity">Cadre méthodologique</Link>
               </div>
             </div>
 

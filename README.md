@@ -13,14 +13,21 @@ Une application premium conçue pour offrir une analyse approfondie du profil pr
 - **Bilan de compétences** : Analyse complète avec modules progressifs
 - **Synthèse stratégique** : Rapport personnalisé avec recommandations
 - **Mode clair/sombre** : Interface adaptative professionnelle
+- **Paiement Stripe** : Intégration paiement sécurisé
+- **Génération PDF** : Export des rapports au format PDF
+- **Tests E2E** : Suite de tests automatisés avec Playwright
 
 ## 🛠️ Stack technique
 
 - **Frontend** : Next.js 14 (App Router), React 18, TypeScript
-- **Styling** : TailwindCSS, shadcn/ui
+- **Styling** : TailwindCSS, shadcn/ui, Framer Motion
 - **Backend** : API Routes Next.js, Prisma ORM
 - **Base de données** : PostgreSQL (Supabase)
 - **Authentification** : NextAuth.js + JWT
+- **Paiements** : Stripe
+- **AI/ML** : OpenAI API
+- **Tests** : Vitest (unitaires), Playwright (E2E)
+- **PDF** : React PDF, PDF-lib
 - **Déploiement** : Vercel
 
 ## 📦 Installation
@@ -37,6 +44,9 @@ pnpm install
 cp .env.example .env
 # Éditer .env avec vos valeurs
 
+# Générer le client Prisma
+pnpm db:generate
+
 # Lancer en développement
 pnpm dev
 ```
@@ -47,8 +57,11 @@ pnpm dev
 |----------|-------------|
 | `DATABASE_URL` | URL de connexion PostgreSQL |
 | `NEXTAUTH_URL` | URL de l'application |
-| `NEXTAUTH_SECRET` | Secret pour NextAuth |
-| `JWT_SECRET` | Secret pour les tokens JWT |
+| `NEXTAUTH_SECRET` | Secret pour NextAuth (générer avec `openssl rand -base64 32`) |
+| `OPENAI_API_KEY` | Clé API OpenAI pour les fonctionnalités IA |
+| `STRIPE_SECRET_KEY` | Clé secrète Stripe |
+| `STRIPE_PUBLISHABLE_KEY` | Clé publique Stripe |
+| `STRIPE_WEBHOOK_SECRET` | Secret webhook Stripe |
 
 ## 📁 Structure du projet
 
@@ -56,8 +69,14 @@ pnpm dev
 src/
 ├── app/
 │   ├── api/           # Routes API
+│   │   ├── auth/      # Authentification
+│   │   ├── cognitive/ # Tests cognitifs
+│   │   ├── stripe/    # Paiements
+│   │   └── user/      # Gestion utilisateur
 │   ├── auth/          # Pages d'authentification
 │   ├── dashboard/     # Interface utilisateur
+│   ├── payment/       # Pages paiement
+│   ├── pricing/       # Pages tarifs
 │   └── (legal)/       # Pages légales
 ├── components/        # Composants UI réutilisables
 ├── lib/               # Utilitaires et configuration
@@ -77,6 +96,30 @@ L'application est configurée pour un déploiement automatique sur Vercel :
 - `/mentions-legales` - Mentions légales
 - `/politique-confidentialite` - Politique RGPD
 - `/cgu` - Conditions générales d'utilisation
+
+## 🧪 Tests
+
+```bash
+# Lancer les tests unitaires
+pnpm test
+
+# Lancer les tests E2E
+pnpm test:e2e
+
+# Ouvrir Prisma Studio
+pnpm db:studio
+
+# Peupler la base de données
+pnpm db:seed
+```
+
+## 💳 Paiement
+
+L'intégration Stripe permet :
+- Paiement sécurisé par carte
+- Webhooks pour la confirmation
+- Gestion des abonnements
+- Interface de paiement personnalisée
 
 ## 👥 Équipe
 
