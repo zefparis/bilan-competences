@@ -47,44 +47,118 @@ export default function ReportPage() {
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
+
       try {
-        // Check payment status
-        const profileRes = await fetch("/api/user/profile")
+        console.log('🔍 [Report] Vérification des prérequis...');
+
+        // 1. Vérifier le paiement
+        const profileRes = await fetch("/api/user/profile");
         if (profileRes.ok) {
-          const profileData = await profileRes.json()
-          setHasPaid(profileData.hasPaid === true)
-        }
+          const profileData = await profileRes.json();
+          const paid = profileData.hasPaid === true;
+          setHasPaid(paid);
 
-        // Check for existing report
-        const reportRes = await fetch("/api/report/generate")
-        if (reportRes.ok) {
-          const reportData = await reportRes.json()
+          console.log('💰 [Report] Paiement:', paid ? 'OK' : 'NON PAYÉ');
 
-          console.log('📄 Existing report found:', reportData)
-
-          setReport(reportData)
-          setHasCognitiveSession(true)
-          setActiveSection(reportData.sections[0]?.id || "cadre")
-
-          // Disable regeneration
-          setCanRegenerate(false)
-        } else if (reportRes.status === 404) {
-          // No report → check if cognitive session exists
-          const sessionRes = await fetch("/api/cognitive/session")
-          if (sessionRes.ok) {
-            setHasCognitiveSession(true)
-            setCanRegenerate(true) // First generation allowed
+          if (!paid) {
+            setLoading(false);
+            return;
           }
         }
+
+        // 2. Vérifier si un rapport existe déjà
+        console.log('📄 [Report] Vérification rapport existant...');
+        const reportRes = await fetch('/api/report/generate');
+
+        if (reportRes.ok) {
+          const reportData = await reportRes.json();
+          console.log('✅ [Report] Rapport existant trouvé:', {
+            hasSections: !!reportData.sections,
+            sectionsCount: reportData.sections?.length,
+            generatedAt: reportData.generatedAt
+          });
+
+          if (reportData.sections && Array.isArray(reportData.sections)) {
+            setReport(reportData);
+            setHasCognitiveSession(true);
+            setActiveSection(reportData.sections[0]?.id || 'cadre');
+            setCanRegenerate(false);
+            setLoading(false);
+            return;
+          } else {
+            console.error('❌ [Report] Rapport existant mais format invalide');
+            setError('Format de rapport invalide');
+            setLoading(false);
+            return;
+          }
+        } else if (reportRes.status === 404) {
+          console.log('📄 [Report] Aucun rapport existant (404), vérification session cognitive...');
+          // Continue to cognitive session check
+        } else {
+          console.error('❌ [Report] Erreur API rapport:', reportRes.status, await reportRes.text());
+          setError('Erreur lors de la vérification du rapport');
+          setLoading(false);
+          return;
+        }
+
+        // 3. Pas de rapport → Vérifier session cognitive
+        console.log('🧠 [Report] Vérification session cognitive...');
+        const sessionRes = await fetch('/api/cognitive/session');
+
+        console.log('🧠 [Report] Session API response status:', sessionRes.status);
+
+        if (sessionRes.ok) {
+          const sessionData = await sessionRes.json();
+
+          console.log('🔍 [Report] Session cognitive data:', {
+            found: !!sessionData,
+            id: sessionData.id,
+            status: sessionData.status,
+            allTestsCompleted: sessionData.allTestsCompleted,
+            hasSignature: sessionData.hasSignature,
+            isFullyCompleted: sessionData.isFullyCompleted,
+            testsCompleted: sessionData.testsCompleted,
+            tests: {
+              stroop: sessionData.stroopCompleted,
+              reaction: sessionData.reactionTimeCompleted,
+              trail: sessionData.trailMakingCompleted,
+              ran: sessionData.ranVisualCompleted
+            }
+          });
+
+          // ✅ Vérifier si TOUS les tests sont complétés + signature existe
+          if (sessionData.isFullyCompleted ||
+              (sessionData.allTestsCompleted && sessionData.hasSignature)) {
+
+            console.log('✅ [Report] Tous les tests sont complétés, génération autorisée');
+            setHasCognitiveSession(true);
+            setCanRegenerate(true);
+          } else {
+            console.warn('⚠️ [Report] Tests incomplets:', {
+              testsCompleted: sessionData.testsCompleted,
+              hasSignature: sessionData.hasSignature,
+              allTestsCompleted: sessionData.allTestsCompleted,
+              isFullyCompleted: sessionData.isFullyCompleted
+            });
+            setHasCognitiveSession(false);
+          }
+        } else {
+          const errorText = await sessionRes.text();
+          console.error('❌ [Report] Session API failed:', sessionRes.status, errorText);
+          setHasCognitiveSession(false);
+        }
+
       } catch (error) {
-        console.error("❌ Error fetching data:", error)
+        console.error('❌ [Report] Erreur chargement:', error);
+        setError('Erreur lors de la vérification des données');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const generateReport = useCallback(async () => {
     if (!canRegenerate) {
@@ -166,7 +240,7 @@ export default function ReportPage() {
 
       // Vérifier que les sections essentielles sont présentes
       const essential = ['cadre', 'synthese', 'croisement_riasec']
-      const missing = essential.filter(key => !completeSections[key])
+      const missing = essential.filter(key => !(completeSections as any)[key])
 
       if (missing.length > 0) {
         throw new Error(`Sections essentielles manquantes: ${missing.join(', ')}`)
@@ -290,21 +364,60 @@ export default function ReportPage() {
           <CardContent className="py-12 text-center space-y-6">
             <Brain className="w-16 h-16 text-muted-foreground mx-auto" />
             <div>
-              <h1 className="text-2xl font-bold text-foreground mb-2">Évaluation Cognitive Requise</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-2">
+                Évaluation Cognitive Requise
+              </h1>
               <p className="text-muted-foreground">
                 Complétez d'abord l'évaluation cognitive pour générer votre rapport personnalisé.
               </p>
+
+              {/* ✅ Diagnostic détaillé */}
+              <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg text-left">
+                <p className="text-sm font-medium text-amber-800 dark:text-amber-200 mb-2">
+                  📋 Prérequis pour la génération :
+                </p>
+                <ul className="text-sm text-amber-700 dark:text-amber-300 space-y-1">
+                  <li>✅ Paiement effectué (49€)</li>
+                  <li className="flex items-center gap-2">
+                    <span>❓ Les 4 tests cognitifs doivent être terminés</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span>❓ La signature cognitive doit être calculée</span>
+                  </li>
+                </ul>
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-3">
+                  💡 Si vous avez terminé tous les tests, actualisez la page (F5)
+                </p>
+              </div>
             </div>
-            <Link href="/dashboard/cognitive-assessment">
-              <Button size="lg">Commencer l'évaluation</Button>
-            </Link>
+
+            <div className="flex gap-3 justify-center">
+              <Link href="/dashboard/cognitive-assessment">
+                <Button size="lg">
+                  <Brain className="w-5 h-5 mr-2" />
+                  Aller aux tests
+                </Button>
+              </Link>
+
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => window.location.reload()}
+              >
+                <RefreshCw className="w-5 h-5 mr-2" />
+                Actualiser
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
+  // At this point: hasPaid = true, hasCognitiveSession = true
+  // Now check if we have a report or need to show generation UI
   if (!report) {
+    // Show report generation UI
     return (
       <div className="max-w-2xl mx-auto py-12">
         <Card>
@@ -358,10 +471,12 @@ export default function ReportPage() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
-  // Report view
+  // At this point: hasPaid = true, hasCognitiveSession = true
+  // Report exists - show report view
+  console.log('📄 [Report] Showing existing report view');
   return (
     <div className="max-w-6xl mx-auto py-8">
       {/* Header */}
@@ -377,11 +492,11 @@ export default function ReportPage() {
           <div>
             <h1 className="text-2xl font-bold text-foreground">Rapport d'Orientation Professionnelle</h1>
             <p className="text-sm text-muted-foreground">
-              Généré le {new Date(report.generatedAt).toLocaleDateString("fr-FR", {
+              Généré le {report?.generatedAt ? new Date(report.generatedAt).toLocaleDateString("fr-FR", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
-              })}
+              }) : 'date inconnue'}
             </p>
           </div>
         </div>
@@ -461,7 +576,7 @@ export default function ReportPage() {
                         Partie {section.part}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        {report.sections.findIndex((s: ReportSection) => s.id === section.id) + 1} / {report.sections.length}
+                        {report!.sections.findIndex((s: ReportSection) => s.id === section.id) + 1} / {report!.sections.length}
                       </span>
                     </div>
                     <CardTitle className="text-2xl">{section.title}</CardTitle>

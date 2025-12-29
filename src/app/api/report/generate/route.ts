@@ -7,18 +7,29 @@ import { fetchCompleteUserData } from '@/lib/report-data-mapper';
 
 export async function GET() {
   try {
+    console.log('📥 [API GET] Starting report retrieval...');
+
     const session = await getServerSession(authConfig);
+    console.log('📥 [API GET] Session retrieved:', !!session?.user?.id);
 
     if (!session?.user?.id) {
+      console.log('❌ [API GET] No authenticated user');
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
     console.log('📥 [API GET] Récupération rapport pour:', session.user.id);
 
+    // Check if prisma client has report model
+    console.log('📥 [API GET] Checking prisma client...');
+    console.log('📥 [API GET] Prisma client methods:', Object.keys((prisma as any) || {}));
+
     // Chercher un rapport existant
+    console.log('📥 [API GET] Querying database...');
     const report = await (prisma as any).report.findUnique({
       where: { userId: session.user.id }
     });
+
+    console.log('📥 [API GET] Database query result:', !!report);
 
     if (!report) {
       console.log('❌ [API GET] Aucun rapport trouvé');
@@ -36,8 +47,15 @@ export async function GET() {
     });
 
   } catch (error) {
-    console.error('❌ [API GET] Erreur:', error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    console.error('❌ [API GET] Erreur détaillée:', error);
+    console.error('❌ [API GET] Error stack:', error instanceof Error ? error.stack : 'No stack');
+    console.error('❌ [API GET] Error name:', error instanceof Error ? error.name : 'Unknown error type');
+
+    return NextResponse.json({
+      error: "Erreur serveur",
+      details: error instanceof Error ? error.message : "Erreur inconnue",
+      stack: error instanceof Error ? error.stack : undefined
+    }, { status: 500 });
   }
 }
 

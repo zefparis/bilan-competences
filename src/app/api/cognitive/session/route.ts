@@ -43,33 +43,59 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const userId = await getUserIdFromRequest(req)
-    
+
     if (!userId) {
       return NextResponse.json({ message: "Non authentifié" }, { status: 401 })
     }
 
-    // Get latest completed session
-    const session = await (prisma as any).cognitiveTestSession.findFirst({
-      where: { 
+    // Récupérer la session cognitive avec signature (même si non complétée)
+    const cognitiveSession = await (prisma as any).cognitiveTestSession.findFirst({
+      where: {
         userId,
-        status: "COMPLETED",
+        // Ne pas filtrer sur status='COMPLETED' ici, vérifier après
       },
-      orderBy: { completedAt: "desc" },
-      include: {
-        signature: true,
-      },
-    })
+      include: { signature: true },
+      orderBy: { createdAt: 'desc' }
+    });
 
-    if (!session) {
-      return NextResponse.json({ message: "Aucune session trouvée" }, { status: 404 })
+    console.log(' [API cognitive/session] Session trouvée:', {
+      found: !!cognitiveSession,
+      status: cognitiveSession?.status,
+      hasSignature: !!cognitiveSession?.signature,
+      tests: {
+        stroop: cognitiveSession?.stroopCompleted,
+        reaction: cognitiveSession?.reactionTimeCompleted,
+        trail: cognitiveSession?.trailMakingCompleted,
+        ran: cognitiveSession?.ranVisualCompleted
+      }
+    });
+
+    if (!cognitiveSession) {
+      return NextResponse.json({ error: "Aucune session trouvée" }, { status: 404 });
     }
 
-    return NextResponse.json(session)
+    // Calculer le statut de complétion
+    const testsCompleted = [
+      cognitiveSession.stroopCompleted,
+      cognitiveSession.reactionTimeCompleted,
+      cognitiveSession.trailMakingCompleted,
+      cognitiveSession.ranVisualCompleted
+    ].filter(Boolean).length;
+
+    const allTestsCompleted = testsCompleted === 4;
+    const hasSignature = !!cognitiveSession.signature;
+
+    // Retourner les données enrichies
+    return NextResponse.json({
+      ...cognitiveSession,
+      testsCompleted,
+      allTestsCompleted,
+      hasSignature,
+      isFullyCompleted: allTestsCompleted && hasSignature
+    });
+
   } catch (error) {
-    console.error("[Cognitive Session] GET Error:", error)
-    return NextResponse.json(
-      { message: "Erreur lors de la récupération de la session" },
-      { status: 500 }
-    )
+    console.error('[API cognitive/session] Erreur:', error);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }

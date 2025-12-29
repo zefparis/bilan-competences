@@ -125,11 +125,21 @@ export default function CognitiveAssessmentPage() {
         })
         
         // Compute signature
-        await fetch("/api/cognitive/session/complete", {
+        console.log('🧮 [Assessment] Calling completion API for session:', sessionId);
+        const completeResponse = await fetch("/api/cognitive/session/complete", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId }),
-        })
+        });
+
+        if (!completeResponse.ok) {
+          const errorData = await completeResponse.json();
+          console.error('❌ [Assessment] Completion API failed:', errorData);
+          throw new Error(`Échec du calcul de signature: ${errorData.message || 'Erreur inconnue'}`);
+        }
+
+        const completeData = await completeResponse.json();
+        console.log('✅ [Assessment] Signature calculée avec succès:', completeData);
       }
       
       setCurrentStep("complete")

@@ -190,21 +190,73 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
     }, currentTrial.delay)
   }, [trials])
 
-  const handleResponse = useCallback(() => {
-    console.log(`🎯 Response attempt at trial ${currentTrialIndex + 1}, phase: ${phase}, transitioning: ${isTransitioning}`)
-    
-    if (phase === "complete" || isTransitioning) {
-      console.warn('⚠️ Response ignored (test complete or transitioning)');
-      return;
+  // ✅ Gestion des clics SEULEMENT pendant la phase stimulus (cercle vert)
+  useEffect(() => {
+    if (phase !== "stimulus") return
+
+    const handleStimulusClick = (e: MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      console.log(`✅ Valid stimulus response at trial ${currentTrialIndexRef.current + 1}`)
+      
+      // Inline the response logic for stimulus phase
+      setIsTransitioning(true)
+      if (responseTimeoutRef.current) clearTimeout(responseTimeoutRef.current)
+
+      const responseTime = performance.now() - stimulusStartTime
+      const currentTrial = trials[currentTrialIndexRef.current]
+      const isCorrect = currentTrial.type === "go"
+
+      const result: ReactionResult = {
+        trialIndex: currentTrialIndexRef.current,
+        type: currentTrial.type,
+        responseTime,
+        responded: true,
+        isCorrect,
+        isFalseStart: false,
+      }
+
+      setResults(prev => [...prev, result])
+      setLastResult({ correct: isCorrect, time: responseTime })
+      setPhase("feedback")
+
+      setTimeout(() => {
+        const nextTrialIndex = currentTrialIndexRef.current + 1
+        setCurrentTrialIndex(nextTrialIndex)
+
+        if (nextTrialIndex >= trials.length) {
+          console.log('✅ Test completed via stimulus click')
+          setPhase("complete")
+        } else {
+          startTrial()
+        }
+        setIsTransitioning(false)
+      }, 500)
     }
 
-    if (phase === "waiting") {
-      console.log('🚩 False start detected')
-      // False start
+    document.addEventListener('click', handleStimulusClick, { once: true })
+
+    return () => {
+      document.removeEventListener('click', handleStimulusClick)
+    }
+  }, [phase, stimulusStartTime, trials, startTrial])
+
+  // ✅ Détection des vrais faux départs SEULEMENT pendant la phase waiting (cercle rouge)
+  useEffect(() => {
+    if (phase !== "waiting") return
+
+    const handleFalseStartClick = (e: MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      console.log('🚩 TRUE false start detected - user clicked during red circle')
+
+      // False start logic
       setIsTransitioning(true)
       setFalseStart(true)
       if (waitingTimeoutRef.current) clearTimeout(waitingTimeoutRef.current)
-      
+
       const result: ReactionResult = {
         trialIndex: currentTrialIndexRef.current,
         type: trials[currentTrialIndexRef.current].type,
@@ -216,51 +268,20 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
       setResults(prev => [...prev, result])
       setLastResult({ correct: false, time: null })
       setPhase("feedback")
-      
+
       setTimeout(() => {
         setCurrentTrialIndex(prev => prev + 1)
         setIsTransitioning(false)
         startTrial()
       }, 1000)
-      return
     }
-    
-    if (phase !== "stimulus") return
-    
-    console.log(`✅ Valid response at trial ${currentTrialIndexRef.current + 1}`)
-    setIsTransitioning(true)
-    if (responseTimeoutRef.current) clearTimeout(responseTimeoutRef.current)
-    
-    const responseTime = performance.now() - stimulusStartTime
-    const currentTrial = trials[currentTrialIndexRef.current]
-    const isCorrect = currentTrial.type === "go"
-    
-    const result: ReactionResult = {
-      trialIndex: currentTrialIndexRef.current,
-      type: currentTrial.type,
-      responseTime,
-      responded: true,
-      isCorrect,
-      isFalseStart: false,
+
+    document.addEventListener('click', handleFalseStartClick, { once: true, capture: true })
+
+    return () => {
+      document.removeEventListener('click', handleFalseStartClick, { capture: true })
     }
-    
-    setResults(prev => [...prev, result])
-    setLastResult({ correct: isCorrect, time: responseTime })
-    setPhase("feedback")
-    
-    setTimeout(() => {
-      const nextTrialIndex = currentTrialIndexRef.current + 1
-      setCurrentTrialIndex(nextTrialIndex)
-      
-      if (nextTrialIndex >= trials.length) {
-        console.log('✅ Test completed via handleResponse')
-        setPhase("complete")
-      } else {
-        startTrial()
-      }
-      setIsTransitioning(false)
-    }, 500)
-  }, [phase, stimulusStartTime, trials, currentTrialIndex, startTrial])
+  }, [phase, trials, startTrial])
 
   useEffect(() => {
     if (phase === "complete" && results.length === trials.length) {
@@ -356,8 +377,8 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
       </CardHeader>
       <CardContent className="py-8">
         <div 
-          className="min-h-[300px] flex flex-col items-center justify-center cursor-pointer select-none"
-          onClick={handleResponse}
+          className="min-h-[300px] flex flex-col items-center justify-center select-none"
+          style={{ pointerEvents: phase === 'waiting' ? 'none' : 'auto' }} // ✅ Désactiver clics pendant waiting
         >
           {phase === "waiting" && (
             <div className="text-center">
