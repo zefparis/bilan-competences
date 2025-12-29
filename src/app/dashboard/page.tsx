@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
 type ModuleStatus = "locked" | "pending" | "in_progress" | "completed"
 
@@ -60,12 +61,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, User, Shield, HelpCircle, RefreshCcw, Settings } from "lucide-react"
+import { LogOut, User, Shield, HelpCircle, RefreshCcw, Settings, CheckCircle } from "lucide-react"
+import { Progress } from "@/components/ui/progress"
 import { signOut } from "next-auth/react"
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null)
   const [loading, setLoading] = useState(true)
+  const [cognitiveSession, setCognitiveSession] = useState<any>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -96,6 +99,35 @@ export default function DashboardPage() {
       cancelled = true
     }
   }, [])
+
+  useEffect(() => {
+    async function fetchCognitiveSession() {
+      try {
+        const res = await fetch('/api/cognitive/session')
+        if (res.ok) {
+          const data = await res.json()
+          setCognitiveSession(data)
+        }
+      } catch (error) {
+        console.error('Erreur récupération session cognitive:', error)
+      }
+    }
+    
+    fetchCognitiveSession()
+  }, [])
+
+  // Calculer le statut de l'évaluation cognitive
+  const cognitiveCompleted = cognitiveSession?.status === 'COMPLETED' || 
+                             cognitiveSession?.signature !== null
+
+  const testsCompleted = [
+    cognitiveSession?.stroopCompleted,
+    cognitiveSession?.reactionTimeCompleted,
+    cognitiveSession?.trailMakingCompleted,
+    cognitiveSession?.ranVisualCompleted
+  ].filter(Boolean).length
+
+  const totalTests = 4
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -273,43 +305,60 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="hover:border-primary transition-colors border-primary/50 bg-primary/5">
+          <Card className="relative overflow-hidden border-primary/20 bg-gradient-to-br from-background to-primary/5">
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Évaluation Cognitive PERSPECTA</CardTitle>
-                <span className="px-2 py-0.5 text-xs font-medium bg-primary/20 text-primary rounded">Premium</span>
-              </div>
-              <CardDescription>4 tests comportementaux • Signature cognitive</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center">
-                <span className="text-primary font-medium">Nouveau</span>
-                <Link href="/dashboard/cognitive-assessment">
-                  <Button variant="default" size="sm">
-                    Commencer
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CardTitle className="text-primary">Évaluation Cognitive PERSPECTA</CardTitle>
+                    {/* Badge Premium (optionnel, à garder si paywall) */}
+                    <Badge variant="secondary" className="bg-amber-500/10 text-amber-600 border-amber-500/20">
+                      Premium
+                    </Badge>
+                  </div>
+                  <CardDescription>
+                    4 tests comportementaux • Signature cognitive
+                  </CardDescription>
+                </div>
 
-          <Card className="hover:border-primary transition-colors border-primary/50 bg-primary/5">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Rapport d'Orientation</CardTitle>
-                <span className="px-2 py-0.5 text-xs font-medium bg-primary/20 text-primary rounded">Premium</span>
+                {/* Validation verte si terminé */}
+                {cognitiveCompleted && (
+                  <div className="flex items-center gap-1 text-emerald-500 font-medium text-sm">
+                    <CheckCircle className="w-4 h-4" />
+                    <span>Terminé</span>
+                  </div>
+                )}
               </div>
-              <CardDescription>Dossier complet • 10 sections • Export PDF</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center">
-                <span className="text-primary font-medium">Nouveau</span>
-                <Link href="/dashboard/report">
-                  <Button variant="default" size="sm">
-                    Générer
-                  </Button>
-                </Link>
-              </div>
+
+            <CardContent className="space-y-4">
+              {/* Progression des tests */}
+              {!cognitiveCompleted && testsCompleted > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Progression</span>
+                    <span className="font-medium">{testsCompleted}/{totalTests} tests</span>
+                  </div>
+                  <Progress value={(testsCompleted / totalTests) * 100} className="h-2" />
+                </div>
+              )}
+
+              {/* Bouton unifié */}
+              <Link href="/dashboard/cognitive-assessment">
+                <Button
+                  variant={cognitiveCompleted ? "outline" : "default"}
+                  className="w-full"
+                >
+                  {cognitiveCompleted ? "Voir" : testsCompleted > 0 ? "Continuer" : "Commencer"}
+                </Button>
+              </Link>
+
+              {/* Indicateur de statut détaillé (optionnel) */}
+              {cognitiveCompleted && (
+                <div className="text-xs text-muted-foreground text-center">
+                  {testsCompleted}/{totalTests} tests complétés
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -323,7 +372,7 @@ export default function DashboardPage() {
                 <span className={`${statusColorClass(summary?.modules.synthese.status ?? "locked")} font-medium`}>
                   {statusLabel(summary?.modules.synthese.status ?? "locked")}
                 </span>
-                <Link href="/dashboard/synthese">
+                <Link href="/dashboard/report">
                   <Button
                     variant={primaryActionVariant(summary?.modules.synthese.status ?? "locked")}
                     size="sm"

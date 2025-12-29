@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
+import { pdf, Document, Page, Text } from "@react-pdf/renderer"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { 
@@ -16,22 +17,27 @@ import {
   AlertCircle
 } from "lucide-react"
 import ReactMarkdown from "react-markdown"
+import { PdfDocument } from "@/lib/pdf-renderer"
+import type { CompleteReportSections } from "@/lib/report-generator"
 
 interface ReportSection {
-  id: string
+  id: keyof CompleteReportSections
   title: string
   content: string
+  part: number
 }
 
 interface GeneratedReport {
   sections: ReportSection[]
   generatedAt: string
   version: string
+  userName?: string
 }
 
 export default function ReportPage() {
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
+  const [downloadingPdf, setDownloadingPdf] = useState(false)
   const [hasPaid, setHasPaid] = useState(false)
   const [hasCognitiveSession, setHasCognitiveSession] = useState(false)
   const [report, setReport] = useState<GeneratedReport | null>(null)
@@ -52,9 +58,10 @@ export default function ReportPage() {
         const reportRes = await fetch("/api/report/generate")
         if (reportRes.ok) {
           const reportData = await reportRes.json()
-          if (reportData.report) {
-            setReport(reportData.report)
+          if (reportData.sections && reportData.sections.length > 0) {
+            setReport(reportData)
             setHasCognitiveSession(true)
+            setActiveSection(reportData.sections[0]?.id || "cadre")
           }
         } else if (reportRes.status === 404) {
           // Check if cognitive session exists
@@ -83,15 +90,135 @@ export default function ReportPage() {
       
       if (res.ok) {
         const data = await res.json()
+        if (!data.sections || !Array.isArray(data.sections)) {
+          throw new Error("Format de rapport invalide : sections manquantes")
+        }
         setReport(data)
+        setActiveSection(data.sections[0]?.id || "cadre")
       } else {
         const errorData = await res.json()
-        setError(errorData.message || "Erreur lors de la génération")
+        setError(errorData.message || errorData.error || "Erreur lors de la génération")
       }
     } catch (error) {
-      setError("Erreur de connexion")
+      setError(error instanceof Error ? error.message : "Erreur de connexion")
     } finally {
       setGenerating(false)
+    }
+  }, [])
+
+  const handleDownloadPdf = useCallback(async () => {
+    if (!report) return
+
+    setDownloadingPdf(true)
+    setError(null)
+
+    try {
+      console.log('🚀 Début génération PDF...')
+      console.log('📊 Sections disponibles:', report.sections.map(s => s.id))
+
+      // Reconstituer CompleteReportSections avec nettoyage du contenu
+      const completeSections: Partial<CompleteReportSections> = {}
+      report.sections.forEach((section) => {
+        // Nettoyer le contenu avant de l'ajouter
+        const cleanContent = section.content
+          .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Supprimer caractères de contrôle
+          .replace(/[^\x00-\x7F\u00A0-\u00FF]/g, (char) => {
+            // Garder les caractères UTF-8 valides pour PDF
+            return /[\u00A0-\u00FF]/.test(char) ? char : ''
+          })
+          .replace(/\n{3,}/g, '\n\n') // Normaliser les sauts de ligne
+          .trim()
+
+        if (cleanContent.length >= 50) { // Vérifier que le contenu est suffisant
+          completeSections[section.id as keyof CompleteReportSections] = cleanContent
+        } else {
+          console.warn(`⚠️ Section ${section.id} trop courte (${cleanContent.length} chars), ignorée`)
+        }
+      })
+
+      // Vérifier que les sections essentielles sont présentes
+      const essential = ['cadre', 'synthese', 'croisement_riasec']
+      const missing = essential.filter(key => !completeSections[key])
+
+      if (missing.length > 0) {
+        throw new Error(`Sections essentielles manquantes: ${missing.join(', ')}`)
+      }
+
+      console.log('📄 Appel pdf()...')
+
+      // Générer le PDF
+      const blob = await pdf(
+        <PdfDocument
+          sections={completeSections as CompleteReportSections}
+          userName={report.userName || "Utilisateur"}
+          date={new Date(report.generatedAt).toLocaleDateString("fr-FR", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
+          cognitiveHash={`PERSPECTA-${report.version}-${Date.now().toString(36).toUpperCase()}`}
+        />
+      ).toBlob()
+
+      console.log('✅ Blob créé:', blob.size, 'bytes')
+
+      // Télécharger
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `bilan-perspecta-${new Date().toISOString().split('T')[0]}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+
+      console.log('✅ PDF téléchargé')
+    } catch (error) {
+      console.error('❌ Erreur PDF:', error)
+
+      // Message d'erreur détaillé
+      const errorMessage = error instanceof Error
+        ? error.message
+        : 'Erreur inconnue'
+
+      setError(`Erreur PDF: ${errorMessage}`)
+
+      // Afficher plus de détails dans la console
+      console.error('❌ Stack:', error instanceof Error ? error.stack : 'Pas de stack')
+      console.error('❌ Sections disponibles:', report.sections.map(s => ({ id: s.id, length: s.content.length })))
+    } finally {
+      setDownloadingPdf(false)
+    }
+  }, [report])
+
+  // Fonction de test PDF minimal
+  const handleTestPdf = useCallback(async () => {
+    try {
+      console.log('🧪 Test PDF minimal...')
+
+      const testBlob = await pdf(
+        <Document>
+          <Page size="A4" style={{ padding: 30 }}>
+            <Text>Test PDF PERSPECTA</Text>
+            <Text>Si vous voyez ce texte, @react-pdf/renderer fonctionne correctement.</Text>
+            <Text>Généré le: {new Date().toLocaleString('fr-FR')}</Text>
+          </Page>
+        </Document>
+      ).toBlob()
+
+      const url = URL.createObjectURL(testBlob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = 'test-perspecta.pdf'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+
+      console.log('✅ Test PDF réussi')
+    } catch (error) {
+      console.error('❌ Test PDF échoué:', error)
+      setError('Erreur de test PDF: @react-pdf/renderer ne fonctionne pas')
     }
   }, [])
 
@@ -163,12 +290,15 @@ export default function ReportPage() {
                 Votre rapport personnalisé sera généré à partir de votre signature cognitive, 
                 profil RIASEC, valeurs et expériences.
               </p>
+              <p className="text-sm text-amber-600 mt-2 font-medium">
+                ⏱️ Temps estimé : 15-30 secondes
+              </p>
             </div>
             
             {error && (
-              <div className="flex items-center justify-center gap-2 text-red-500">
+              <div className="flex items-center justify-center gap-2 text-red-500 bg-red-50 p-4 rounded-lg">
                 <AlertCircle className="w-5 h-5" />
-                <span>{error}</span>
+                <span className="text-sm">{error}</span>
               </div>
             )}
             
@@ -186,15 +316,20 @@ export default function ReportPage() {
               ) : (
                 <>
                   <FileText className="w-5 h-5" />
-                  Générer mon rapport
+                  Générer mon rapport (IA)
                 </>
               )}
             </Button>
             
             {generating && (
-              <p className="text-sm text-muted-foreground">
-                Cette opération peut prendre jusqu'à 30 secondes...
-              </p>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  L'IA analyse votre profil cognitif et RIASEC...
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Génération de 11 sections personnalisées (~6000 mots)
+                </p>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -228,33 +363,67 @@ export default function ReportPage() {
         </div>
         
         <div className="flex gap-2">
+          <Button variant="outline" onClick={handleTestPdf} className="gap-2">
+            <FileText className="w-4 h-4" />
+            Test PDF (debug)
+          </Button>
           <Button variant="outline" onClick={generateReport} disabled={generating} className="gap-2">
             <RefreshCw className={`w-4 h-4 ${generating ? "animate-spin" : ""}`} />
-            Régénérer
+            {generating ? "Régénération..." : "Régénérer"}
           </Button>
-          <Button onClick={handlePrint} className="gap-2">
-            <Download className="w-4 h-4" />
-            Exporter PDF
+          <Button onClick={handleDownloadPdf} disabled={downloadingPdf} className="gap-2">
+            {downloadingPdf ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Génération PDF...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4" />
+                Télécharger PDF
+              </>
+            )}
           </Button>
         </div>
       </div>
 
       <div className="grid md:grid-cols-[250px_1fr] gap-8">
         {/* Navigation sidebar */}
-        <nav className="space-y-1 print:hidden">
-          {report.sections.map((section, index) => (
-            <button
-              key={section.id}
-              onClick={() => setActiveSection(section.id)}
-              className={`w-full text-left px-4 py-2 rounded-lg text-sm transition-colors ${
-                activeSection === section.id
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              }`}
-            >
-              <span className="font-medium">{index + 1}.</span> {section.title}
-            </button>
-          ))}
+        <nav className="space-y-2 print:hidden">
+          <div className="sticky top-8 space-y-1">
+            {report.sections.map((section, index) => {
+              const isActive = activeSection === section.id
+              const partLabel = `Partie ${section.part}`
+
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => setActiveSection(section.id)}
+                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-all ${
+                    isActive
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span
+                      className={`text-xs font-semibold ${isActive ? "text-primary-foreground/70" : "text-muted-foreground/70"}`}
+                    >
+                      {partLabel}
+                    </span>
+                    <span
+                      className={`text-xs ${isActive ? "text-primary-foreground/70" : "text-muted-foreground/70"}`}
+                    >
+                      {index + 1}
+                    </span>
+                  </div>
+                  <div className={`font-medium ${isActive ? "" : "text-foreground"}`}>
+                    {section.title}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
         </nav>
 
         {/* Content */}
@@ -264,17 +433,60 @@ export default function ReportPage() {
             {report.sections
               .filter(s => s.id === activeSection)
               .map(section => (
-                <Card key={section.id}>
-                  <CardHeader>
-                    <CardTitle className="text-xl">{section.title}</CardTitle>
+                <Card key={section.id} className="shadow-sm">
+                  <CardHeader className="border-b">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                        Partie {section.part}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {report.sections.findIndex(s => s.id === section.id) + 1} / {report.sections.length}
+                      </span>
+                    </div>
+                    <CardTitle className="text-2xl">{section.title}</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="prose prose-sm max-w-none dark:prose-invert">
-                      <ReactMarkdown>{section.content}</ReactMarkdown>
+                  <CardContent className="pt-6">
+                    <div className="prose prose-slate max-w-none dark:prose-invert">
+                      {section.content.split("\n\n").map((paragraph, idx) => (
+                        <p key={idx} className="text-foreground/90 leading-relaxed mb-4">
+                          {paragraph}
+                        </p>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
               ))}
+
+            <div className="flex justify-between mt-6">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const currentIndex = report.sections.findIndex(s => s.id === activeSection)
+                  if (currentIndex > 0) {
+                    setActiveSection(report.sections[currentIndex - 1].id)
+                  }
+                }}
+                disabled={report.sections.findIndex(s => s.id === activeSection) === 0}
+                className="gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Section précédente
+              </Button>
+
+              <Button
+                onClick={() => {
+                  const currentIndex = report.sections.findIndex(s => s.id === activeSection)
+                  if (currentIndex < report.sections.length - 1) {
+                    setActiveSection(report.sections[currentIndex + 1].id)
+                  }
+                }}
+                disabled={report.sections.findIndex(s => s.id === activeSection) === report.sections.length - 1}
+                className="gap-2"
+              >
+                Section suivante
+                <ArrowLeft className="w-4 h-4 rotate-180" />
+              </Button>
+            </div>
           </div>
 
           {/* Print view - all sections */}
@@ -292,6 +504,7 @@ export default function ReportPage() {
                   year: "numeric",
                 })}
               </p>
+              <p className="text-sm text-muted-foreground">Version {report.version}</p>
             </div>
 
             {report.sections.map((section, index) => (

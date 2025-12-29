@@ -114,16 +114,25 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
   const [stimulusStartTime, setStimulusStartTime] = useState(0)
   const [lastResult, setLastResult] = useState<{ correct: boolean; time: number | null } | null>(null)
   const [falseStart, setFalseStart] = useState(false)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   
+  const currentTrialIndexRef = useRef(0)
   const waitingTimeoutRef = useRef<NodeJS.Timeout>()
   const responseTimeoutRef = useRef<NodeJS.Timeout>()
+
+  useEffect(() => {
+    currentTrialIndexRef.current = currentTrialIndex
+  }, [currentTrialIndex])
 
   useEffect(() => {
     setTrials(generateTrials())
   }, [])
 
   const startTrial = useCallback(() => {
-    if (currentTrialIndex >= trials.length) {
+    console.log(`🔄 Starting trial ${currentTrialIndexRef.current + 1}/${trials.length}`)
+    
+    if (currentTrialIndexRef.current >= trials.length) {
+      console.log('✅ All trials completed, setting phase to complete')
       setPhase("complete")
       return
     }
@@ -131,7 +140,7 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
     setFalseStart(false)
     setPhase("waiting")
     
-    const currentTrial = trials[currentTrialIndex]
+    const currentTrial = trials[currentTrialIndexRef.current]
     
     waitingTimeoutRef.current = setTimeout(() => {
       setPhase("stimulus")
@@ -142,7 +151,7 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
         if (currentTrial.type === "go") {
           // Missed go trial
           const result: ReactionResult = {
-            trialIndex: currentTrialIndex,
+            trialIndex: currentTrialIndexRef.current,
             type: "go",
             responseTime: null,
             responded: false,
@@ -154,7 +163,7 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
         } else {
           // Correct no-go (didn't respond)
           const result: ReactionResult = {
-            trialIndex: currentTrialIndex,
+            trialIndex: currentTrialIndexRef.current,
             type: "no-go",
             responseTime: null,
             responded: false,
@@ -167,22 +176,38 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
         
         setPhase("feedback")
         setTimeout(() => {
-          setCurrentTrialIndex(prev => prev + 1)
-          startTrial()
+          const nextTrialIndex = currentTrialIndexRef.current + 1
+          setCurrentTrialIndex(nextTrialIndex)
+          
+          if (nextTrialIndex >= trials.length) {
+            console.log('✅ Test completed via timeout (missed response)')
+            setPhase("complete")
+          } else {
+            startTrial()
+          }
         }, 800)
       }, MAX_RESPONSE_TIME)
     }, currentTrial.delay)
-  }, [currentTrialIndex, trials])
+  }, [trials])
 
   const handleResponse = useCallback(() => {
+    console.log(`🎯 Response attempt at trial ${currentTrialIndex + 1}, phase: ${phase}, transitioning: ${isTransitioning}`)
+    
+    if (phase === "complete" || isTransitioning) {
+      console.warn('⚠️ Response ignored (test complete or transitioning)');
+      return;
+    }
+
     if (phase === "waiting") {
+      console.log('🚩 False start detected')
       // False start
+      setIsTransitioning(true)
       setFalseStart(true)
       if (waitingTimeoutRef.current) clearTimeout(waitingTimeoutRef.current)
       
       const result: ReactionResult = {
-        trialIndex: currentTrialIndex,
-        type: trials[currentTrialIndex].type,
+        trialIndex: currentTrialIndexRef.current,
+        type: trials[currentTrialIndexRef.current].type,
         responseTime: null,
         responded: true,
         isCorrect: false,
@@ -194,6 +219,7 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
       
       setTimeout(() => {
         setCurrentTrialIndex(prev => prev + 1)
+        setIsTransitioning(false)
         startTrial()
       }, 1000)
       return
@@ -201,14 +227,16 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
     
     if (phase !== "stimulus") return
     
+    console.log(`✅ Valid response at trial ${currentTrialIndexRef.current + 1}`)
+    setIsTransitioning(true)
     if (responseTimeoutRef.current) clearTimeout(responseTimeoutRef.current)
     
     const responseTime = performance.now() - stimulusStartTime
-    const currentTrial = trials[currentTrialIndex]
+    const currentTrial = trials[currentTrialIndexRef.current]
     const isCorrect = currentTrial.type === "go"
     
     const result: ReactionResult = {
-      trialIndex: currentTrialIndex,
+      trialIndex: currentTrialIndexRef.current,
       type: currentTrial.type,
       responseTime,
       responded: true,
@@ -221,12 +249,16 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
     setPhase("feedback")
     
     setTimeout(() => {
-      setCurrentTrialIndex(prev => prev + 1)
-      if (currentTrialIndex + 1 >= trials.length) {
+      const nextTrialIndex = currentTrialIndexRef.current + 1
+      setCurrentTrialIndex(nextTrialIndex)
+      
+      if (nextTrialIndex >= trials.length) {
+        console.log('✅ Test completed via handleResponse')
         setPhase("complete")
       } else {
         startTrial()
       }
+      setIsTransitioning(false)
     }, 500)
   }, [phase, stimulusStartTime, trials, currentTrialIndex, startTrial])
 
@@ -236,6 +268,14 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
       onComplete({ trials: results, metrics })
     }
   }, [phase, results, trials.length, onComplete])
+
+  // Safety net: force completion if we somehow exceed trial count
+  useEffect(() => {
+    if (currentTrialIndex >= TOTAL_TRIALS && phase !== "complete") {
+      console.warn('🚨 Safety net: forcing test completion', { currentTrialIndex, TOTAL_TRIALS })
+      setPhase("complete")
+    }
+  }, [currentTrialIndex, phase])
 
   useEffect(() => {
     return () => {
@@ -309,7 +349,7 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Test de Temps de Réaction</CardTitle>
           <span className="text-sm text-muted-foreground">
-            {currentTrialIndex + 1} / {TOTAL_TRIALS}
+            {Math.min(currentTrialIndex + 1, TOTAL_TRIALS)} / {TOTAL_TRIALS}
           </span>
         </div>
         <Progress value={progress} className="h-2" />

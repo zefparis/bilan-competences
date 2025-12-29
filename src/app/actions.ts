@@ -89,7 +89,7 @@ export async function saveRiasecResults(assessmentId: string, scores: {
   })
 
   revalidatePath("/dashboard/riasec")
-  revalidatePath("/dashboard/synthese")
+  revalidatePath("/dashboard/report")
   return results
 }
 
@@ -113,6 +113,6 @@ export async function saveUserValues(assessmentId: string, values: {
   })
 
   revalidatePath("/dashboard/valeurs")
-  revalidatePath("/dashboard/synthese")
+  revalidatePath("/dashboard/report")
   return results
 }

@@ -1,0 +1,295 @@
+import { CognitiveSignatureData, RIASECProfile } from "./premium-report-sections";
+import {
+  generateSignatureCentraleSection,
+  generateLectureFonctionnelleSection,
+  generateCarteTensionsSection,
+  generateZonesVigilanceSection,
+  generateProjectionIATransformationSection,
+} from "./premium-report-sections";
+import * as crypto from 'crypto';
+import { generateGeneralReport, type GeneralReportInput } from "./general-report-sections";
+
+/* =======================
+   TYPES & INTERFACES
+======================= */
+
+/**
+ * Interface unifiée pour les entrées du générateur de rapport
+ */
+export interface ReportGeneratorInput {
+  cognitiveSignature: CognitiveSignatureData;
+  riasecProfile?: RIASECProfile;
+  userName?: string;
+  age?: number;
+  occupation?: string;
+  experience?: string;
+}
+
+/**
+ * Interface canonique du rapport complet PERSPECTA (11 sections)
+ * PARTIE I - Synthèse Générale (5 sections)
+ * PARTIE II - Analyse Cognitive Premium (4 sections)
+ * PARTIE III - Transformation (1 section)
+ * PARTIE IV - Conclusion (1 section)
+ */
+export interface CompleteReportSections {
+  // PARTIE I - Synthèse Générale
+  cadre: string;
+  synthese: string;
+  croisement_riasec: string;
+  scenarios: string;
+  environnements_compatibles: string;
+
+  // PARTIE II - Analyse Cognitive Premium
+  signature_centrale: string;
+  lecture_fonctionnelle: string;
+  tensions_cognitives: string;
+  zones_vigilance: string;
+
+  // PARTIE III - Transformation
+  projection_ia: string;
+
+  // PARTIE IV - Conclusion
+  conclusion: string;
+}
+
+/**
+ * Sections cognitives générées de manière déterministe
+ * (anciennes sections "premium")
+ */
+interface CognitiveSections {
+  signature_centrale: string;
+  lecture_fonctionnelle: string;
+  tensions_cognitives: string;
+  zones_vigilance: string;
+  projection_ia: string;
+  conclusion: string;
+}
+
+/* =======================
+   GÉNÉRATION SECTIONS COGNITIVES
+======================= */
+
+/**
+ * Génère les 6 sections d'analyse cognitive détaillée
+ * (logique déterministe basée sur les scores cognitifs)
+ */
+function generateCognitiveSections(
+  input: ReportGeneratorInput
+): CognitiveSections {
+  const { cognitiveSignature } = input;
+
+  return {
+    signature_centrale: generateSignatureCentraleSection(cognitiveSignature),
+    lecture_fonctionnelle: generateLectureFonctionnelleSection(cognitiveSignature),
+    tensions_cognitives: generateCarteTensionsSection(cognitiveSignature),
+    zones_vigilance: generateZonesVigilanceSection(cognitiveSignature),
+    projection_ia: generateProjectionIATransformationSection(cognitiveSignature),
+    conclusion: generateConclusionSection(cognitiveSignature),
+  };
+}
+
+/**
+ * Génère la conclusion stratégique du rapport
+ */
+function generateConclusionSection(sig: CognitiveSignatureData): string {
+  const scores = [
+    sig.processingSpeed,
+    sig.inhibitoryControl,
+    sig.cognitiveFlexibility,
+    sig.accessFluency
+  ].filter(Boolean);
+
+  const scoresText = scores.length > 0 
+    ? scores.map(s => `${s}%`).join(', ')
+    : 'scores mesurés';
+
+  return `Ce rapport décrit un fonctionnement cognitif spécifique à un instant donné, basé sur des indicateurs comportementaux mesurés (${scoresText}).
+
+Il ne constitue ni un diagnostic, ni une prédiction, ni une évaluation normative. Il s'agit d'un outil de compréhension destiné à éclairer vos réflexions professionnelles dans un contexte de transformation du travail et d'évolution des environnements cognitifs.
+
+Votre empreinte cognitive n'est pas figée. Elle évolue avec l'expérience, les contextes et les stratégies que vous mobilisez. Ce document propose une photographie actuelle de vos ressources cognitives, qui peut servir de point de départ pour une réflexion sur votre développement professionnel.
+
+Les recommandations formulées dans ce rapport visent à identifier les environnements dans lesquels vos ressources cognitives peuvent s'exprimer de manière optimale, minimisant ainsi les coûts d'adaptation et favorisant l'épanouissement professionnel. Elles ne constituent pas des prescriptions rigides, mais plutôt des pistes de réflexion à considérer dans le cadre de votre parcours individuel.`;
+}
+
+/* =======================
+   ASSEMBLAGE RAPPORT COMPLET
+======================= */
+
+/**
+ * Fonction principale : génère le rapport complet PERSPECTA (11 sections)
+ * 
+ * Pipeline :
+ * 1. Génère les sections générales via API OpenAI (async)
+ * 2. Génère les sections cognitives (déterministe)
+ * 3. Assemble les 11 sections dans l'ordre canonique
+ * 
+ * @param input - Données cognitives + RIASEC + métadonnées utilisateur
+ * @returns Promise<CompleteReportSections> - Les 11 sections du rapport
+ * @throws Error si génération échoue ou sections incomplètes
+ */
+export async function assembleCompleteReport(
+  input: ReportGeneratorInput
+): Promise<CompleteReportSections> {
+  console.log("🚀 Démarrage génération rapport complet PERSPECTA...");
+
+  // ============================================
+  // VALIDATION DES ENTRÉES
+  // ============================================
+  if (!input.cognitiveSignature) {
+    throw new Error("❌ cognitiveSignature est requis pour générer le rapport");
+  }
+
+  if (!input.riasecProfile) {
+    console.warn("⚠️ riasecProfile manquant - utilisation de valeurs par défaut");
+  }
+
+  // ============================================
+  // GÉNÉRATION PARALLÈLE
+  // ============================================
+  try {
+    const [generalSections, cognitiveSections] = await Promise.all([
+      generateGeneralReport({
+        cognitiveSignature: input.cognitiveSignature,
+        riasecProfile: input.riasecProfile || getDefaultRIASECProfile(),
+        userName: input.userName,
+        age: input.age,
+        occupation: input.occupation,
+        experience: input.experience,
+      }),
+      Promise.resolve(generateCognitiveSections(input))
+    ]);
+
+    // ============================================
+    // ASSEMBLAGE FINAL (11 sections)
+    // ============================================
+    const completeReport: CompleteReportSections = {
+      // PARTIE I - Synthèse Générale (5 sections IA)
+      cadre: generalSections.cadre,
+      synthese: generalSections.synthese,
+      croisement_riasec: generalSections.croisement_riasec,
+      scenarios: generalSections.scenarios,
+      environnements_compatibles: generalSections.environnements_compatibles,
+
+      // PARTIE II - Analyse Cognitive Premium (4 sections déterministes)
+      signature_centrale: cognitiveSections.signature_centrale,
+      lecture_fonctionnelle: cognitiveSections.lecture_fonctionnelle,
+      tensions_cognitives: cognitiveSections.tensions_cognitives,
+      zones_vigilance: cognitiveSections.zones_vigilance,
+
+      // PARTIE III - Transformation (1 section déterministe)
+      projection_ia: cognitiveSections.projection_ia,
+
+      // PARTIE IV - Conclusion (1 section déterministe)
+      conclusion: cognitiveSections.conclusion,
+    };
+
+    // ============================================
+    // VALIDATION DES SECTIONS
+    // ============================================
+    validateReportSections(completeReport);
+
+    console.log("✅ Rapport complet généré avec succès (11 sections)");
+    return completeReport;
+
+  } catch (error) {
+    console.error("❌ Erreur génération rapport complet:", error);
+    throw new Error(
+      `Échec génération rapport PERSPECTA: ${error instanceof Error ? error.message : "erreur inconnue"}`
+    );
+  }
+}
+
+/* =======================
+   UTILITAIRES
+======================= */
+
+/**
+ * Valide que toutes les sections du rapport sont présentes et non vides
+ */
+function validateReportSections(report: CompleteReportSections): void {
+  const requiredSections: (keyof CompleteReportSections)[] = [
+    "cadre",
+    "synthese",
+    "croisement_riasec",
+    "scenarios",
+    "environnements_compatibles",
+    "signature_centrale",
+    "lecture_fonctionnelle",
+    "tensions_cognitives",
+    "zones_vigilance",
+    "projection_ia",
+    "conclusion",
+  ];
+
+  const missingOrEmpty = requiredSections.filter((key) => {
+    const content = report[key];
+    return !content || content.trim().length < 50;
+  });
+
+  if (missingOrEmpty.length > 0) {
+    throw new Error(
+      `⚠️ Sections incomplètes détectées: ${missingOrEmpty.join(", ")}\n` +
+      `Le rapport ne peut pas être généré avec des sections vides.`
+    );
+  }
+}
+
+/**
+ * Retourne un profil RIASEC par défaut (équilibré)
+ */
+function getDefaultRIASECProfile(): RIASECProfile {
+  return {
+    realistic: 50,
+    investigative: 50,
+    artistic: 50,
+    social: 50,
+    enterprising: 50,
+    conventional: 50,
+  };
+}
+
+/**
+ * Génère un hash unique pour le rapport
+ */
+export function generateReportHash(input: ReportGeneratorInput): string {
+  const data = JSON.stringify({
+    cognitive: input.cognitiveSignature,
+    riasec: input.riasecProfile,
+    timestamp: Date.now(),
+  });
+  
+  return crypto
+    .createHash('sha256')
+    .update(data)
+    .digest('hex')
+    .slice(0, 16)
+    .toUpperCase();
+}
+
+/* =======================
+   LEGACY - COMPATIBILITÉ
+======================= */
+
+/**
+ * @deprecated Utiliser assembleCompleteReport() à la place
+ * Conservé temporairement pour compatibilité descendante
+ */
+export function generateReportSections(
+  input: ReportGeneratorInput
+): CognitiveSections {
+  console.warn(
+    "⚠️ generateReportSections() est déprécié. " +
+    "Utilisez assembleCompleteReport() pour obtenir le rapport complet."
+  );
+  
+  return generateCognitiveSections(input);
+}
+
+/**
+ * @deprecated Interface legacy - utiliser CompleteReportSections
+ */
+export interface GeneratedReportSections extends CognitiveSections {
+  title: string;
+}

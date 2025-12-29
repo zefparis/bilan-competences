@@ -27,12 +27,23 @@ export default function PricingPage() {
         return
       }
 
+      if (!res.ok) {
+        const errorData = await res.json()
+        console.error("Erreur API:", errorData)
+        alert("Erreur lors de la création de la session de paiement. Veuillez réessayer.")
+        return
+      }
+
       const data = await res.json()
       if (data.url) {
         window.location.href = data.url
+      } else {
+        console.error("Pas d'URL retournée:", data)
+        alert("Erreur lors de la redirection vers Stripe. Veuillez réessayer.")
       }
     } catch (error) {
       console.error("Erreur checkout:", error)
+      alert("Erreur de connexion. Veuillez vérifier votre connexion internet.")
     } finally {
       setLoading(false)
     }

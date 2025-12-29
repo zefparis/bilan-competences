@@ -1,242 +1,110 @@
-import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { getUserIdFromRequest } from "@/lib/auth-user"
-import OpenAI from "openai"
-import {
-  generateSystemPrompt,
-  generateUserPrompt,
-  generateFallbackReport,
-  type ReportInput,
-  type GeneratedReport,
-} from "@/lib/report-generator"
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authConfig } from '@/app/auth-config';
+import { assembleCompleteReport } from '@/lib/report-generator';
+import { fetchCompleteUserData } from '@/lib/report-data-mapper';
 
-export const dynamic = "force-dynamic"
-export const maxDuration = 60
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
-export async function POST(req: NextRequest) {
+export async function GET() {
   try {
-    const userId = await getUserIdFromRequest(req)
-
-    if (!userId) {
-      return NextResponse.json({ message: "Non authentifié" }, { status: 401 })
-    }
-
-    // Check if user has paid
-    const user = await (prisma as any).user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        hasPaid: true,
-      },
-    })
-
-    if (!user?.hasPaid) {
-      return NextResponse.json({ message: "Accès non autorisé" }, { status: 403 })
-    }
-
-    // Fetch cognitive session
-    console.log("[REPORT-GEN] Fetching COMPLETED cognitive session for user:", userId);
-    let cognitiveSession = null
-    let assessment = null
+    const session = await getServerSession(authConfig);
     
-    try {
-      cognitiveSession = await (prisma as any).cognitiveTestSession.findFirst({
-        where: { userId, status: "COMPLETED" },
-        orderBy: { completedAt: "desc" },
-        include: { signature: true },
-      })
-      console.log("[REPORT-GEN] Cognitive session found:", !!cognitiveSession, "Signature:", !!cognitiveSession?.signature);
-    } catch (e: any) {
-      console.error("[REPORT-GEN] Error fetching cognitive session:", e?.message)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
-    // Fetch assessment data
-    console.log("[REPORT-GEN] Fetching assessment data...");
-    try {
-      assessment = await (prisma as any).assessment.findFirst({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
-        include: {
-          riasecResult: true,
-          userValues: { orderBy: { order: "asc" }, take: 10 },
-          experiences: { orderBy: { createdAt: "desc" }, take: 5 },
-          lifePath: {
-            include: {
-              events: { orderBy: { year: "desc" }, take: 10 },
-            },
-          },
-        },
-      })
-      console.log("[REPORT-GEN] Assessment found:", !!assessment);
-    } catch (e: any) {
-      console.error("[REPORT-GEN] Error fetching assessment:", e?.message)
-    }
-
-    const riasecResult = assessment?.riasecResult
-    const values = assessment?.userValues
-    const experiences = assessment?.experiences
-    const lifeEvents = assessment?.lifePath?.events
-
-    if (!cognitiveSession?.signature) {
-      console.warn("[REPORT-GEN] Missing cognitive signature, aborting.");
-      return NextResponse.json(
-        { message: "Évaluation cognitive non complétée. Veuillez d'abord compléter les 4 tests cognitifs." },
-        { status: 400 }
-      )
-    }
-
-    // Prepare input data
-    console.log("[REPORT-GEN] Preparing report input...");
-    const reportInput: ReportInput = {
-      userName: user.name || "Utilisateur",
-      cognitiveSignature: {
-        inhibitoryControl: cognitiveSession.signature.inhibitoryControl,
-        processingSpeed: cognitiveSession.signature.processingSpeed,
-        cognitiveFlexibility: cognitiveSession.signature.cognitiveFlexibility,
-        accessFluency: cognitiveSession.signature.accessFluency,
-        reactionVariance: cognitiveSession.signature.reactionVariance,
-        attentionDrift: cognitiveSession.signature.attentionDrift,
-        conflictErrors: cognitiveSession.signature.conflictErrors,
-        sequencingErrors: cognitiveSession.signature.sequencingErrors,
-      },
-      riasec: riasecResult
-        ? {
-            realistic: riasecResult.scoreR || 0,
-            investigative: riasecResult.scoreI || 0,
-            artistic: riasecResult.scoreA || 0,
-            social: riasecResult.scoreS || 0,
-            enterprising: riasecResult.scoreE || 0,
-            conventional: riasecResult.scoreC || 0,
-            dominantCode: riasecResult.topCode || "N/A",
-          }
-        : undefined,
-      values: values?.map((v: any) => ({
-        id: v.id,
-        name: v.valueName,
-        priority: v.order,
-      })),
-      experiences: experiences?.map((e: any) => ({
-        id: e.id,
-        title: e.title,
-        situation: e.situation || "",
-        task: e.task || "",
-        action: e.action || "",
-        result: e.result || "",
-        competences: e.skills ? e.skills.split(",").map((s: string) => s.trim()) : [],
-      })),
-      lifeEvents: lifeEvents?.map((e: any) => ({
-        id: e.id,
-        title: e.title,
-        date: String(e.year) || "",
-        type: e.type || "",
-        description: e.description || "",
-      })),
-    }
-
-    let report: GeneratedReport | null = null;
-
-    // Try to generate with OpenAI
-    if (process.env.OPENAI_API_KEY) {
-      console.log("[REPORT-GEN] Using OpenAI GPT-4o...");
-      try {
-        const completion = await openai.chat.completions.create({
-          model: "gpt-4o",
-          messages: [
-            { role: "system", content: generateSystemPrompt() },
-            { role: "user", content: generateUserPrompt(reportInput) },
-          ],
-          temperature: 0.7,
-          max_tokens: 4000,
-          response_format: { type: "json_object" },
-        })
-
-        const content = completion.choices[0]?.message?.content
-        if (content) {
-          const parsed = JSON.parse(content)
-          report = {
-            sections: parsed.sections,
-            generatedAt: new Date().toISOString(),
-            version: "1.0.0-ai",
-          }
-          console.log("[REPORT-GEN] AI report generated successfully.");
-        }
-      } catch (aiError: any) {
-        console.error("[REPORT-GEN] OpenAI error:", aiError?.message || aiError)
-        console.log("[REPORT-GEN] Falling back to static report generation.");
-      }
-    }
-
-    // Fallback if AI failed or no key
-    if (!report) {
-      console.log("[REPORT-GEN] Generating fallback static report.");
-      report = generateFallbackReport(reportInput)
-    }
-
-    // Store the report
-    console.log("[REPORT-GEN] Storing report in database for session:", cognitiveSession.id);
-    await (prisma as any).cognitiveTestSession.update({
-      where: { id: cognitiveSession.id },
-      data: {
-        generatedReport: JSON.parse(JSON.stringify(report)), // Ensure it's a plain object
-      },
-    })
-
-    console.log("[REPORT-GEN] Generation complete.");
-    return NextResponse.json(report)
-  } catch (error: any) {
-    console.error("[Report Generate] Error:", error?.message || error)
-    return NextResponse.json(
-      { message: error?.message || "Erreur lors de la génération du rapport" },
-      { status: 500 }
-    )
+    // TODO: Récupérer rapport existant depuis DB
+    return NextResponse.json({ error: "Aucun rapport trouvé" }, { status: 404 });
+    
+  } catch (error) {
+    console.error("❌ Erreur GET /api/report/generate:", error);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function POST() {
   try {
-    const userId = await getUserIdFromRequest(req)
-
-    if (!userId) {
-      return NextResponse.json({ message: "Non authentifié" }, { status: 401 })
+    const session = await getServerSession(authConfig);
+    
+    if (!session?.user?.id) {
+      console.error('❌ [API] Non authentifié');
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
-    // Get latest session with report
-    const session = await (prisma as any).cognitiveTestSession.findFirst({
-      where: { 
-        userId, 
-        status: "COMPLETED",
-        generatedReport: { not: null },
-      },
-      orderBy: { completedAt: "desc" },
-      select: {
-        id: true,
-        generatedReport: true,
-        completedAt: true,
-      },
-    })
+    console.log('🚀 [API] Génération rapport pour:', session.user.id);
 
-    if (!session?.generatedReport) {
+    // 1. Récupérer les données
+    const userData = await fetchCompleteUserData(session.user.id);
+    
+    if (!userData) {
+      console.error('❌ [API] userData est null');
+      
+      // Retourner un message d'erreur plus explicite
       return NextResponse.json(
-        { message: "Aucun rapport disponible" },
-        { status: 404 }
-      )
+        { 
+          error: "Données utilisateur incomplètes",
+          details: "Impossible de récupérer les données. Vérifiez que vous avez complété :\n- L'évaluation cognitive (4 tests)\n- Le test RIASEC\nConsultez la console serveur pour plus de détails."
+        },
+        { status: 400 }
+      );
     }
+
+    console.log('✅ [API] Données récupérées, début génération...');
+
+    // 2. Générer le rapport
+    const completeSections = await assembleCompleteReport(userData);
+    
+    console.log('✅ [API] Sections générées:', Object.keys(completeSections).length);
+    
+    // 3. Transformer pour l'UI
+    const transformedReport = {
+      sections: completeSections,
+      userName: userData.user.name,
+      generatedAt: new Date().toISOString()
+    };
+
+    console.log('✅ [API] Rapport transformé, envoi au client');
+
+    // Transformer en format attendu par le frontend
+    const sectionsArray = [
+      // Partie I - Synthèse Générale (7 sections)
+      { id: "cadre", title: "Cadre stratégique", content: transformedReport.sections.cadre, part: 1 },
+      { id: "synthese", title: "Synthèse générale", content: transformedReport.sections.synthese, part: 1 },
+      { id: "valeurs_professionnelles", title: "Valeurs professionnelles", content: transformedReport.sections.valeurs_professionnelles, part: 1 },
+      { id: "parcours_professionnel", title: "Parcours professionnel", content: transformedReport.sections.parcours_professionnel, part: 1 },
+      { id: "croisement_riasec", title: "Croisement Cognition × RIASEC", content: transformedReport.sections.croisement_riasec, part: 1 },
+      { id: "scenarios", title: "Scénarios professionnels", content: transformedReport.sections.scenarios, part: 1 },
+      { id: "environnements_compatibles", title: "Environnements compatibles", content: transformedReport.sections.environnements_compatibles, part: 1 },
+
+      // Partie II - Analyse Cognitive (4 sections)
+      { id: "signature_centrale", title: "Signature cognitive centrale", content: transformedReport.sections.signature_centrale, part: 2 },
+      { id: "lecture_fonctionnelle", title: "Lecture fonctionnelle", content: transformedReport.sections.lecture_fonctionnelle, part: 2 },
+      { id: "tensions_cognitives", title: "Carte des tensions cognitives", content: transformedReport.sections.tensions_cognitives, part: 2 },
+      { id: "zones_vigilance", title: "Zones de vigilance cognitive", content: transformedReport.sections.zones_vigilance, part: 2 },
+
+      // Partie III - Transformation (1 section)
+      { id: "projection_ia", title: "Projection IA & transformation du travail", content: transformedReport.sections.projection_ia, part: 3 },
+
+      // Partie IV - Conclusion (1 section)
+      { id: "conclusion", title: "Conclusion stratégique", content: transformedReport.sections.conclusion, part: 4 },
+    ];
 
     return NextResponse.json({
-      sessionId: session.id,
-      report: session.generatedReport,
-      completedAt: session.completedAt,
-    })
+      sections: sectionsArray,
+      userName: transformedReport.userName,
+      generatedAt: transformedReport.generatedAt,
+      version: "1.0.0"
+    });
+    
   } catch (error) {
-    console.error("[Report Get] Error:", error)
+    console.error('❌ [API] Erreur génération rapport:', error);
+    
     return NextResponse.json(
-      { message: "Erreur lors de la récupération du rapport" },
+      { 
+        error: "Erreur génération rapport",
+        message: error instanceof Error ? error.message : "Erreur inconnue",
+        details: "Consultez la console serveur pour les logs détaillés"
+      },
       { status: 500 }
-    )
+    );
   }
 }

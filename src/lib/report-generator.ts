@@ -1,930 +1,384 @@
+import { CognitiveSignatureData, RIASECProfile } from "./premium-report-sections";
+import {
+  generateSignatureCentraleSection,
+  generateLectureFonctionnelleSection,
+  generateCarteTensionsSection,
+  generateZonesVigilanceSection,
+  generateProjectionIATransformationSection,
+} from "./premium-report-sections";
+import * as crypto from 'crypto';
+import { generateGeneralReport, type GeneralReportInput } from "./general-report-sections";
+import type { CompleteReportInput } from '@/types/report';
+
+/* =======================
+   TYPES & INTERFACES
+======================= */
+
 /**
- * PERSPECTA - Générateur de Rapport Cognitif Professionnel
- * 
- * Ce module génère un rapport structuré en 10 sections basé sur :
- * - Profil RIASEC
- * - Signature cognitive comportementale
- * - Valeurs professionnelles
- * - Expériences clés
- * - Parcours chronologique
+ * Interface unifiée pour les entrées du générateur de rapport
  */
-
-export interface CognitiveSignatureData {
-  inhibitoryControl: number
-  processingSpeed: number
-  cognitiveFlexibility: number
-  accessFluency: number
-  reactionVariance: number
-  attentionDrift: number
-  conflictErrors: number
-  sequencingErrors: number
-}
-
-export interface RiasecProfile {
-  realistic: number
-  investigative: number
-  artistic: number
-  social: number
-  enterprising: number
-  conventional: number
-  dominantCode: string
-}
-
-export interface UserValue {
-  id: string
-  name: string
-  priority: number
-}
-
-export interface Experience {
-  id: string
-  title: string
-  situation: string
-  task: string
-  action: string
-  result: string
-  competences: string[]
-}
-
-export interface LifeEvent {
-  id: string
-  title: string
-  date: string
-  type: string
-  description: string
-}
-
-export interface ReportInput {
-  userName: string
-  cognitiveSignature: CognitiveSignatureData
-  riasec?: RiasecProfile
-  values?: UserValue[]
-  experiences?: Experience[]
-  lifeEvents?: LifeEvent[]
-}
-
-export interface ReportSection {
-  id: string
-  title: string
-  content: string
-}
-
-export interface GeneratedReport {
-  sections: ReportSection[]
-  generatedAt: string
-  version: string
+export interface ReportGeneratorInput {
+  cognitiveSignature: CognitiveSignatureData;
+  riasecProfile?: RIASECProfile;
+  userName?: string;
+  age?: number;
+  occupation?: string;
+  experience?: string;
 }
 
 /**
- * Détermine l'archétype cognitif basé sur la signature
+ * Interface canonique du rapport complet PERSPECTA (11 sections)
+ * PARTIE I - Synthèse Générale (7 sections)
+ * PARTIE II - Analyse Cognitive Premium (4 sections)
+ * PARTIE III - Transformation (1 section)
+ * PARTIE IV - Conclusion (1 section)
  */
-export function determineCognitiveArchetype(signature: CognitiveSignatureData): {
-  archetype: string
-  description: string
-} {
-  const { inhibitoryControl, processingSpeed, cognitiveFlexibility, accessFluency } = signature
+export interface CompleteReportSections {
+  // PARTIE I - Synthèse Générale (7 sections)
+  cadre: string;
+  synthese: string;
+  valeurs_professionnelles: string;      // NOUVEAU
+  parcours_professionnel: string;        // NOUVEAU
+  croisement_riasec: string;
+  scenarios: string;
+  environnements_compatibles: string;
 
-  // Calculer le profil dominant
+  // PARTIE II - Analyse Cognitive Premium (4 sections)
+  signature_centrale: string;
+  lecture_fonctionnelle: string;
+  tensions_cognitives: string;
+  zones_vigilance: string;
+
+  // PARTIE III - Transformation (1 section)
+  projection_ia: string;
+
+  // PARTIE IV - Conclusion (1 section)
+  conclusion: string;
+}
+
+/**
+ * Sections cognitives générées de manière déterministe
+ * (anciennes sections "premium")
+ */
+interface CognitiveSections {
+  signature_centrale: string;
+  lecture_fonctionnelle: string;
+  tensions_cognitives: string;
+  zones_vigilance: string;
+  projection_ia: string;
+  conclusion: string;
+}
+
+/* =======================
+   GÉNÉRATION SECTIONS COGNITIVES
+======================= */
+
+/**
+ * Génère les 6 sections d'analyse cognitive détaillée
+ * (logique déterministe basée sur les scores cognitifs)
+ */
+function generateCognitiveSections(
+  input: ReportGeneratorInput
+): CognitiveSections {
+  const { cognitiveSignature } = input;
+
+  return {
+    signature_centrale: generateSignatureCentraleSection(cognitiveSignature),
+    lecture_fonctionnelle: generateLectureFonctionnelleSection(cognitiveSignature),
+    tensions_cognitives: generateCarteTensionsSection(cognitiveSignature),
+    zones_vigilance: generateZonesVigilanceSection(cognitiveSignature),
+    projection_ia: generateProjectionIATransformationSection(cognitiveSignature),
+    conclusion: generateConclusionSection(cognitiveSignature),
+  };
+}
+
+/**
+ * Génère la conclusion stratégique du rapport
+ */
+function generateConclusionSection(sig: CognitiveSignatureData): string {
   const scores = [
-    { dim: "control", value: inhibitoryControl },
-    { dim: "speed", value: processingSpeed },
-    { dim: "flexibility", value: cognitiveFlexibility },
-    { dim: "fluency", value: accessFluency },
-  ].sort((a, b) => b.value - a.value)
+    sig.processingSpeed,
+    sig.inhibitoryControl,
+    sig.cognitiveFlexibility,
+    sig.accessFluency
+  ].filter(Boolean);
 
-  const primary = scores[0]
-  const secondary = scores[1]
+  const scoresText = scores.length > 0 
+    ? scores.map(s => `${s}%`).join(', ')
+    : 'scores mesurés';
 
-  // Archétypes basés sur les combinaisons dominantes
-  if (primary.dim === "speed" && processingSpeed >= 70) {
-    if (secondary.dim === "flexibility") {
-      return {
-        archetype: "Stratège Réactif",
-        description: "Traitement rapide avec capacité d'adaptation. Excelle dans les environnements dynamiques nécessitant des décisions rapides et des ajustements fréquents.",
-      }
-    }
-    if (secondary.dim === "control") {
-      return {
-        archetype: "Exécutant Précis",
-        description: "Rapidité d'exécution combinée à une forte maîtrise des interférences. Performant dans les contextes à haute pression avec objectifs clairs.",
-      }
-    }
-    return {
-      archetype: "Accélérateur",
-      description: "Vitesse de traitement élevée. Optimisé pour les environnements à rythme soutenu avec flux d'informations continu.",
-    }
+  return `Ce rapport décrit un fonctionnement cognitif spécifique à un instant donné, basé sur des indicateurs comportementaux mesurés (${scoresText}).
+
+Il ne constitue ni un diagnostic, ni une prédiction, ni une évaluation normative. Il s'agit d'un outil de compréhension destiné à éclairer vos réflexions professionnelles dans un contexte de transformation du travail et d'évolution des environnements cognitifs.
+
+Votre empreinte cognitive n'est pas figée. Elle évolue avec l'expérience, les contextes et les stratégies que vous mobilisez. Ce document propose une photographie actuelle de vos ressources cognitives, qui peut servir de point de départ pour une réflexion sur votre développement professionnel.
+
+Les recommandations formulées dans ce rapport visent à identifier les environnements dans lesquels vos ressources cognitives peuvent s'exprimer de manière optimale, minimisant ainsi les coûts d'adaptation et favorisant l'épanouissement professionnel. Elles ne constituent pas des prescriptions rigides, mais plutôt des pistes de réflexion à considérer dans le cadre de votre parcours individuel.`;
+}
+
+/* =======================
+   ASSEMBLAGE RAPPORT COMPLET
+======================= */
+
+/**
+ * Fonction principale : génère le rapport complet PERSPECTA (11 sections)
+ * 
+ * Pipeline :
+ * 1. Génère les sections générales via API OpenAI (async)
+ * 2. Génère les sections cognitives (déterministe)
+ * 3. Assemble les 11 sections dans l'ordre canonique
+ * 
+ * @param input - Données cognitives + RIASEC + métadonnées utilisateur
+ * @returns Promise<CompleteReportSections> - Les 11 sections du rapport
+ * @throws Error si génération échoue ou sections incomplètes
+ */
+export async function assembleCompleteReport(
+  input: CompleteReportInput
+): Promise<CompleteReportSections> {
+  console.log("🚀 Démarrage génération rapport complet (13 sections)...");
+
+  // Validation
+  if (!input.cognitive || !input.riasec) {
+    throw new Error("Données cognitives et RIASEC requises");
   }
 
-  if (primary.dim === "control" && inhibitoryControl >= 70) {
-    if (secondary.dim === "flexibility") {
-      return {
-        archetype: "Architecte Méthodique",
-        description: "Fort contrôle cognitif avec flexibilité. Capable de maintenir le cap tout en intégrant de nouvelles contraintes.",
-      }
-    }
-    return {
-      archetype: "Gardien de Focus",
-      description: "Excellente résistance aux distractions. Performant dans les environnements complexes nécessitant concentration prolongée.",
-    }
-  }
+  try {
+    // Génération parallèle
+    const [generalSections, cognitiveSections] = await Promise.all([
+      generateGeneralReport({
+        cognitive: input.cognitive,
+        riasec: input.riasec,
+        values: input.values,
+        experiences: input.experiences,
+        lifePath: input.lifePath,
+        userName: input.user.name,
+      }),
+      Promise.resolve(generateCognitiveSections({ cognitiveSignature: input.cognitive }))
+    ]);
 
-  if (primary.dim === "flexibility" && cognitiveFlexibility >= 70) {
-    if (secondary.dim === "fluency") {
-      return {
-        archetype: "Explorateur Cognitif",
-        description: "Grande adaptabilité avec accès fluide aux représentations. Excelle dans les contextes créatifs et non linéaires.",
-      }
-    }
-    return {
-      archetype: "Navigateur Contextuel",
-      description: "Forte capacité d'alternance entre règles et contextes. Adapté aux environnements multi-projets.",
-    }
-  }
+    // Assemblage final (13 sections)
+    const completeReport: CompleteReportSections = {
+      // Partie I - Synthèse Générale (7 sections)
+      cadre: generalSections.cadre,
+      synthese: generalSections.synthese,
+      valeurs_professionnelles: generalSections.valeurs_professionnelles,
+      parcours_professionnel: generalSections.parcours_professionnel,
+      croisement_riasec: generalSections.croisement_riasec,
+      scenarios: generalSections.scenarios,
+      environnements_compatibles: generalSections.environnements_compatibles,
 
-  if (primary.dim === "fluency" && accessFluency >= 70) {
-    return {
-      archetype: "Processeur Fluide",
-      description: "Accès automatisé et régulier aux informations. Performant dans les tâches de traitement visuel et reconnaissance de patterns.",
-    }
-  }
+      // Partie II - Analyse Cognitive (4 sections)
+      signature_centrale: cognitiveSections.signature_centrale,
+      lecture_fonctionnelle: cognitiveSections.lecture_fonctionnelle,
+      tensions_cognitives: cognitiveSections.tensions_cognitives,
+      zones_vigilance: cognitiveSections.zones_vigilance,
 
-  // Profil équilibré
-  const avgScore = (inhibitoryControl + processingSpeed + cognitiveFlexibility + accessFluency) / 4
-  if (avgScore >= 60) {
-    return {
-      archetype: "Généraliste Équilibré",
-      description: "Profil cognitif harmonieux sans dominante marquée. Polyvalent, adaptable à divers contextes professionnels.",
-    }
-  }
+      // Partie III - Transformation (1 section)
+      projection_ia: cognitiveSections.projection_ia,
 
+      // Partie IV - Conclusion (1 section)
+      conclusion: cognitiveSections.conclusion,
+    };
+
+    // Validation
+    validateReportSections(completeReport);
+
+    console.log("✅ Rapport complet généré (13 sections)");
+    return completeReport;
+
+  } catch (error) {
+    console.error("❌ Erreur assembleCompleteReport:", error);
+    console.warn("⚠️ Utilisation du rapport de secours complet");
+    return generateCompleteFallbackReport(input);
+  }
+}
+
+/**
+ * Génère un rapport de secours complet avec toutes les sections
+ */
+function generateCompleteFallbackReport(input: CompleteReportInput): CompleteReportSections {
   return {
-    archetype: "Profil en Développement",
-    description: "Signature cognitive avec potentiel d'optimisation. Les stratégies d'adaptation peuvent compenser les zones de vigilance.",
+    // Partie I - Synthèse Générale (7 sections)
+    cadre: `Ce bilan cognitif professionnel PERSPECTA vise à éclairer votre réflexion professionnelle en croisant votre fonctionnement cognitif avec vos intérêts professionnels selon le modèle RIASEC.
+
+L'analyse repose sur une mesure de vos fonctions exécutives (contrôle inhibiteur, vitesse de traitement, flexibilité cognitive, fluidité d'accès) et de vos préférences d'activité professionnelle.
+
+Cette approche permet d'identifier les environnements dans lesquels vos ressources cognitives pourront s'exprimer pleinement, sans coût d'adaptation excessif.`,
+
+    synthese: `Votre profil cognitif présente des caractéristiques spécifiques qui orientent vers certains types d'environnements professionnels.
+
+Les dimensions mesurées (contrôle inhibiteur à ${input.cognitive.inhibitoryControl}%, vitesse de traitement à ${input.cognitive.processingSpeed}%, flexibilité cognitive à ${input.cognitive.cognitiveFlexibility}%) dessinent un fonctionnement cognitif qui trouve sa cohérence dans le croisement avec vos intérêts professionnels.
+
+Votre profil RIASEC révèle des préférences marquées qui, articulées avec votre architecture cognitive, suggèrent des voies d'orientation à explorer.`,
+
+    valeurs_professionnelles: `Vos valeurs professionnelles constituent un pilier essentiel de votre épanouissement au travail.
+
+L'analyse de vos valeurs prioritaires révèle les moteurs profonds qui animent votre engagement professionnel et guident vos choix de carrière.
+
+L'alignement entre vos valeurs fondamentales et votre environnement de travail constitue un facteur déterminant de votre satisfaction et de votre performance professionnelle.`,
+
+    parcours_professionnel: `Votre parcours professionnel dessine une trajectoire cohérente marquée par des expériences significatives et des apprentissages continus.
+
+L'analyse de vos expériences passées met en évidence des compétences transférables et des patterns de réussite qui peuvent être valorisés dans votre évolution professionnelle.
+
+Les leçons tirées de votre parcours constituent un atout précis pour orienter vos prochains choix stratégiques.`,
+
+    croisement_riasec: `L'articulation entre votre fonctionnement cognitif et vos intérêts professionnels révèle des synergies potentielles.
+
+Les dimensions cognitives les plus développées soutiennent vos préférences d'activité dominantes, créant des conditions favorables pour certains types d'environnements professionnels.
+
+Il existe également des zones de tension potentielle à anticiper, où l'écart entre ressources cognitives et exigences professionnelles pourrait nécessiter des stratégies d'adaptation spécifiques.`,
+
+    scenarios: `Plusieurs trajectoires professionnelles s'offrent à vous en fonction de votre profil.
+
+Un premier scénario de continuité permettrait d'optimiser vos ressources actuelles dans des environnements alignés avec vos forces cognitives.
+
+Un second scénario de pivot stratégique mobiliserait vos compétences transférables vers de nouveaux horizons nécessitant une adaptation progressive.
+
+Un troisième scénario de rupture innovante explorerait des chemins moins conventionnels, croisant plusieurs dimensions de votre profil de manière originale.`,
+
+    environnements_compatibles: `Les environnements professionnels compatibles avec votre profil présentent certaines caractéristiques structurelles.
+
+En termes de culture organisationnelle, certains types d'organisations correspondent mieux à votre fonctionnement cognitif et à vos préférences d'activité.
+
+Le rythme de travail, les modalités de collaboration et le rapport à l'innovation constituent des paramètres importants à considérer dans votre recherche d'alignement professionnel.
+
+Des environnements spécifiques (startups, grands groupes, PME, secteur public) présentent des avantages et contraintes différenciés selon votre profil.`,
+
+    // Partie II - Analyse Cognitive (4 sections)
+    signature_centrale: `Votre fonctionnement cognitif s'organise principalement autour de ${input.cognitive.inhibitoryControl > input.cognitive.processingSpeed ? 'contrôle inhibiteur' : 'vitesse de traitement'}.
+
+Cette dimension dominante influence votre manière de traiter l'information et de prendre des décisions dans les contextes professionnels.
+
+Elle facilite certains types de tâches tout en pouvant complexifier d'autres situations, créant ainsi un profil cognitif unique.`,
+
+    lecture_fonctionnelle: `Votre fonctionnement cognitif se caractérise par ${input.cognitive.processingSpeed >= 60 ? 'un rythme rapide et synthétique' : 'un rythme plus analytique et approfondi'}.
+
+Face à la complexité, vous mobilisez ${input.cognitive.cognitiveFlexibility >= 60 ? 'une capacité à naviguer entre plusieurs perspectives' : 'une préférence pour des structures progressives et stables'}.
+
+Votre mode de décision repose sur ${input.cognitive.inhibitoryControl >= 60 ? 'un processus décisionnel structuré et cohérent' : 'un processus décisionnel contextuel et adaptatif'}.`,
+
+    tensions_cognitives: `Votre profil cognitif présente un équilibre général entre ses différentes dimensions.
+
+Les scores mesurés (contrôle inhibiteur: ${input.cognitive.inhibitoryControl}%, vitesse: ${input.cognitive.processingSpeed}%, flexibilité: ${input.cognitive.cognitiveFlexibility}%) indiquent une cohérence globale.
+
+Dans certains contextes très exigeants, des stratégies d'adaptation peuvent être nécessaires pour maintenir les performances.`,
+
+    zones_vigilance: `Les contextes professionnels très éloignés de vos habitudes cognitives peuvent nécessiter une adaptation consciente.
+
+Les environnements avec des rythmes très différents de votre fonctionnement naturel demandent une attention particulière.
+
+Votre profil équilibré vous permet généralement de vous adapter, mais certains contextes extrêmes peuvent solliciter davantage vos ressources cognitives.`,
+
+    // Partie III - Transformation (1 section)
+    projection_ia: `L'intelligence artificielle transforme les environnements de travail en automatisant les tâches répétitives et standardisées.
+
+Votre profil cognitif (${input.cognitive.processingSpeed >= 60 ? 'avec une bonne vitesse de traitement' : 'avec une approche réfléchie'}) vous positionne favorablement pour interagir avec ces nouvelles technologies.
+
+Votre valeur ajoutée réside dans ${input.cognitive.cognitiveFlexibility >= 60 ? 'votre adaptabilité et créativité' : 'votre rigueur et fiabilité'}, qui complètent parfaitement les capacités algorithmiques.`,
+
+    // Partie IV - Conclusion (1 section)
+    conclusion: `Ce rapport décrit un fonctionnement cognitif spécifique basé sur des indicateurs comportementaux mesurés (${input.cognitive.inhibitoryControl}%, ${input.cognitive.processingSpeed}%, ${input.cognitive.cognitiveFlexibility}%, ${input.cognitive.accessFluency}%).
+
+Il ne constitue ni un diagnostic, ni une prédiction, ni une évaluation normative. Il s'agit d'un outil de compréhension destiné à éclairer vos réflexions professionnelles.
+
+Votre empreinte cognitive évolue avec l'expérience. Ce document propose une photographie actuelle qui peut servir de point de départ pour votre développement professionnel.
+
+Les recommandations formulées visent à identifier les environnements où vos ressources cognitives s'expriment de manière optimale, favorisant ainsi votre épanouissement professionnel.`
+  };
+}
+
+/* =======================
+   UTILITAIRES
+======================= */
+
+/**
+ * Valide que toutes les sections du rapport sont présentes et non vides
+ */
+function validateReportSections(report: CompleteReportSections): void {
+  const requiredSections: (keyof CompleteReportSections)[] = [
+    "cadre",
+    "synthese",
+    "valeurs_professionnelles",
+    "parcours_professionnel",
+    "croisement_riasec",
+    "scenarios",
+    "environnements_compatibles",
+    "signature_centrale",
+    "lecture_fonctionnelle",
+    "tensions_cognitives",
+    "zones_vigilance",
+    "projection_ia",
+    "conclusion",
+  ];
+
+  const missingOrEmpty = requiredSections.filter((key) => {
+    const content = report[key];
+    return !content || content.trim().length < 50;
+  });
+
+  if (missingOrEmpty.length > 0) {
+    throw new Error(
+      `⚠️ Sections incomplètes détectées: ${missingOrEmpty.join(", ")}\n` +
+      `Le rapport ne peut pas être généré avec des sections vides.`
+    );
   }
 }
 
 /**
- * Génère le prompt système pour l'IA
+ * Retourne un profil RIASEC par défaut (équilibré)
  */
-export function generateSystemPrompt(): string {
-  return `Tu es un expert en orientation professionnelle et analyse cognitive, spécialisé dans la traduction de données cognitives comportementales en recommandations professionnelles concrètes, stratégiques et actionnables.
-
-Tu ne fais aucun diagnostic médical, aucune psychologie clinique, aucun discours motivationnel creux.
-
-Ton objectif est de produire un dossier d'orientation professionnelle cognitive clair, structuré et utile à la prise de décision.
-
-CONTRAINTES ABSOLUES :
-- Pas de diagnostic médical
-- Pas de promesses thérapeutiques
-- Pas de jargon psychologique creux
-- Pas de score unique type QI
-- Pas de discours marketing
-- Pas de métaphores floues
-
-POSITIONNEMENT :
-- L'analyse repose sur des mesures comportementales
-- Les modèles sont issus de travaux de recherche protégés
-- La cognition est utilisée comme outil d'orientation, pas de jugement
-
-TON ATTENDU :
-- Professionnel
-- Structuré
-- Sobre
-- Engageant intellectuellement
-- Orienté décision
-
-FORMAT DE SORTIE :
-Tu dois retourner un JSON valide avec la structure suivante :
-{
-  "sections": [
-    { "id": "section_id", "title": "Titre", "content": "Contenu markdown" }
-  ]
-}`
+function getDefaultRIASECProfile(): RIASECProfile {
+  return {
+    realistic: 50,
+    investigative: 50,
+    artistic: 50,
+    social: 50,
+    enterprising: 50,
+    conventional: 50,
+  };
 }
 
 /**
- * Génère le prompt utilisateur avec les données du profil
+ * Génère un hash unique pour le rapport
  */
-export function generateUserPrompt(input: ReportInput): string {
-  const archetype = determineCognitiveArchetype(input.cognitiveSignature)
+export function generateReportHash(input: ReportGeneratorInput): string {
+  const data = JSON.stringify({
+    cognitive: input.cognitiveSignature,
+    riasec: input.riasecProfile,
+    timestamp: Date.now(),
+  });
   
-  const cognitiveDescription = `
-SIGNATURE COGNITIVE :
-- Contrôle inhibiteur : ${input.cognitiveSignature.inhibitoryControl}/100
-- Vitesse de traitement : ${input.cognitiveSignature.processingSpeed}/100
-- Flexibilité cognitive : ${input.cognitiveSignature.cognitiveFlexibility}/100
-- Fluidité d'accès : ${input.cognitiveSignature.accessFluency}/100
-- Régularité des réponses : ${input.cognitiveSignature.reactionVariance}/100
-- Maintien de l'attention : ${input.cognitiveSignature.attentionDrift}/100
-- Erreurs sous conflit : ${input.cognitiveSignature.conflictErrors}%
-- Erreurs de séquençage : ${input.cognitiveSignature.sequencingErrors}
+  return crypto
+    .createHash('sha256')
+    .update(data)
+    .digest('hex')
+    .slice(0, 16)
+    .toUpperCase();
+}
 
-ARCHÉTYPE COGNITIF : ${archetype.archetype}
-${archetype.description}`
+/* =======================
+   LEGACY - COMPATIBILITÉ
+======================= */
 
-  let riasecDescription = ""
-  if (input.riasec) {
-    riasecDescription = `
-PROFIL RIASEC :
-- Réaliste : ${input.riasec.realistic}%
-- Investigateur : ${input.riasec.investigative}%
-- Artistique : ${input.riasec.artistic}%
-- Social : ${input.riasec.social}%
-- Entreprenant : ${input.riasec.enterprising}%
-- Conventionnel : ${input.riasec.conventional}%
-- Code dominant : ${input.riasec.dominantCode}`
-  }
-
-  let valuesDescription = ""
-  if (input.values && input.values.length > 0) {
-    valuesDescription = `
-VALEURS PROFESSIONNELLES (par ordre de priorité) :
-${input.values.map((v, i) => `${i + 1}. ${v.name}`).join("\n")}`
-  }
-
-  let experiencesDescription = ""
-  if (input.experiences && input.experiences.length > 0) {
-    experiencesDescription = `
-EXPÉRIENCES CLÉS :
-${input.experiences.map(e => `- ${e.title} : ${e.competences.join(", ")}`).join("\n")}`
-  }
-
-  let lifeEventsDescription = ""
-  if (input.lifeEvents && input.lifeEvents.length > 0) {
-    lifeEventsDescription = `
-PARCOURS CHRONOLOGIQUE :
-${input.lifeEvents.map(e => `- ${e.date} : ${e.title} (${e.type})`).join("\n")}`
-  }
-
-  return `Génère un rapport d'orientation professionnelle cognitive complet pour ${input.userName || "l'utilisateur"}.
-
-DONNÉES DU PROFIL :
-${cognitiveDescription}
-${riasecDescription}
-${valuesDescription}
-${experiencesDescription}
-${lifeEventsDescription}
-
-STRUCTURE OBLIGATOIRE DU DOCUMENT (16 sections) :
-
-1. "cadre" - Page d'ouverture — Cadre du bilan
-Explique brièvement : ce qu'est un bilan cognitif professionnel, ce que mesure ce document, comment l'utiliser pour prendre des décisions. Ton posé, sérieux, orienté utilité.
-
-2. "synthese" - Synthèse exécutive (SECTION CRITIQUE)
-6-8 lignes maximum répondant à : « Quelle est la logique professionnelle globale de ce profil ? »
-Inclure : fonctionnement cognitif dominant, dynamique générale, type d'environnements favorables, point de vigilance principal, direction professionnelle globale.
-
-3. "lecture_fonctionnelle" - Lecture fonctionnelle du fonctionnement cognitif (NOUVEAU)
-Expliquer COMMENT la personne traite l'information au quotidien. Utiliser des formulations du type "Votre fonctionnement tend à...", "Dans un contexte professionnel, cela se traduit par...". Pas de "vous êtes", pas de jugement de valeur.
-
-4. "fonctionnement" - Fonctionnement cognitif détaillé
-Décrire le mode de fonctionnement, pas la personnalité : comment la personne traite l'information, décide, s'adapte, réagit à la complexité et au rythme. Langage fonctionnel et professionnel.
-
-5. "forces" - Forces cognitives naturelles
-3 à 5 capacités clés : ce que le cerveau fait bien spontanément, ce qui demande peu d'effort, ce qui peut devenir un avantage professionnel. Formulation valorisante mais factuelle.
-
-6. "zones_vigilance" - Zones de vigilance cognitive (NOUVEAU)
-2 à 3 points maximum présentés comme des conditions à surveiller, pas des faiblesses. Formulation : "Dans certains contextes, ce fonctionnement peut entraîner..."
-
-7. "environnements_compatibles" - Environnements professionnels compatibles (NOUVEAU)
-Structuré en : Environnements favorables, Environnements neutres, Environnements cognitivement coûteux. Axes abstraits (stimulation, autonomie, pression temporelle, charge sociale, ambiguïté). PAS de métiers.
-
-8. "vigilance" - Points de vigilance cognitifs
-Ce qui fatigue le cerveau, ce qui peut dégrader la performance, ce qui peut générer frustration ou usure à long terme. Orienté prévention de mauvais choix professionnels.
-
-9. "croisement" - Croisement COGNITION × RIASEC
-Analyser comment les intérêts professionnels sont soutenus ou freinés par la cognition. Montrer cohérences fortes, tensions potentielles, zones de compromis intelligents.
-
-10. "leviers_developpement" - Leviers de développement (NOUVEAU)
-Stratégies générales : organisation, environnement, modes de collaboration. Montrer que l'empreinte cognitive n'est PAS figée. Pas de coaching, pas de plan d'action rigide.
-
-11. "scenarios" - Scénarios professionnels possibles (OBLIGATOIRE)
-3 scénarios maximum : Continuité optimisée, Pivot professionnel cohérent, Repositionnement/reconversion.
-Pour chaque : type d'environnement, nature des missions, conditions de réussite, points de vigilance.
-Logique professionnelle, pas fiches métiers.
-
-12. "projection_ia" - Projection dans un contexte de transformation du travail (NOUVEAU)
-Répondre à l'impact de l'IA sans discours anxiogène. Ce que ce fonctionnement favorise dans les contextes changeants, tâches complexes, interactions humaines. Mettre en avant ce qui est difficilement automatisable.
-
-13. "environnements" - Environnements à privilégier / à éviter
-Décrire concrètement : rythme, niveau d'interaction, structure, autonomie, pression sensorielle.
-Permettre une auto-évaluation immédiate des contextes futurs.
-
-14. "leviers" - Leviers d'évolution et de progression
-Ce que la personne peut travailler, comment équilibrer son fonctionnement, comment sécuriser une trajectoire long terme. Conseils sobres et applicables.
-
-15. "conclusion_enrichie" - Conclusion stratégique enrichie (NOUVEAU)
-Rappel synthétique du fonctionnement cognitif, rôle du rapport comme outil d'aide à la réflexion, invitation à prendre du recul. Pas d'appel à l'action commercial.
-
-16. "conclusion" - Conclusion stratégique
-Vision globale, direction claire, invitation à l'action réfléchie. Pas de répétition, pas de résumé.
-
-Retourne UNIQUEMENT un JSON valide avec la structure demandée.`
+/**
+ * @deprecated Utiliser assembleCompleteReport() à la place
+ * Conservé temporairement pour compatibilité descendante
+ */
+export function generateReportSections(
+  input: ReportGeneratorInput
+): CognitiveSections {
+  console.warn(
+    "⚠️ generateReportSections() est déprécié. " +
+    "Utilisez assembleCompleteReport() pour obtenir le rapport complet."
+  );
+  
+  return generateCognitiveSections(input);
 }
 
 /**
- * Génère un rapport statique de fallback (sans IA)
+ * @deprecated Interface legacy - utiliser CompleteReportSections
  */
-export function generateFallbackReport(input: ReportInput): GeneratedReport {
-  const archetype = determineCognitiveArchetype(input.cognitiveSignature)
-  const sig = input.cognitiveSignature
-
-  const sections: ReportSection[] = [
-    {
-      id: "cadre",
-      title: "Cadre du Bilan Cognitif Professionnel",
-      content: `## Qu'est-ce qu'un bilan cognitif professionnel ?
-
-Ce document présente une analyse de votre fonctionnement cognitif basée sur des mesures comportementales objectives. Contrairement aux tests déclaratifs, les données proviennent de votre performance réelle sur des tâches standardisées.
-
-### Ce que mesure ce document
-
-- **Contrôle inhibiteur** : capacité à résister aux interférences et distractions
-- **Vitesse de traitement** : rapidité de réaction et de décision
-- **Flexibilité cognitive** : aptitude à alterner entre règles et contextes
-- **Fluidité d'accès** : automatisation de la reconnaissance visuelle
-
-### Comment utiliser ce rapport
-
-Ce bilan n'est pas un diagnostic. C'est un outil d'aide à la décision professionnelle. Utilisez-le pour :
-- Comprendre vos modes de fonctionnement naturels
-- Identifier les environnements qui vous correspondent
-- Anticiper les sources potentielles de fatigue ou de friction
-- Orienter vos choix de carrière de manière éclairée`,
-    },
-    {
-      id: "synthese",
-      title: "Synthèse Exécutive",
-      content: `Votre profil cognitif révèle un fonctionnement de type **${archetype.archetype}**. ${archetype.description}
-
-${sig.processingSpeed >= 60 ? "Votre vitesse de traitement vous permet d'évoluer dans des environnements dynamiques." : "Votre approche plus délibérée favorise la précision sur la rapidité."}
-${sig.inhibitoryControl >= 60 ? "Votre contrôle inhibiteur soutient une bonne résistance aux distractions." : "Les environnements à forte charge informationnelle peuvent nécessiter des stratégies d'organisation."}
-${sig.cognitiveFlexibility >= 60 ? "Votre flexibilité cognitive facilite l'adaptation aux changements de contexte." : "Les environnements structurés et prévisibles correspondent mieux à votre fonctionnement."}
-
-**Direction professionnelle** : Privilégiez les contextes qui exploitent vos forces naturelles tout en minimisant l'exposition prolongée à vos zones de vigilance.`,
-    },
-    {
-      id: "lecture_fonctionnelle",
-      title: "Lecture Fonctionnelle du Fonctionnement Cognitif",
-      content: generateLectureFonctionnelleSection(sig),
-    },
-    {
-      id: "fonctionnement",
-      title: "Fonctionnement Cognitif Détaillé",
-      content: `### Traitement de l'information
-
-${sig.processingSpeed >= 70 
-  ? "Vous traitez l'information rapidement, ce qui vous permet de réagir efficacement aux stimuli. Cette caractéristique est un atout dans les environnements à flux tendu."
-  : sig.processingSpeed >= 40
-    ? "Votre vitesse de traitement est équilibrée, permettant un bon compromis entre rapidité et précision."
-    : "Vous adoptez une approche plus analytique du traitement de l'information, privilégiant la précision à la vitesse."}
-
-### Prise de décision
-
-${sig.inhibitoryControl >= 70
-  ? "Vous maintenez efficacement votre focus malgré les informations contradictoires, ce qui soutient des décisions cohérentes même sous pression."
-  : sig.inhibitoryControl >= 40
-    ? "Votre capacité décisionnelle est satisfaisante dans la plupart des contextes, avec une sensibilité modérée aux interférences."
-    : "Les situations à forte charge cognitive peuvent ralentir votre processus décisionnel. Des environnements plus calmes favorisent votre efficacité."}
-
-### Adaptation au changement
-
-${sig.cognitiveFlexibility >= 70
-  ? "Vous naviguez aisément entre différentes règles et contextes mentaux. Les environnements non linéaires vous conviennent."
-  : sig.cognitiveFlexibility >= 40
-    ? "Vous gérez les transitions de manière satisfaisante, avec un coût cognitif modéré lors des changements fréquents."
-    : "Vous performez mieux dans des environnements stables avec des règles claires et peu de changements imprévus."}
-
-### Réaction à la complexité
-
-${sig.accessFluency >= 70
-  ? "Votre accès aux représentations visuelles est fluide et automatisé, facilitant le traitement d'informations complexes."
-  : sig.accessFluency >= 40
-    ? "Vous traitez la complexité visuelle de manière satisfaisante, avec une attention aux détails."
-    : "Les environnements visuellement chargés peuvent nécessiter plus d'effort. Privilégiez les interfaces épurées."}`,
-    },
-    {
-      id: "forces",
-      title: "Forces Cognitives Naturelles",
-      content: generateForcesSection(sig),
-    },
-    {
-      id: "zones_vigilance",
-      title: "Zones de Vigilance Cognitive",
-      content: generateZonesVigilanceSection(sig),
-    },
-    {
-      id: "environnements_compatibles",
-      title: "Environnements Professionnels Compatibles",
-      content: generateEnvironnementsCompatiblesSection(sig),
-    },
-    {
-      id: "vigilance",
-      title: "Points de Vigilance Cognitifs",
-      content: generateVigilanceSection(sig),
-    },
-    {
-      id: "croisement",
-      title: "Croisement Cognition × RIASEC",
-      content: input.riasec 
-        ? generateCroisementSection(sig, input.riasec)
-        : `*Profil RIASEC non disponible. Complétez le test RIASEC pour obtenir une analyse croisée de vos intérêts professionnels et de votre fonctionnement cognitif.*`,
-    },
-    {
-      id: "leviers_developpement",
-      title: "Leviers de Développement",
-      content: generateLeviersDeveloppementSection(sig),
-    },
-    {
-      id: "scenarios",
-      title: "Scénarios Professionnels Possibles",
-      content: generateScenariosSection(sig, archetype),
-    },
-    {
-      id: "projection_ia",
-      title: "Projection dans un Contexte de Transformation du Travail",
-      content: generateProjectionIASection(sig),
-    },
-    {
-      id: "environnements",
-      title: "Environnements à Privilégier / À Éviter",
-      content: generateEnvironmentsSection(sig),
-    },
-    {
-      id: "leviers",
-      title: "Leviers d'Évolution et de Progression",
-      content: generateLeviersSection(sig),
-    },
-    {
-      id: "conclusion_enrichie",
-      title: "Conclusion Stratégique Enrichie",
-      content: generateConclusionEnrichieSection(sig, archetype),
-    },
-    {
-      id: "conclusion",
-      title: "Conclusion Stratégique",
-      content: `Votre signature cognitive de type **${archetype.archetype}** constitue une base solide pour orienter vos choix professionnels.
-
-Les données comportementales révèlent un fonctionnement qui sera optimisé dans des environnements correspondant à vos forces naturelles : ${sig.processingSpeed >= 60 ? "rythme soutenu" : "rythme modéré"}, ${sig.cognitiveFlexibility >= 60 ? "contextes variés" : "cadre structuré"}, ${sig.inhibitoryControl >= 60 ? "autonomie décisionnelle" : "objectifs clairs"}.
-
-**Prochaine étape recommandée** : Évaluez vos opportunités actuelles et futures à travers le prisme de ce rapport. Identifiez les correspondances et les écarts avec votre fonctionnement naturel.
-
-Ce bilan n'est pas une destination, mais un outil de navigation. Utilisez-le pour prendre des décisions éclairées, pas pour vous enfermer dans une catégorie.
-
----
-*Rapport généré par PERSPECTA — Méthodologie propriétaire basée sur des mesures comportementales.*`,
-    },
-  ]
-
-  return {
-    sections,
-    generatedAt: new Date().toISOString(),
-    version: "1.0.0",
-  }
-}
-
-function generateForcesSection(sig: CognitiveSignatureData): string {
-  const forces: string[] = []
-
-  if (sig.processingSpeed >= 60) {
-    forces.push(`**Réactivité décisionnelle** — Votre vitesse de traitement (${sig.processingSpeed}/100) vous permet de réagir rapidement aux situations. Cette capacité est particulièrement valorisée dans les environnements dynamiques, la gestion de crise, ou les fonctions nécessitant des arbitrages rapides.`)
-  }
-
-  if (sig.inhibitoryControl >= 60) {
-    forces.push(`**Résistance aux interférences** — Votre contrôle inhibiteur (${sig.inhibitoryControl}/100) vous permet de maintenir votre concentration malgré les distractions. Atout majeur pour les postes nécessitant une attention soutenue ou la gestion de priorités multiples.`)
-  }
-
-  if (sig.cognitiveFlexibility >= 60) {
-    forces.push(`**Adaptabilité contextuelle** — Votre flexibilité cognitive (${sig.cognitiveFlexibility}/100) facilite les transitions entre différentes tâches ou règles. Précieux dans les environnements multi-projets ou les fonctions transversales.`)
-  }
-
-  if (sig.accessFluency >= 60) {
-    forces.push(`**Traitement visuel fluide** — Votre fluidité d'accès (${sig.accessFluency}/100) indique une automatisation efficace de la reconnaissance visuelle. Avantage pour les métiers impliquant analyse de données visuelles, design, ou surveillance.`)
-  }
-
-  if (sig.reactionVariance >= 60) {
-    forces.push(`**Stabilité attentionnelle** — Votre régularité de performance (${sig.reactionVariance}/100) témoigne d'une attention constante dans la durée. Qualité essentielle pour les tâches prolongées nécessitant vigilance.`)
-  }
-
-  if (forces.length === 0) {
-    forces.push(`**Potentiel d'optimisation** — Votre profil présente des marges de progression sur plusieurs dimensions. Cette configuration invite à développer des stratégies compensatoires et à choisir des environnements adaptés.`)
-  }
-
-  return forces.join("\n\n")
-}
-
-function generateVigilanceSection(sig: CognitiveSignatureData): string {
-  const vigilances: string[] = []
-
-  if (sig.processingSpeed < 40) {
-    vigilances.push(`**Environnements à rythme intense** — Une vitesse de traitement modérée (${sig.processingSpeed}/100) peut générer de la fatigue dans les contextes à flux tendu. Privilégiez les postes permettant un temps de réflexion.`)
-  }
-
-  if (sig.inhibitoryControl < 40) {
-    vigilances.push(`**Contextes à forte charge informationnelle** — Un contrôle inhibiteur en développement (${sig.inhibitoryControl}/100) rend vulnérable aux environnements bruyants ou aux interruptions fréquentes. L'open space peut être épuisant.`)
-  }
-
-  if (sig.cognitiveFlexibility < 40) {
-    vigilances.push(`**Changements fréquents de contexte** — Une flexibilité cognitive modérée (${sig.cognitiveFlexibility}/100) peut rendre coûteux les environnements imprévisibles. Les transitions fréquentes entre projets peuvent générer de la friction.`)
-  }
-
-  if (sig.accessFluency < 40) {
-    vigilances.push(`**Surcharge visuelle** — Une fluidité d'accès en développement (${sig.accessFluency}/100) peut ralentir le traitement dans les environnements visuellement denses. Préférez les interfaces épurées.`)
-  }
-
-  if (sig.attentionDrift < 40) {
-    vigilances.push(`**Tâches prolongées sans pause** — Une dérive attentionnelle notable (${sig.attentionDrift}/100) suggère une fatigue progressive sur les tâches longues. Structurez votre travail en blocs avec pauses régulières.`)
-  }
-
-  if (sig.conflictErrors > 20) {
-    vigilances.push(`**Situations de conflit cognitif** — Un taux d'erreurs sous conflit de ${sig.conflictErrors}% indique une vulnérabilité aux situations ambiguës. Clarifiez les priorités avant d'agir.`)
-  }
-
-  if (vigilances.length === 0) {
-    vigilances.push(`Votre profil ne présente pas de zone de vigilance majeure. Restez attentif à l'équilibre global et évitez la surcharge prolongée.`)
-  }
-
-  return vigilances.join("\n\n")
-}
-
-function generateCroisementSection(sig: CognitiveSignatureData, riasec: RiasecProfile): string {
-  const code = riasec.dominantCode.toUpperCase()
-  let analysis = ""
-
-  if (code.includes("R")) {
-    analysis += `### Dimension Réaliste (${riasec.realistic}%)
-${sig.processingSpeed >= 50 
-  ? "✓ Votre vitesse de traitement soutient les activités pratiques nécessitant réactivité."
-  : "⚠ Les tâches manuelles rapides peuvent être plus exigeantes pour vous."}
-${sig.accessFluency >= 50
-  ? "✓ Votre fluidité visuelle facilite le travail avec des objets et outils."
-  : ""}\n\n`
-  }
-
-  if (code.includes("I")) {
-    analysis += `### Dimension Investigatrice (${riasec.investigative}%)
-${sig.cognitiveFlexibility >= 50
-  ? "✓ Votre flexibilité cognitive soutient l'exploration de problèmes complexes."
-  : "⚠ Les problèmes très ouverts peuvent nécessiter plus de structure."}
-${sig.inhibitoryControl >= 50
-  ? "✓ Votre contrôle inhibiteur favorise la concentration analytique prolongée."
-  : ""}\n\n`
-  }
-
-  if (code.includes("A")) {
-    analysis += `### Dimension Artistique (${riasec.artistic}%)
-${sig.cognitiveFlexibility >= 50
-  ? "✓ Votre flexibilité cognitive soutient la créativité et l'exploration."
-  : "⚠ Les processus créatifs très libres peuvent être déstabilisants."}
-${sig.accessFluency >= 50
-  ? "✓ Votre fluidité visuelle facilite le travail esthétique."
-  : ""}\n\n`
-  }
-
-  if (code.includes("S")) {
-    analysis += `### Dimension Sociale (${riasec.social}%)
-${sig.inhibitoryControl >= 50
-  ? "✓ Votre contrôle inhibiteur vous aide à gérer les interactions multiples."
-  : "⚠ Les environnements très sociaux peuvent être cognitivement coûteux."}
-${sig.cognitiveFlexibility >= 50
-  ? "✓ Votre flexibilité facilite l'adaptation aux différents interlocuteurs."
-  : ""}\n\n`
-  }
-
-  if (code.includes("E")) {
-    analysis += `### Dimension Entreprenante (${riasec.enterprising}%)
-${sig.processingSpeed >= 50
-  ? "✓ Votre vitesse de traitement soutient la prise de décision rapide."
-  : "⚠ Les contextes très compétitifs peuvent être exigeants."}
-${sig.inhibitoryControl >= 50
-  ? "✓ Votre contrôle inhibiteur aide à maintenir le cap malgré les pressions."
-  : ""}\n\n`
-  }
-
-  if (code.includes("C")) {
-    analysis += `### Dimension Conventionnelle (${riasec.conventional}%)
-${sig.reactionVariance >= 50
-  ? "✓ Votre stabilité attentionnelle soutient les tâches répétitives et précises."
-  : "⚠ Les tâches très routinières peuvent générer de la fatigue."}
-${sig.inhibitoryControl >= 50
-  ? "✓ Votre contrôle inhibiteur favorise le respect des procédures."
-  : ""}\n\n`
-  }
-
-  return analysis || "Analyse croisée non disponible pour ce profil RIASEC."
-}
-
-function generateScenariosSection(
-  sig: CognitiveSignatureData, 
-  archetype: { archetype: string; description: string }
-): string {
-  return `### Scénario 1 : Continuité Optimisée
-
-**Type d'environnement** : ${sig.processingSpeed >= 50 ? "Dynamique avec flux régulier" : "Structuré avec rythme modéré"}
-**Nature des missions** : ${sig.cognitiveFlexibility >= 50 ? "Projets variés, coordination transverse" : "Missions définies, expertise approfondie"}
-**Conditions de réussite** : 
-- Environnement correspondant à votre profil ${archetype.archetype}
-- ${sig.inhibitoryControl >= 50 ? "Autonomie décisionnelle" : "Objectifs clairs et feedback régulier"}
-- ${sig.accessFluency >= 50 ? "Outils visuels performants" : "Interfaces épurées"}
-
-**Points de vigilance** : Éviter ${sig.processingSpeed < 50 ? "la pression temporelle excessive" : sig.cognitiveFlexibility < 50 ? "les changements de contexte trop fréquents" : "la surcharge informationnelle prolongée"}
-
----
-
-### Scénario 2 : Pivot Professionnel Cohérent
-
-**Type d'environnement** : ${sig.cognitiveFlexibility >= 50 ? "Innovation, transformation, nouveaux marchés" : "Secteur stable avec évolution progressive"}
-**Nature des missions** : Transition vers des fonctions exploitant davantage ${sig.processingSpeed >= sig.cognitiveFlexibility ? "votre réactivité" : "votre adaptabilité"}
-**Conditions de réussite** :
-- Période de transition accompagnée
-- Montée en compétence progressive
-- Validation des acquis cognitifs dans le nouveau contexte
-
-**Points de vigilance** : ${sig.attentionDrift < 50 ? "Gérer la fatigue de l'apprentissage" : "Maintenir l'engagement sur la durée"}
-
----
-
-### Scénario 3 : Repositionnement / Reconversion
-
-**Type d'environnement** : Rupture avec le contexte actuel, nouveau secteur ou nouvelle fonction
-**Nature des missions** : Reconstruction d'une trajectoire alignée avec votre fonctionnement cognitif naturel
-**Conditions de réussite** :
-- Analyse approfondie des environnements cibles
-- Validation terrain avant engagement
-- Filet de sécurité financier et psychologique
-
-**Points de vigilance** : Ce scénario est le plus exigeant cognitivement. À envisager si les scénarios 1 et 2 ne sont pas viables.`
-}
-
-function generateEnvironmentsSection(sig: CognitiveSignatureData): string {
-  const toPrivilege: string[] = []
-  const toAvoid: string[] = []
-
-  // Rythme
-  if (sig.processingSpeed >= 60) {
-    toPrivilege.push("**Rythme** : Environnements dynamiques, flux d'activité soutenu")
-  } else {
-    toPrivilege.push("**Rythme** : Environnements permettant réflexion, délais raisonnables")
-    toAvoid.push("**Rythme** : Pression temporelle constante, urgences permanentes")
-  }
-
-  // Interaction
-  if (sig.inhibitoryControl >= 60) {
-    toPrivilege.push("**Interaction** : Open space gérable, réunions fréquentes acceptables")
-  } else {
-    toPrivilege.push("**Interaction** : Espaces calmes, temps de concentration protégé")
-    toAvoid.push("**Interaction** : Open space bruyant, interruptions fréquentes")
-  }
-
-  // Structure
-  if (sig.cognitiveFlexibility >= 60) {
-    toPrivilege.push("**Structure** : Environnements agiles, règles évolutives")
-  } else {
-    toPrivilege.push("**Structure** : Cadre clair, processus définis, prévisibilité")
-    toAvoid.push("**Structure** : Chaos organisationnel, règles changeantes")
-  }
-
-  // Autonomie
-  if (sig.inhibitoryControl >= 60 && sig.processingSpeed >= 50) {
-    toPrivilege.push("**Autonomie** : Forte autonomie décisionnelle, responsabilité directe")
-  } else {
-    toPrivilege.push("**Autonomie** : Autonomie encadrée, feedback régulier")
-    toAvoid.push("**Autonomie** : Isolement décisionnel sans support")
-  }
-
-  // Pression sensorielle
-  if (sig.accessFluency >= 60 && sig.inhibitoryControl >= 50) {
-    toPrivilege.push("**Environnement sensoriel** : Interfaces riches, multiples sources d'information")
-  } else {
-    toPrivilege.push("**Environnement sensoriel** : Interfaces épurées, information hiérarchisée")
-    toAvoid.push("**Environnement sensoriel** : Surcharge visuelle, notifications permanentes")
-  }
-
-  return `## Environnements à Privilégier
-
-${toPrivilege.join("\n")}
-
-## Environnements à Éviter
-
-${toAvoid.length > 0 ? toAvoid.join("\n") : "Aucune contre-indication majeure identifiée. Restez vigilant sur l'équilibre global."}`
-}
-
-function generateLeviersSection(sig: CognitiveSignatureData): string {
-  const leviers: string[] = []
-
-  if (sig.processingSpeed < 50) {
-    leviers.push(`**Optimiser la vitesse de traitement**
-- Pratiquer des exercices de réactivité (jeux cognitifs, sport)
-- Automatiser les tâches répétitives pour libérer de la bande passante
-- Préparer les décisions à l'avance quand c'est possible`)
-  }
-
-  if (sig.inhibitoryControl < 50) {
-    leviers.push(`**Renforcer le contrôle inhibiteur**
-- Structurer l'environnement de travail (notifications off, plages protégées)
-- Pratiquer la méditation de pleine conscience
-- Utiliser des listes de priorités claires`)
-  }
-
-  if (sig.cognitiveFlexibility < 50) {
-    leviers.push(`**Développer la flexibilité cognitive**
-- S'exposer progressivement à des contextes variés
-- Pratiquer des activités nécessitant alternance (musique, langues)
-- Anticiper les transitions plutôt que les subir`)
-  }
-
-  if (sig.attentionDrift < 50) {
-    leviers.push(`**Stabiliser l'attention dans la durée**
-- Structurer le travail en blocs de 45-90 minutes
-- Intégrer des pauses actives régulières
-- Varier les types de tâches au cours de la journée`)
-  }
-
-  leviers.push(`**Sécuriser la trajectoire long terme**
-- Choisir des environnements alignés avec votre fonctionnement naturel
-- Développer des stratégies compensatoires pour vos zones de vigilance
-- Réévaluer régulièrement l'adéquation poste/profil`)
-
-  return leviers.join("\n\n")
-}
-
-function generateLectureFonctionnelleSection(sig: CognitiveSignatureData): string {
-  return `### Votre mode de traitement de l'information
-
-Votre fonctionnement tend à ${sig.processingSpeed >= 60 ? "traiter les informations de manière rapide et synthétique" : "analyser les informations en profondeur avant de prendre une décision"}. Dans un contexte professionnel, cela se traduit par ${sig.processingSpeed >= 60 ? "une capacité à réagir rapidement aux sollicitations" : "une approche méthodique qui privilégie la précision"}.
-
-### Votre style décisionnel
-
-Dans la prise de décision, votre fonctionnement se caractérise par ${sig.inhibitoryControl >= 60 ? "une bonne résistance aux interférences externes" : "une sensibilité accrue aux contextes chargés en informations"}. Concrètement, cela signifie que ${sig.inhibitoryControl >= 60 ? "vous maintenez votre cap malgré les distractions" : "vous performez mieux dans des environnements calmes et structurés"}.
-
-### Votre adaptabilité cognitive
-
-Face aux changements, votre fonctionnement s'adapte ${sig.cognitiveFlexibility >= 60 ? "avec aisance aux nouvelles règles et contextes" : "de manière plus progressive, nécessitant des périodes d'ajustement"}. Cette caractéristique influence votre manière de ${sig.cognitiveFlexibility >= 60 ? "gérer les imprévus et les transitions" : "privilégier la stabilité et la prévisibilité"}.
-
-### Votre réaction à la complexité
-
-Lorsque vous êtes confronté à des situations complexes, votre traitement ${sig.accessFluency >= 60 ? "s'appuie sur un accès fluide aux représentations visuelles" : "bénéficie d'une approche séquentielle qui décompose les problèmes"}. Dans la pratique, cela se manifeste par ${sig.accessFluency >= 60 ? "une bonne gestion des informations multiples" : "une préférence pour les interfaces épurées et les instructions claires"}.`
-}
-
-function generateZonesVigilanceSection(sig: CognitiveSignatureData): string {
-  const zones: string[] = []
-
-  if (sig.processingSpeed < 40 && sig.inhibitoryControl < 50) {
-    zones.push(`**Contextes à double pression** — Dans certains environnements combinant urgence et forte charge informationnelle, ce fonctionnement peut entraîner une surcharge cognitive rapide. La vigilance s'impose lors des pics d'activité simultanés.`)
-  }
-
-  if (sig.cognitiveFlexibility < 40 && sig.processingSpeed < 50) {
-    zones.push(`**Transitions rapides non préparées** — Face à des changements fréquents et imprévus, ce fonctionnement peut nécessiter plus de temps d'adaptation. Les contextes très volatiles demandent des stratégies d'anticipation.`)
-  }
-
-  if (sig.attentionDrift < 40 && sig.accessFluency < 50) {
-    zones.push(`**Tâches prolongées sur interfaces complexes** — Dans certaines conditions de longue concentration sur des visuels denses, ce fonctionnement peut entraîner une fatigue progressive. La segmentation des tâches est recommandée.`)
-  }
-
-  if (zones.length === 0) {
-    zones.push(`**Équilibre général** — Votre fonctionnement ne présente pas de zone de vigilance critique majeure. Restez attentif aux contextes extrêmes qui sortent de votre zone de confort habituelle.`)
-  }
-
-  return zones.join("\n\n")
-}
-
-function generateEnvironnementsCompatiblesSection(sig: CognitiveSignatureData): string {
-  const favorables: string[] = []
-  const neutres: string[] = []
-  const couteux: string[] = []
-
-  // Niveau de stimulation
-  if (sig.processingSpeed >= 60) {
-    favorables.push("**Niveau de stimulation** : Élevé mais régulier, flux d'informations continu")
-    neutres.push("**Niveau de stimulation** : Modéré avec pics occasionnels")
-    couteux.push("**Niveau de stimulation** : Très faible ou monotone")
-  } else {
-    favorables.push("**Niveau de stimulation** : Modéré, temps de réflexion intégré")
-    neutres.push("**Niveau de stimulation** : Variable avec plages calmes")
-    couteux.push("**Niveau de stimulation** : Constant et intense")
-  }
-
-  // Degré d'autonomie
-  if (sig.inhibitoryControl >= 60 && sig.cognitiveFlexibility >= 50) {
-    favorables.push("**Degré d'autonomie** : Forte avec responsabilités décisionnelles")
-    neutres.push("**Degré d'autonomie** : Encadrée avec marges de manœuvre")
-    couteux.push("**Degré d'autonomie** : Très faible ou isolement total")
-  } else {
-    favorables.push("**Degré d'autonomie** : Structurée avec support disponible")
-    neutres.push("**Degré d'autonomie** : Progressive avec feedback régulier")
-    couteux.push("**Degré d'autonomie** : Sans cadre ni accompagnement")
-  }
-
-  // Pression temporelle
-  if (sig.processingSpeed >= 70 && sig.inhibitoryControl >= 60) {
-    favorables.push("**Pression temporelle** : Gérable avec deadlines claires")
-    neutres.push("**Pression temporelle** : Modérée avec ajustements possibles")
-    couteux.push("**Pression temporelle** : Permanente et imprévisible")
-  } else {
-    favorables.push("**Pression temporelle** : Faible avec délais raisonnables")
-    neutres.push("**Pression temporelle** : Ponctuelle et planifiable")
-    couteux.push("**Pression temporelle** : Constante et urgente")
-  }
-
-  // Charge sociale
-  if (sig.inhibitoryControl >= 60) {
-    favorables.push("**Charge sociale** : Interactions fréquentes gérables")
-    neutres.push("**Charge sociale** : Modérée avec équilibre individuel")
-    couteux.push("**Charge sociale** : Très élevée et continue")
-  } else {
-    favorables.push("**Charge sociale** : Calme avec interactions ciblées")
-    neutres.push("**Charge sociale** : Variable avec temps de retrait")
-    couteux.push("**Charge sociale** : Open space bruyant, interruptions")
-  }
-
-  // Ambiguïté des tâches
-  if (sig.cognitiveFlexibility >= 60) {
-    favorables.push("**Ambiguïté des tâches** : Gérable avec objectifs clairs")
-    neutres.push("**Ambiguïté des tâches** : Modérée avec procédures partielles")
-    couteux.push("**Ambiguïté des tâches** : Totale sans cadre")
-  } else {
-    favorables.push("**Ambiguïté des tâches** : Faible avec instructions précises")
-    neutres.push("**Ambiguïté des tâches** : Contrôlée avec guidelines")
-    couteux.push("**Ambiguïté des tâches** : Élevée et changeante")
-  }
-
-  return `### Environnements Favorables
-
-${favorables.join("\n")}
-
-### Environnements Neutres
-
-${neutres.join("\n")}
-
-### Environnements Cognitivement Coûteux
-
-${couteux.join("\n")}`
-}
-
-function generateLeviersDeveloppementSection(sig: CognitiveSignatureData): string {
-  const leviers: string[] = []
-
-  // Organisation
-  if (sig.processingSpeed < 50) {
-    leviers.push(`**Stratégies d'organisation** — Structurez votre environnement de travail pour optimiser le temps de traitement. Utilisez des systèmes de priorisation clairs et des routines établies pour réduire la charge décisionnelle.`)
-  }
-
-  if (sig.inhibitoryControl < 50) {
-    leviers.push(`**Gestion de l'environnement** — Aménagez des zones de concentration protégée. Utilisez des techniques de filtrage des informations et définissez des plages horaires sans interruptions pour les tâches complexes.`)
-  }
-
-  // Environnement
-  if (sig.cognitiveFlexibility < 50) {
-    leviers.push(`**Aménagement des transitions** — Préparez les changements de contexte à l'avance. Créez des rituels de passage entre différentes tâches et développez des routines pour faciliter les adaptations.`)
-  }
-
-  // Modes de collaboration
-  if (sig.inhibitoryControl >= 60 && sig.processingSpeed >= 50) {
-    leviers.push(`**Modes de collaboration optimisés** — Exploitez votre capacité à gérer des interactions complexes. Positionnez-vous sur des rôles de coordination ou de synthèse qui valorisent votre traitement rapide en environnement social.`)
-  } else {
-    leviers.push(`**Collaboration adaptée** — Choisissez des modes de collaboration qui correspondent à votre fonctionnement. Privilégiez les échanges structurés et les contributions individuelles plutôt que les brainstormings permanents.`)
-  }
-
-  // Développement général
-  leviers.push(`**Évolution progressive** — L'empreinte cognitive n'est pas figée. Développez consciemment des stratégies compensatoires pour vos zones de vigilance et renforcez vos points forts par des pratiques régulières.`)
-
-  return leviers.join("\n\n")
-}
-
-function generateProjectionIASection(sig: CognitiveSignatureData): string {
-  return `### Complémentarité avec les outils numériques
-
-Votre fonctionnement cognitif présente des atouts spécifiques dans un contexte de transformation numérique. ${sig.cognitiveFlexibility >= 60 ? "Votre capacité d'adaptation facilite l'intégration de nouveaux outils et l'évolution des processus." : "Votre approche structurée assure une stabilité précieuse face aux changements technologiques."}
-
-### Compétences difficilement automatisables
-
-${sig.inhibitoryControl >= 60 ? "Votre résistance aux interférences et votre capacité de maintien du focus constituent des compétences humaines précieuses dans un monde saturé d'informations numériques." : "Votre sensibilité aux contextes informationnels développe une expertise dans la curation et la hiérarchisation des informations."}
-
-${sig.cognitiveFlexibility >= 60 ? "Votre flexibilité cognitive vous permet de naviguer entre différents systèmes et de créer des ponts entre solutions techniques." : "Votre préférence pour la structure et la cohérence devient essentielle pour maintenir l'ordre dans des écosystèmes numériques complexes."}
-
-### Adaptation aux contextes changeants
-
-Face à l'évolution rapide des environnements de travail, ${sig.processingSpeed >= 60 ? "votre vitesse de traitement vous permet de rester performant dans des contextes où les outils et les méthodes évoluent rapidement." : "votre approche réfléchie assure une intégration plus profonde et durable des nouvelles technologies."}
-
-### Valeur ajoutée humaine
-
-${sig.accessFluency >= 60 ? "Votre traitement visuel fluide complète avantageusement les outils d'analyse automatique." : "Votre approche séquentielle et méthodique apporte une rigueur essentielle aux processus automatisés."}
-
-Ces caractéristiques cognitives constituent des atouts durablement valorisables dans un marché du travail en transformation.`
-}
-
-function generateConclusionEnrichieSection(sig: CognitiveSignatureData, archetype: { archetype: string; description: string }): string {
-  return `### Synthèse de votre fonctionnement cognitif
-
-Votre signature de type **${archetype.archetype}** révèle un profil cohérent avec des forces naturelles dans ${sig.processingSpeed >= 60 ? "le traitement rapide" : "l'analyse approfondie"}${sig.cognitiveFlexibility >= 60 ? " et l'adaptabilité contextuelle" : " et la stabilité méthodique"}.
-
-### Rôle de ce rapport
-
-Ce document constitue un outil d'aide à la réflexion stratégique sur votre trajectoire professionnelle. Il vous fournit des clés pour comprendre vos modes de fonctionnement naturels et identifier les environnements où votre performance sera optimale.
-
-### Invitation à la prise de recul
-
-Les données comportementales présentées ici ne définissent pas votre potentiel, mais éclairent vos prédispositions cognitives. Utilisez ces informations comme un guide pour prendre des décisions éclairées, pas comme une limitation.
-
-Ce bilan vous appartient. Il constitue une base de réflexion personnelle que vous êtes libre d'interpréter et d'exploiter selon vos propres objectifs professionnels.`
+export interface GeneratedReportSections extends CognitiveSections {
+  title: string;
 }
