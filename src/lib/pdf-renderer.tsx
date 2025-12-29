@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   Font,
+  Image,
 } from "@react-pdf/renderer";
 import { CompleteReportSections } from "./report-generator";
 
@@ -299,11 +300,16 @@ export function PdfDocument({
   userName,
   date,
   cognitiveHash,
+  chartSvgs,
 }: {
   sections: CompleteReportSections;
   userName?: string;
   date?: string;
   cognitiveHash?: string;
+  chartSvgs?: {
+    riasec: string;
+    cognitive: string;
+  };
 }) {
   const parts = [
     {
@@ -390,6 +396,51 @@ export function PdfDocument({
           </View>
         )}
       </Page>
+
+      {/* ================= VISUALIZATION PAGE ================= */}
+      {chartSvgs && (
+        <Page size="A4" style={styles.page}>
+          <Text style={styles.partTitle}>Synthèse Visuelle</Text>
+
+          {/* RIASEC Radar Chart */}
+          <View style={{ marginBottom: spacing.xxxl }}>
+            <Text style={styles.sectionTitle}>Profil RIASEC - Préférences Professionnelles</Text>
+            {chartSvgs.riasec && (
+              <Image
+                src={chartSvgs.riasec}
+                style={{
+                  width: 400,
+                  height: 300,
+                  marginTop: spacing.lg,
+                  alignSelf: 'center'
+                }}
+              />
+            )}
+            <Text style={[styles.paragraph, { fontSize: 9, color: colors.slate600, textAlign: 'center', marginTop: spacing.sm }]}>
+              Radar montrant vos préférences selon les 6 types RIASEC (Réaliste, Investigateur, Artistique, Social, Entreprenant, Conventionnel)
+            </Text>
+          </View>
+
+          {/* Cognitive Bar Chart */}
+          <View style={{ marginTop: spacing.xxxl }}>
+            <Text style={styles.sectionTitle}>Dimensions Cognitives - Fonctions Exécutives</Text>
+            {chartSvgs.cognitive && (
+              <Image
+                src={chartSvgs.cognitive}
+                style={{
+                  width: 400,
+                  height: 250,
+                  marginTop: spacing.lg,
+                  alignSelf: 'center'
+                }}
+              />
+            )}
+            <Text style={[styles.paragraph, { fontSize: 9, color: colors.slate600, textAlign: 'center', marginTop: spacing.sm }]}>
+              Barres horizontales représentant vos scores dans les 4 dimensions cognitives (Contrôle inhibiteur, Vitesse traitement, Flexibilité, Fluidité d'accès)
+            </Text>
+          </View>
+        </Page>
+      )}
 
       {/* ================= CONTENT PAGES - Unlimited natural flow ================= */}
       <Page size="A4" style={styles.page}>

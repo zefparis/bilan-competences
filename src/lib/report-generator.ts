@@ -9,6 +9,9 @@ import {
 import * as crypto from 'crypto';
 import { generateGeneralReport, type GeneralReportInput } from "./general-report-sections";
 import type { CompleteReportInput } from '@/types/report';
+import { generateRIASECRadar, generateCognitiveBarChart } from './chart-generator';
+import fs from 'fs';
+import path from 'path';
 
 /* =======================
    TYPES & INTERFACES
@@ -54,6 +57,12 @@ export interface CompleteReportSections {
 
   // PARTIE IV - Conclusion (1 section)
   conclusion: string;
+
+  // Graphiques SVG
+  chartSvgs?: {
+    riasec: string;
+    cognitive: string;
+  };
 }
 
 /**
@@ -77,19 +86,36 @@ interface CognitiveSections {
  * Génère les 6 sections d'analyse cognitive détaillée
  * (logique déterministe basée sur les scores cognitifs)
  */
-function generateCognitiveSections(
+async function generateCognitiveSections(
   input: ReportGeneratorInput
-): CognitiveSections {
-  const { cognitiveSignature } = input;
+): Promise<CognitiveSections> {
+  const { cognitiveSignature, riasecProfile } = input;
 
-  return {
-    signature_centrale: generateSignatureCentraleSection(cognitiveSignature),
-    lecture_fonctionnelle: generateLectureFonctionnelleSection(cognitiveSignature),
-    tensions_cognitives: generateCarteTensionsSection(cognitiveSignature),
-    zones_vigilance: generateZonesVigilanceSection(cognitiveSignature),
+  console.log("🤖 Génération des sections cognitives avec OpenAI...");
+
+  // Générer les 4 sections Part II en parallèle
+  const [
+    signature_centrale,
+    lecture_fonctionnelle,
+    tensions_cognitives,
+    zones_vigilance
+  ] = await Promise.all([
+    generateSignatureCentraleSection(cognitiveSignature),
+    generateLectureFonctionnelleSection(cognitiveSignature),
+    generateCarteTensionsSection(cognitiveSignature),
+    generateZonesVigilanceSection(cognitiveSignature, riasecProfile)
+  ]);
+
+  const cognitiveSections = {
+    signature_centrale,
+    lecture_fonctionnelle,
+    tensions_cognitives,
+    zones_vigilance,
     projection_ia: generateProjectionIATransformationSection(cognitiveSignature),
     conclusion: generateConclusionSection(cognitiveSignature),
   };
+
+  return cognitiveSections;
 }
 
 /**
@@ -143,8 +169,14 @@ export async function assembleCompleteReport(
   }
 
   try {
-    // Génération parallèle
-    const [generalSections, cognitiveSections] = await Promise.all([
+    // Créer le dossier temporaire pour les graphiques
+    const chartsDir = path.join(process.cwd(), 'public', 'temp-charts');
+    if (!fs.existsSync(chartsDir)) {
+      fs.mkdirSync(chartsDir, { recursive: true });
+    }
+
+    // Génération parallèle des sections et graphiques
+    const [generalSections, cognitiveSections, riasecChartSvg, cognitiveChartSvg] = await Promise.all([
       generateGeneralReport({
         cognitive: input.cognitive,
         riasec: input.riasec,
@@ -153,12 +185,19 @@ export async function assembleCompleteReport(
         lifePath: input.lifePath,
         userName: input.user.name,
       }),
-      Promise.resolve(generateCognitiveSections({ cognitiveSignature: input.cognitive }))
+      generateCognitiveSections({ 
+        cognitiveSignature: input.cognitive,
+        riasecProfile: input.riasec
+      }),
+      generateRIASECRadar(input.riasec),
+      generateCognitiveBarChart(input.cognitive)
     ]);
 
-    // Assemblage final (13 sections)
+    console.log("📊 Graphiques SVG générés");
+
+    // Assemblage final (13 sections + graphiques SVG)
     const completeReport: CompleteReportSections = {
-      // Partie I - Synthèse Générale (7 sections)
+      // PARTIE I - Synthèse Générale (7 sections)
       cadre: generalSections.cadre,
       synthese: generalSections.synthese,
       valeurs_professionnelles: generalSections.valeurs_professionnelles,
@@ -178,6 +217,12 @@ export async function assembleCompleteReport(
 
       // Partie IV - Conclusion (1 section)
       conclusion: cognitiveSections.conclusion,
+
+      // Graphiques SVG
+      chartSvgs: {
+        riasec: riasecChartSvg,
+        cognitive: cognitiveChartSvg
+      }
     };
 
     // Validation
@@ -313,8 +358,11 @@ function validateReportSections(report: CompleteReportSections): void {
   ];
 
   const missingOrEmpty = requiredSections.filter((key) => {
+    // Skip chartSvgs as it's an object, not a string
+    if (key === 'chartSvgs') return false;
+
     const content = report[key];
-    return !content || content.trim().length < 50;
+    return !content || (typeof content === 'string' && content.trim().length < 50);
   });
 
   if (missingOrEmpty.length > 0) {
@@ -365,15 +413,15 @@ export function generateReportHash(input: ReportGeneratorInput): string {
  * @deprecated Utiliser assembleCompleteReport() à la place
  * Conservé temporairement pour compatibilité descendante
  */
-export function generateReportSections(
+export async function generateReportSections(
   input: ReportGeneratorInput
-): CognitiveSections {
+): Promise<CognitiveSections> {
   console.warn(
     "⚠️ generateReportSections() est déprécié. " +
     "Utilisez assembleCompleteReport() pour obtenir le rapport complet."
   );
-  
-  return generateCognitiveSections(input);
+
+  return await generateCognitiveSections(input);
 }
 
 /**

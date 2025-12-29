@@ -259,6 +259,7 @@ export default function ReportPage() {
             year: "numeric",
           })}
           cognitiveHash={`PERSPECTA-${report.version}-${Date.now().toString(36).toUpperCase()}`}
+          chartSvgs={(completeSections as CompleteReportSections).chartSvgs}
         />
       ).toBlob()
 
@@ -275,6 +276,24 @@ export default function ReportPage() {
       URL.revokeObjectURL(url)
 
       console.log('✅ PDF téléchargé')
+
+      // ✅ Nettoyer les graphiques temporaires
+      if ((completeSections as CompleteReportSections).chartSvgs) {
+        try {
+          await fetch('/api/report/cleanup-charts', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              chartSvgs: (completeSections as CompleteReportSections).chartSvgs
+            })
+          })
+          console.log('🗑️ Graphiques temporaires nettoyés')
+        } catch (error) {
+          console.warn('⚠️ Impossible de nettoyer les graphiques temporaires:', error)
+        }
+      }
     } catch (error) {
       console.error('❌ Erreur PDF:', error)
 

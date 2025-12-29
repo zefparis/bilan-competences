@@ -1,4 +1,9 @@
 import { createHash } from 'crypto'
+import OpenAI from "openai"
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
 
 export interface CognitiveSignatureData {
   inhibitoryControl: number
@@ -6,6 +11,9 @@ export interface CognitiveSignatureData {
   cognitiveFlexibility: number
   accessFluency: number
   attentionDrift: number
+  reactionVariance?: number
+  conflictErrors?: number
+  sequencingErrors?: number
 }
 
 export interface RIASECProfile {
@@ -24,187 +32,239 @@ export interface PremiumReportInput {
 }
 
 /* ============================================================
-   SECTION 1 — Signature cognitive centrale
+   SECTION 2.1 — Signature cognitive centrale
 ============================================================ */
-export function generateSignatureCentraleSection(
+export async function generateSignatureCentraleSection(
   sig: CognitiveSignatureData
-): string {
-  const scores = [
-    { key: "control", value: sig.inhibitoryControl, label: "contrôle inhibiteur" },
-    { key: "speed", value: sig.processingSpeed, label: "vitesse de traitement" },
-    { key: "flexibility", value: sig.cognitiveFlexibility, label: "flexibilité cognitive" },
-    { key: "fluency", value: sig.accessFluency, label: "fluidité d'accès" },
-  ].sort((a, b) => b.value - a.value)
+): Promise<string> {
+  const prompt = `Tu es un expert en neurosciences cognitives et en psychologie du travail. Analyse la signature cognitive suivante et rédige une section de 600-800 mots.
 
-  const dominant = scores[0]
+**Données** :
+- Contrôle inhibiteur : ${sig.inhibitoryControl}/100
+- Vitesse de traitement : ${sig.processingSpeed}/100
+- Flexibilité cognitive : ${sig.cognitiveFlexibility}/100
+- Fluidité d'accès : ${sig.accessFluency}/100
 
-  let facilitation = ""
-  let complexification = ""
+**Tâche** :
+1. Identifie la dimension cognitive DOMINANTE (la plus élevée)
+2. Explique ce que cette dominance signifie concrètement dans le travail quotidien
+3. Décris comment les autres dimensions SOUTIENNENT ou COMPENSENT la dimension dominante
+4. Donne 3 exemples concrets de situations professionnelles où cette signature excelle
+5. Donne 2 exemples de situations où cette signature pourrait rencontrer des difficultés
+6. Propose 2 stratégies d'adaptation pour les situations difficiles
 
-  switch (dominant.key) {
-    case "speed":
-      facilitation =
-        "Votre capacité à traiter rapidement les informations facilite la prise de décision dans des contextes dynamiques."
-      complexification =
-        "Dans des situations nécessitant une très grande précision, cette rapidité peut demander des stratégies de vérification."
-      break
-    case "control":
-      facilitation =
-        "Votre résistance aux interférences soutient une concentration stable sur des objectifs complexes."
-      complexification =
-        "Dans des contextes très ambigus ou non structurés, un temps d'ajustement peut être nécessaire."
-      break
-    case "flexibility":
-      facilitation =
-        "Votre adaptabilité cognitive facilite les transitions entre différents cadres de réflexion."
-      complexification =
-        "Dans des environnements très répétitifs ou rigides, cela peut générer une sensation de sous-stimulation."
-      break
-    case "fluency":
-      facilitation =
-        "Votre accès fluide aux représentations visuelles soutient la reconnaissance rapide de structures et de patterns."
-      complexification =
-        "Lorsque les informations sont très abstraites ou peu concrètes, un effort supplémentaire peut être requis."
-      break
+**Ton** : Expert mais accessible, avec métaphores et exemples concrets
+**Format** : Prose fluide avec sous-titres (### en Markdown)
+**Longueur** : 600-800 mots
+
+**Structure suggérée** :
+### Architecture cognitive dominante
+[Explication de la dimension dominante]
+
+### Orchestration des ressources cognitives
+[Comment les dimensions interagissent]
+
+### Contextes d'excellence
+[3 situations où ce profil brille]
+
+### Zones de vigilance
+[2 situations délicates + stratégies]`
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 1200,
+      temperature: 0.7,
+    })
+
+    return response.choices[0]?.message?.content?.trim() || "Erreur de génération"
+  } catch (error) {
+    console.error("Erreur génération signature centrale:", error)
+    return "Erreur lors de la génération de la signature cognitive centrale."
   }
-
-  return `
-Votre fonctionnement cognitif s’organise principalement autour du ${dominant.label}.  
-Votre manière de traiter l’information et de prendre des décisions tend à refléter cette logique dominante.
-
-### Ce que ce fonctionnement facilite
-${facilitation}
-
-### Ce que ce fonctionnement peut complexifier
-${complexification}
-`.trim()
 }
 
 /* ============================================================
-   SECTION 2 — Lecture fonctionnelle du traitement de l'information
+   SECTION 2.2 — Lecture fonctionnelle du traitement de l'information
 ============================================================ */
-export function generateLectureFonctionnelleSection(
+export async function generateLectureFonctionnelleSection(
   sig: CognitiveSignatureData
-): string {
-  const rythme =
-    sig.processingSpeed >= 60
-      ? "un rythme rapide et synthétique"
-      : "un rythme plus analytique et approfondi"
+): Promise<string> {
+  const prompt = `Tu es un expert en ergonomie cognitive. Analyse comment cette personne TRAITE l'information au quotidien.
 
-  const complexite =
-    sig.cognitiveFlexibility >= 60
-      ? "une capacité à naviguer entre plusieurs perspectives"
-      : "une préférence pour des structures progressives et stables"
+**Données** :
+- Vitesse de traitement : ${sig.processingSpeed}/100
+- Contrôle inhibiteur : ${sig.inhibitoryControl}/100
+- Flexibilité cognitive : ${sig.cognitiveFlexibility}/100
+- Erreurs de conflit (Stroop) : ${sig.conflictErrors || 0}%
+- Erreurs de séquençage (Trail) : ${sig.sequencingErrors || 0}
 
-  const decision =
-    sig.inhibitoryControl >= 60
-      ? "un processus décisionnel structuré et cohérent"
-      : "un processus décisionnel contextuel et adaptatif"
+**Tâche** :
+1. Décris le RYTHME de traitement : rapide/réfléchi/variable ?
+2. Explique la gestion de la COMPLEXITÉ : comment cette personne gère-t-elle les informations multiples ?
+3. Analyse le MODE DE DÉCISION : impulsif, analytique, intuitif, méthodique ?
+4. Identifie les CANAUX SENSORIELS préférés (visuel, auditif, kinesthésique) basé sur les tests
+5. Donne 4 recommandations pratiques pour OPTIMISER son environnement de travail :
+   - Organisation de l'espace
+   - Gestion des interruptions
+   - Structuration des tâches
+   - Outils et supports adaptés
 
-  return `
-### Lecture fonctionnelle du traitement de l'information
+**Ton** : Pragmatique et actionnable
+**Format** : Prose avec sous-titres et listes à puces pour les recommandations
+**Longueur** : 700-900 mots
 
-Votre fonctionnement cognitif se caractérise par ${rythme}.  
-Face à la complexité, vous mobilisez ${complexite}.  
-Votre mode de décision repose sur ${decision}.
+**Structure suggérée** :
+### Rythme et tempo cognitif
+[Description du rythme]
 
-Ces caractéristiques influencent directement votre confort dans différents contextes professionnels.
-`.trim()
+### Navigation dans la complexité
+[Gestion de l'information multiple]
+
+### Style décisionnel
+[Comment les décisions sont prises]
+
+### Optimisations environnementales
+- **Aménagement spatial** : [recommandation]
+- **Gestion temporelle** : [recommandation]
+- **Structuration des tâches** : [recommandation]
+- **Outils de support** : [recommandation]`
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 1400,
+      temperature: 0.7,
+    })
+
+    return response.choices[0]?.message?.content?.trim() || "Erreur de génération"
+  } catch (error) {
+    console.error("Erreur génération lecture fonctionnelle:", error)
+    return "Erreur lors de la génération de la lecture fonctionnelle."
+  }
 }
 
 /* ============================================================
-   SECTION 3 — Carte des tensions cognitives
+   SECTION 2.3 — Carte des tensions cognitives
 ============================================================ */
-export function generateCarteTensionsSection(
+export async function generateCarteTensionsSection(
   sig: CognitiveSignatureData
-): string {
-  const tensions: string[] = []
+): Promise<string> {
+  const prompt = `Tu es un psychologue du travail spécialisé en prévention des risques psychosociaux. Identifie les TENSIONS potentielles dans ce profil cognitif.
 
-  if (sig.processingSpeed >= 60 && sig.inhibitoryControl < 50) {
-    tensions.push(
-      `Votre vitesse de traitement (${sig.processingSpeed}%) combinée à un contrôle inhibiteur plus modéré (${sig.inhibitoryControl}%) peut créer une tension entre réactivité rapide et nécessité de précision. Dans certains contextes exigeant une grande exactitude, cette dynamique peut demander des stratégies de vérification consciemment mises en place.`
-    )
+**Données** :
+- Contrôle inhibiteur : ${sig.inhibitoryControl}/100
+- Vitesse de traitement : ${sig.processingSpeed}/100
+- Flexibilité cognitive : ${sig.cognitiveFlexibility}/100
+- Fluidité d'accès : ${sig.accessFluency}/100
+- Dérive attentionnelle : ${sig.attentionDrift}/100
+- Variance de réaction : ${sig.reactionVariance || 0}/100
+
+**Tâche** :
+1. Identifie les ÉCARTS significatifs entre dimensions (>30 points)
+2. Pour chaque écart, explique :
+   - Quelle tension cela crée
+   - Dans quels contextes professionnels cette tension s'exprime
+   - Quel coût énergétique cela représente
+3. Analyse les COMPENSATIONS : quelles dimensions compensent les faiblesses ?
+4. Donne 3 signaux d'alerte de surcharge cognitive
+5. Propose 3 stratégies de régulation
+
+**Important** : Si le profil est ÉQUILIBRÉ (écarts <20 points), explique que c'est une FORCE et décris les avantages de cette harmonie.
+
+**Ton** : Bienveillant mais lucide, focus prévention
+**Format** : Prose avec encadrés pour les signaux d'alerte
+**Longueur** : 600-800 mots
+
+**Structure suggérée** :
+### Cartographie des écarts
+[Analyse des tensions ou de l'harmonie]
+
+### Expression situationnelle
+[Quand ces tensions se manifestent]
+
+### Signaux d'alerte précoces
+⚠️ [Signal 1]
+⚠️ [Signal 2]
+⚠️ [Signal 3]
+
+### Stratégies de régulation
+✓ [Stratégie 1]
+✓ [Stratégie 2]
+✓ [Stratégie 3]`
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 1200,
+      temperature: 0.7,
+    })
+
+    return response.choices[0]?.message?.content?.trim() || "Erreur de génération"
+  } catch (error) {
+    console.error("Erreur génération tensions cognitives:", error)
+    return "Erreur lors de la génération de la carte des tensions cognitives."
   }
-
-  if (sig.cognitiveFlexibility >= 60 && sig.inhibitoryControl < 50) {
-    tensions.push(
-      `Votre flexibilité cognitive élevée (${sig.cognitiveFlexibility}%) associée à un contrôle inhibiteur modéré (${sig.inhibitoryControl}%) génère une tension entre exploration de nouvelles approches et maintien du focus. Dans des environnements très structurés, cette caractéristique peut entraîner une recherche de stimulation externe pour préserver l'engagement.`
-    )
-  }
-
-  if (sig.inhibitoryControl >= 60 && sig.cognitiveFlexibility < 50) {
-    tensions.push(
-      `Votre excellent contrôle inhibiteur (${sig.inhibitoryControl}%) couplé à une flexibilité cognitive plus mesurée (${sig.cognitiveFlexibility}%) crée une tension entre stabilité et adaptation. Face à des situations exigeant une créativité spontanée, ce profil peut nécessiter un temps d'ajustement pour sortir des cadres établis.`
-    )
-  }
-
-  if (sig.processingSpeed >= 70 && sig.accessFluency < 40) {
-    tensions.push(
-      `Votre vitesse de traitement très élevée (${sig.processingSpeed}%) contrastant avec une fluidité d'accès plus limitée (${sig.accessFluency}%) peut générer une tension entre rapidité de réaction et traitement visuel approfondi. Dans des contextes avec informations complexes, cette dynamique peut créer un besoin de structuration visuelle externe.`
-    )
-  }
-
-  if (tensions.length === 0) {
-    tensions.push(
-      `Votre profil cognitif équilibré (vitesse: ${sig.processingSpeed}%, contrôle: ${sig.inhibitoryControl}%, flexibilité: ${sig.cognitiveFlexibility}%) présente une harmonie globale. Les tensions éventuelles dépendront principalement des exigences extrêmes des contextes professionnels spécifiques.`
-    )
-  }
-
-  return tensions.slice(0, 3).join("\n\n")
 }
 
 /* ============================================================
-   SECTION 4 — Zones de vigilance cognitive
+   SECTION 2.4 — Zones de vigilance cognitive
 ============================================================ */
-export function generateZonesVigilanceSection(
-  sig: CognitiveSignatureData
-): string {
-  const zones: string[] = []
+export async function generateZonesVigilanceSection(
+  sig: CognitiveSignatureData,
+  riasec?: RIASECProfile
+): Promise<string> {
+  const prompt = `Tu es un consultant en performance cognitive. Identifie les situations professionnelles à RISQUE pour ce profil.
 
-  // Zone 1: Double pression (vitesse faible + contrôle faible)
-  if (sig.processingSpeed < 40 && sig.inhibitoryControl < 50) {
-    zones.push(
-      `Les situations combinant urgence et surcharge informationnelle peuvent générer une fatigue rapide pour votre profil (vitesse: ${sig.processingSpeed}%, contrôle: ${sig.inhibitoryControl}%). La vigilance s'impose lors des pics d'activité simultanés où les urgences se multiplient.`
-    )
+**Données** :
+- Profil cognitif complet : ${JSON.stringify(sig)}
+- Profil RIASEC : ${JSON.stringify(riasec || {})}
+
+**Tâche** :
+1. Identifie 4 TYPES DE SITUATIONS à risque :
+   - Charge cognitive élevée
+   - Conditions dégradées (stress, fatigue, bruit)
+   - Exigences contradictoires
+   - Environnements inadaptés
+2. Pour chaque type, donne :
+   - Description concrète de la situation
+   - Pourquoi ce profil est vulnérable
+   - Signes avant-coureurs de difficulté
+   - 2 tactiques de compensation
+3. Propose un PROTOCOLE de récupération cognitive (micro-pauses, routines)
+
+**Ton** : Préventif et pratique, focus outils
+**Format** : Fiches situations avec bullet points
+**Longueur** : 700-900 mots
+
+**Structure suggérée** :
+### Situation 1 : [Nom]
+**Description** : [contexte]
+**Vulnérabilité** : [pourquoi]
+**Signaux** : [liste]
+**Tactiques** : [2 actions]
+
+[Répéter pour 4 situations]
+
+### Protocole de récupération
+[Routine de micro-pauses, exercices, etc.]`
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 1400,
+      temperature: 0.7,
+    })
+
+    return response.choices[0]?.message?.content?.trim() || "Erreur de génération"
+  } catch (error) {
+    console.error("Erreur génération zones vigilance:", error)
+    return "Erreur lors de la génération des zones de vigilance cognitive."
   }
-
-  // Zone 2: Changements brusques (flexibilité par tranches)
-  if (sig.cognitiveFlexibility < 40) {
-    zones.push(
-      `Les changements brusques de cadre ou de règles peuvent nécessiter un temps d'adaptation significatif pour votre profil (flexibilité: ${sig.cognitiveFlexibility}%). Les transitions non préparées peuvent demander un effort cognitif supplémentaire.`
-    )
-  } else if (sig.cognitiveFlexibility < 60) {
-    zones.push(
-      `Les transitions fréquentes peuvent demander une concentration consciente pour votre profil (flexibilité: ${sig.cognitiveFlexibility}%). Une anticipation des changements peut aider à maintenir l'efficacité.`
-    )
-  }
-
-  // Zone 3: Interfaces complexes (fluidité par tranches)
-  if (sig.accessFluency < 40) {
-    zones.push(
-      `Les interfaces visuellement denses et les informations multiples peuvent entraîner une fatigue progressive pour votre profil (fluidité: ${sig.accessFluency}%). La segmentation des tâches complexes est recommandée.`
-    )
-  } else if (sig.accessFluency < 60) {
-    zones.push(
-      `Les sessions longues sur des systèmes complexes peuvent nécessiter des pauses régulières pour votre profil (fluidité: ${sig.accessFluency}%). L'organisation visuelle de l'information peut optimiser le traitement.`
-    )
-  }
-
-  // Zone 4: Sous-stimulation (vitesse élevée + flexibilité élevée)
-  if (sig.processingSpeed >= 70 && sig.cognitiveFlexibility >= 60) {
-    zones.push(
-      `Les environnements avec faible stimulation et tâches très répétitives peuvent générer une sensation de sous-stimulation pour votre profil (vitesse: ${sig.processingSpeed}%, flexibilité: ${sig.cognitiveFlexibility}%). La recherche de défis intellectuels peut être nécessaire pour maintenir l'engagement.`
-    )
-  }
-
-  // Zone par défaut si aucune condition spécifique
-  if (zones.length === 0) {
-    zones.push(
-      `Les contextes très éloignés de vos habitudes peuvent nécessiter une adaptation consciente pour votre profil équilibré (vitesse: ${sig.processingSpeed}%, contrôle: ${sig.inhibitoryControl}%, flexibilité: ${sig.cognitiveFlexibility}%).`
-    )
-  }
-
-  return zones.slice(0, 3).join("\n\n")
 }
 
 /* ============================================================
