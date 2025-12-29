@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -61,7 +61,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, User, Shield, HelpCircle, RefreshCcw, Settings, CheckCircle } from "lucide-react"
+import { LogOut, User, Shield, HelpCircle, RefreshCcw, Settings, CheckCircle, Circle } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { signOut } from "next-auth/react"
 
@@ -69,6 +69,9 @@ export default function DashboardPage() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null)
   const [loading, setLoading] = useState(true)
   const [cognitiveSession, setCognitiveSession] = useState<any>(null)
+  const [cognitiveAssessmentCompleted, setCognitiveAssessmentCompleted] = useState(false)
+  const [reportGenerated, setReportGenerated] = useState(false)
+  const [reportGeneratedAt, setReportGeneratedAt] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -101,24 +104,60 @@ export default function DashboardPage() {
   }, [])
 
   useEffect(() => {
-    async function fetchCognitiveSession() {
+    async function checkCognitiveAssessment() {
       try {
         const res = await fetch('/api/cognitive/session')
+
         if (res.ok) {
           const data = await res.json()
-          setCognitiveSession(data)
+
+          // ✅ Vérifier que les 4 tests sont complétés + signature existe
+          const completed = data.allTestsCompleted && data.hasSignature
+
+          console.log('🧠 Évaluation Cognitive:', {
+            testsCompleted: data.testsCompleted,
+            allCompleted: data.allTestsCompleted,
+            hasSignature: data.hasSignature,
+            status: completed ? '✅' : '❌'
+          })
+
+          setCognitiveAssessmentCompleted(completed)
         }
       } catch (error) {
-        console.error('Erreur récupération session cognitive:', error)
+        console.error('❌ Erreur vérification évaluation cognitive:', error)
       }
     }
-    
-    fetchCognitiveSession()
+
+    checkCognitiveAssessment()
   }, [])
 
-  // Calculer le statut de l'évaluation cognitive
-  const cognitiveCompleted = cognitiveSession?.status === 'COMPLETED' || 
-                             cognitiveSession?.signature !== null
+  useEffect(() => {
+    async function checkReport() {
+      try {
+        const res = await fetch('/api/report/generate')
+
+        if (res.ok) {
+          const data = await res.json()
+          setReportGenerated(true)
+          setReportGeneratedAt(data.generatedAt)
+
+          console.log('📄 Rapport:', {
+            generated: true,
+            date: data.generatedAt
+          })
+        } else {
+          setReportGenerated(false)
+        }
+      } catch (error) {
+        console.error('❌ Erreur vérification rapport:', error)
+      }
+    }
+
+    checkReport()
+  }, [])
+
+  // ✅ Calculer le statut de l'évaluation cognitive
+  const cognitiveCompleted = cognitiveSession?.allTestsCompleted && cognitiveSession?.hasSignature
 
   const testsCompleted = [
     cognitiveSession?.stroopCompleted,
@@ -128,6 +167,45 @@ export default function DashboardPage() {
   ].filter(Boolean).length
 
   const totalTests = 4
+
+  // ✅ TOUS les modules du bilan
+  const modules = [
+    { name: 'Parcours de Vie', completed: summary?.modules.parcours.status === 'completed' },
+    { name: 'Expériences STAR', completed: summary?.modules.experiences.status === 'completed' },
+    { name: 'Tri des Valeurs', completed: summary?.modules.valeurs.status === 'completed' },
+    { name: 'Test RIASEC', completed: summary?.modules.riasec.status === 'completed' },
+    { name: 'Profil Cognitif', completed: summary?.modules.cognitive.status === 'completed' },
+    { name: 'Évaluation Cognitive', completed: cognitiveAssessmentCompleted }
+  ]
+
+  const modulesTermines = modules.filter(m => m.completed).length
+  const totalModules = modules.length // 6
+
+  console.log('📊 Modules terminés:', modulesTermines, '/', totalModules)
+  console.log('Détail:', modules.map(m => `${m.name}: ${m.completed ? '✅' : '❌'}`))
+
+  // Progression globale (pondérée selon la difficulté)
+  const progressionWeighted = useMemo(() => {
+    const weights = {
+      'Parcours de Vie': 10,
+      'Expériences STAR': 20,
+      'Tri des Valeurs': 10,
+      'Test RIASEC': 20,
+      'Profil Cognitif': 15,
+      'Évaluation Cognitive': 25
+    }
+
+    const totalWeight = Object.values(weights).reduce((sum, w) => sum + w, 0)
+
+    let completedWeight = 0
+    modules.forEach(module => {
+      if (module.completed) {
+        completedWeight += weights[module.name as keyof typeof weights]
+      }
+    })
+
+    return Math.round((completedWeight / totalWeight) * 100)
+  }, [modules])
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -159,9 +237,13 @@ export default function DashboardPage() {
               <CardTitle className="text-sm font-medium text-muted-foreground">Progression</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-primary">
-                {loading ? "..." : `${summary?.completionRate ?? 0}%`}
+              <div className="text-4xl font-bold text-amber-500">
+                {loading ? "..." : `${progressionWeighted}%`}
               </div>
+              <Progress value={progressionWeighted} className="mt-3 h-2" />
+              <p className="text-xs text-muted-foreground mt-2">
+                Basé sur la difficulté des modules
+              </p>
             </CardContent>
           </Card>
           <Card>
@@ -170,16 +252,39 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
-                {loading ? "..." : `${summary?.modulesCompleted ?? 0}/${summary?.totalModules ?? 5}`}
+                {loading ? "..." : `${modulesTermines}/${totalModules}`}
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Recommandations</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Rapport Généré
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">{loading ? "..." : (summary?.recommendations ?? 0)}</div>
+              <div className="flex items-center gap-2">
+                {reportGenerated ? (
+                  <>
+                    <CheckCircle className="w-6 h-6 text-emerald-500" />
+                    <span className="text-2xl font-bold text-emerald-500">Oui</span>
+                  </>
+                ) : (
+                  <>
+                    <Circle className="w-6 h-6 text-slate-400" />
+                    <span className="text-2xl font-bold text-slate-400">Non</span>
+                  </>
+                )}
+              </div>
+              {reportGenerated && reportGeneratedAt && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  Généré le {new Date(reportGeneratedAt).toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                  })}
+                </p>
+              )}
             </CardContent>
           </Card>
           <Card>
@@ -385,6 +490,37 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Détail de progression par module */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle>Détail de la Progression</CardTitle>
+            <CardDescription>
+              État d'avancement de chaque module du bilan
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {modules.map((module, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <div className="flex items-center gap-3">
+                    {module.completed ? (
+                      <CheckCircle className="w-5 h-5 text-emerald-500" />
+                    ) : (
+                      <Circle className="w-5 h-5 text-slate-400" />
+                    )}
+                    <span className={`font-medium ${module.completed ? 'text-foreground' : 'text-muted-foreground'}`}>
+                      {module.name}
+                    </span>
+                  </div>
+                  <span className={`text-sm ${module.completed ? 'text-emerald-500' : 'text-slate-400'}`}>
+                    {module.completed ? 'Terminé' : 'À faire'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
