@@ -1,9 +1,20 @@
 'use client';
 
-import { PDFViewer } from '@react-pdf/renderer';
+import { useEffect, useState } from 'react';
 import { PdfDocument } from '@/lib/pdf-renderer';
 
 export const TestPdfGeneration = () => {
+  const [PDFViewer, setPDFViewer] = useState<any>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    // Dynamically import PDFViewer only on client side
+    import('@react-pdf/renderer').then(({ PDFViewer: Viewer }) => {
+      setPDFViewer(() => Viewer);
+    });
+  }, []);
+
   // Mock complete report sections for testing
   const sections = {
     // Partie I - Synthèse Générale (7 sections)
@@ -30,14 +41,20 @@ export const TestPdfGeneration = () => {
 
   return (
     <div style={{ height: '100vh' }}>
-      <PDFViewer width="100%" height="100%">
-        <PdfDocument 
-          sections={sections}
-          userName="Test User"
-          date={new Date().toLocaleDateString('fr-FR')}
-          cognitiveHash="SHA256:TEST1234"
-        />
-      </PDFViewer>
+      {PDFViewer ? (
+        <PDFViewer width="100%" height="100%">
+          <PdfDocument
+            sections={sections}
+            userName="Test User"
+            date={new Date().toLocaleDateString('fr-FR')}
+            cognitiveHash="SHA256:TEST1234"
+          />
+        </PDFViewer>
+      ) : (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+          <p>Loading PDF...</p>
+        </div>
+      )}
     </div>
   );
 };
