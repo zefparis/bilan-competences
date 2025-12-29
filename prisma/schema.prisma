@@ -38,6 +38,8 @@ model User {
   cognitiveInsights CognitiveInsight[]
   cognitiveTestResponses CognitiveTestResponse[]
   cognitiveTestSessions CognitiveTestSession[]
+  // Add report relation
+  report Report?
 }
 
 model Account {
@@ -288,4 +290,21 @@ model CognitiveSignature {
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Report {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Content
+  sections       Json // Array of ReportSection for UI
+  completeSections Json // CompleteReportSections object
+
+  // Metadata
+  generatedAt    DateTime @default(now())
+  version        String   @default("2.0")
+  tokensCost     Int? // Estimated tokens used
+
+  updatedAt      DateTime @updatedAt
 }

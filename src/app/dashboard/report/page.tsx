@@ -43,6 +43,7 @@ export default function ReportPage() {
   const [report, setReport] = useState<GeneratedReport | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [activeSection, setActiveSection] = useState<string>("cadre")
+  const [canRegenerate, setCanRegenerate] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -58,36 +59,61 @@ export default function ReportPage() {
         const reportRes = await fetch("/api/report/generate")
         if (reportRes.ok) {
           const reportData = await reportRes.json()
-          if (reportData.sections && reportData.sections.length > 0) {
-            setReport(reportData)
-            setHasCognitiveSession(true)
-            setActiveSection(reportData.sections[0]?.id || "cadre")
-          }
+
+          console.log('📄 Existing report found:', reportData)
+
+          setReport(reportData)
+          setHasCognitiveSession(true)
+          setActiveSection(reportData.sections[0]?.id || "cadre")
+
+          // Disable regeneration
+          setCanRegenerate(false)
         } else if (reportRes.status === 404) {
-          // Check if cognitive session exists
+          // No report → check if cognitive session exists
           const sessionRes = await fetch("/api/cognitive/session")
           if (sessionRes.ok) {
             setHasCognitiveSession(true)
+            setCanRegenerate(true) // First generation allowed
           }
         }
       } catch (error) {
-        console.error("Error fetching data:", error)
+        console.error("❌ Error fetching data:", error)
       } finally {
         setLoading(false)
       }
     }
+
     fetchData()
   }, [])
 
   const generateReport = useCallback(async () => {
+    if (!canRegenerate) {
+      setError("Votre rapport a déjà été généré. Consultez-le ci-dessous.")
+      return
+    }
+
     setGenerating(true)
     setError(null)
-    
+
     try {
       const res = await fetch("/api/report/generate", {
         method: "POST",
       })
-      
+
+      if (res.status === 409) {
+        // Rapport déjà existant
+        const data = await res.json()
+        setError(data.message)
+
+        if (data.existingReport) {
+          setReport(data.existingReport)
+          setActiveSection(data.existingReport.sections[0]?.id || "cadre")
+        }
+
+        setCanRegenerate(false)
+        return
+      }
+
       if (res.ok) {
         const data = await res.json()
         if (!data.sections || !Array.isArray(data.sections)) {
@@ -95,6 +121,8 @@ export default function ReportPage() {
         }
         setReport(data)
         setActiveSection(data.sections[0]?.id || "cadre")
+        setCanRegenerate(false) // ✅ Bloquer les futures régénérations
+        console.log('✅ Rapport généré et sauvegardé')
       } else {
         const errorData = await res.json()
         setError(errorData.message || errorData.error || "Erreur lors de la génération")
@@ -104,7 +132,7 @@ export default function ReportPage() {
     } finally {
       setGenerating(false)
     }
-  }, [])
+  }, [canRegenerate])
 
   const handleDownloadPdf = useCallback(async () => {
     if (!report) return
@@ -130,7 +158,7 @@ export default function ReportPage() {
           .trim()
 
         if (cleanContent.length >= 50) { // Vérifier que le contenu est suffisant
-          completeSections[section.id as keyof CompleteReportSections] = cleanContent
+          (completeSections as any)[section.id] = cleanContent
         } else {
           console.warn(`⚠️ Section ${section.id} trop courte (${cleanContent.length} chars), ignorée`)
         }
@@ -287,25 +315,32 @@ export default function ReportPage() {
                 Générer votre Rapport d'Orientation
               </h1>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Votre rapport personnalisé sera généré à partir de votre signature cognitive, 
+                Votre rapport personnalisé sera généré à partir de votre signature cognitive,
                 profil RIASEC, valeurs et expériences.
               </p>
               <p className="text-sm text-amber-600 mt-2 font-medium">
                 ⏱️ Temps estimé : 15-30 secondes
               </p>
+
+              {/* ✅ Message if already generated */}
+              {!canRegenerate && (
+                <p className="text-sm text-red-500 mt-4 font-medium">
+                  ⚠️ Vous avez déjà généré votre rapport. Il est consultable ci-dessous ou depuis votre profil.
+                </p>
+              )}
             </div>
-            
+
             {error && (
               <div className="flex items-center justify-center gap-2 text-red-500 bg-red-50 p-4 rounded-lg">
                 <AlertCircle className="w-5 h-5" />
                 <span className="text-sm">{error}</span>
               </div>
             )}
-            
-            <Button 
-              size="lg" 
+
+            <Button
+              size="lg"
               onClick={generateReport}
-              disabled={generating}
+              disabled={generating || !canRegenerate}
               className="gap-2"
             >
               {generating ? (
@@ -316,21 +351,10 @@ export default function ReportPage() {
               ) : (
                 <>
                   <FileText className="w-5 h-5" />
-                  Générer mon rapport (IA)
+                  {canRegenerate ? 'Générer mon rapport (IA)' : 'Rapport déjà généré'}
                 </>
               )}
             </Button>
-            
-            {generating && (
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  L'IA analyse votre profil cognitif et RIASEC...
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Génération de 11 sections personnalisées (~6000 mots)
-                </p>
-              </div>
-            )}
           </CardContent>
         </Card>
       </div>
@@ -343,8 +367,8 @@ export default function ReportPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 print:hidden">
         <div className="flex items-center gap-4">
-          <Link 
-            href="/dashboard" 
+          <Link
+            href="/dashboard"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -361,16 +385,13 @@ export default function ReportPage() {
             </p>
           </div>
         </div>
-        
+
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleTestPdf} className="gap-2">
             <FileText className="w-4 h-4" />
             Test PDF (debug)
           </Button>
-          <Button variant="outline" onClick={generateReport} disabled={generating} className="gap-2">
-            <RefreshCw className={`w-4 h-4 ${generating ? "animate-spin" : ""}`} />
-            {generating ? "Régénération..." : "Régénérer"}
-          </Button>
+          {/* Removed regenerate button to prevent multiple generations */}
           <Button onClick={handleDownloadPdf} disabled={downloadingPdf} className="gap-2">
             {downloadingPdf ? (
               <>
@@ -391,7 +412,7 @@ export default function ReportPage() {
         {/* Navigation sidebar */}
         <nav className="space-y-2 print:hidden">
           <div className="sticky top-8 space-y-1">
-            {report.sections.map((section, index) => {
+            {report?.sections.map((section: ReportSection, index: number) => {
               const isActive = activeSection === section.id
               const partLabel = `Partie ${section.part}`
 
@@ -430,9 +451,9 @@ export default function ReportPage() {
         <div className="space-y-8">
           {/* Screen view - single section */}
           <div className="print:hidden">
-            {report.sections
-              .filter(s => s.id === activeSection)
-              .map(section => (
+            {report?.sections
+              .filter((s: ReportSection) => s.id === activeSection)
+              .map((section: ReportSection) => (
                 <Card key={section.id} className="shadow-sm">
                   <CardHeader className="border-b">
                     <div className="flex items-center gap-3 mb-2">
@@ -440,14 +461,14 @@ export default function ReportPage() {
                         Partie {section.part}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        {report.sections.findIndex(s => s.id === section.id) + 1} / {report.sections.length}
+                        {report.sections.findIndex((s: ReportSection) => s.id === section.id) + 1} / {report.sections.length}
                       </span>
                     </div>
                     <CardTitle className="text-2xl">{section.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="pt-6">
                     <div className="prose prose-slate max-w-none dark:prose-invert">
-                      {section.content.split("\n\n").map((paragraph, idx) => (
+                      {section.content.split("\n\n").map((paragraph: string, idx: number) => (
                         <p key={idx} className="text-foreground/90 leading-relaxed mb-4">
                           {paragraph}
                         </p>
@@ -461,12 +482,13 @@ export default function ReportPage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  const currentIndex = report.sections.findIndex(s => s.id === activeSection)
+                  if (!report) return
+                  const currentIndex = report.sections.findIndex((s: ReportSection) => s.id === activeSection)
                   if (currentIndex > 0) {
                     setActiveSection(report.sections[currentIndex - 1].id)
                   }
                 }}
-                disabled={report.sections.findIndex(s => s.id === activeSection) === 0}
+                disabled={!report || report.sections.findIndex((s: ReportSection) => s.id === activeSection) === 0}
                 className="gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -475,12 +497,13 @@ export default function ReportPage() {
 
               <Button
                 onClick={() => {
-                  const currentIndex = report.sections.findIndex(s => s.id === activeSection)
+                  if (!report) return
+                  const currentIndex = report.sections.findIndex((s: ReportSection) => s.id === activeSection)
                   if (currentIndex < report.sections.length - 1) {
                     setActiveSection(report.sections[currentIndex + 1].id)
                   }
                 }}
-                disabled={report.sections.findIndex(s => s.id === activeSection) === report.sections.length - 1}
+                disabled={!report || report.sections.findIndex((s: ReportSection) => s.id === activeSection) === report.sections.length - 1}
                 className="gap-2"
               >
                 Section suivante
@@ -498,16 +521,16 @@ export default function ReportPage() {
                 Rapport d'Orientation Professionnelle Cognitive
               </h2>
               <p className="text-sm text-muted-foreground">
-                Document généré le {new Date(report.generatedAt).toLocaleDateString("fr-FR", {
+                Document généré le {new Date(report?.generatedAt || Date.now()).toLocaleDateString("fr-FR", {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
                 })}
               </p>
-              <p className="text-sm text-muted-foreground">Version {report.version}</p>
+              <p className="text-sm text-muted-foreground">Version {report?.version}</p>
             </div>
 
-            {report.sections.map((section, index) => (
+            {report?.sections.map((section: ReportSection, index: number) => (
               <div key={section.id} className="page-break-before">
                 <h2 className="text-xl font-bold mb-4 text-primary">
                   {index + 1}. {section.title}

@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { ModulePageHeader } from "@/components/module-page-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { User, Mail, Shield, Calendar, Save, Loader2, Briefcase, Lock, Fingerprint, Settings, Linkedin, Github, Globe, Sparkles, Upload, ImageIcon, CheckCircle, AlertCircle, ArrowRight } from "lucide-react"
+import { User, Mail, Shield, Calendar, Save, Loader2, Briefcase, Lock, Fingerprint, Settings, Linkedin, Github, Globe, Sparkles, Upload, ImageIcon, CheckCircle, AlertCircle, ArrowRight, FileText } from "lucide-react"
 import Link from "next/link"
 
 type UserProfile = {
@@ -277,6 +277,44 @@ export default function ProfilePage() {
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Section Mon Rapport PERSPECTA */}
+      {user?.hasPaid && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Mon Rapport PERSPECTA</CardTitle>
+            <CardDescription>
+              Consultez votre bilan cognitif professionnel complet
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div>
+                  <p className="font-medium">Rapport généré</p>
+                  <p className="text-sm text-muted-foreground">
+                    Le {new Date().toLocaleDateString('fr-FR', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </p>
+                </div>
+                <Link href="/dashboard/report">
+                  <Button>
+                    <FileText className="w-4 h-4 mr-2" />
+                    Consulter
+                  </Button>
+                </Link>
+              </div>
+
+              <p className="text-xs text-muted-foreground">
+                💡 Vous pouvez consulter votre rapport autant de fois que vous le souhaitez.
+              </p>
+            </div>
           </CardContent>
         </Card>
       )}

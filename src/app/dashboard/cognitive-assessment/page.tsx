@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Brain, Lock, CheckCircle, ArrowRight, Loader2, Shield } from "lucide-react"
+import { Brain, Lock, CheckCircle, ArrowRight, Loader2, Shield, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 import { 
@@ -191,13 +191,32 @@ export default function CognitiveAssessmentPage() {
   if (currentStep === "intro") {
     return (
       <div className="max-w-3xl mx-auto py-8 space-y-6">
+        {/* Header avec bouton retour */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => router.push('/dashboard')}
+            className="gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Retour au dashboard
+          </Button>
+          
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-foreground">
+              Évaluation Cognitive PERSPECTA
+            </h1>
+            <p className="text-muted-foreground">
+              Cette batterie de tests mesure vos capacités cognitives à travers 4 épreuves comportementales.
+            </p>
+          </div>
+        </div>
+
         <div className="text-center space-y-4">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
             <Brain className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">
-            Évaluation Cognitive PERSPECTA
-          </h1>
           <p className="text-muted-foreground max-w-xl mx-auto">
             Cette batterie de tests mesure vos capacités cognitives à travers 4 épreuves comportementales. 
             Les résultats produiront votre signature cognitive personnalisée.
