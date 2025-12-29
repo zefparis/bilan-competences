@@ -6,6 +6,12 @@ Une application premium conçue pour offrir une analyse approfondie du profil pr
 
 ---
 
+## 🧩 Empreinte cognitive
+PERSPECTA modélise une empreinte cognitive fonctionnelle : un ensemble d'indicateurs comportementaux décrivant la manière dont une personne traite l'information, prend des décisions et s'adapte à un contexte de travail.  
+Cette empreinte n'est ni un diagnostic médical, ni une mesure de QI, ni une évaluation clinique : elle sert uniquement d'outil d'orientation et de compréhension.
+
+---
+
 ## 🎯 Fonctionnalités
 
 - **Évaluation cognitive** : Tests basés sur 4 dimensions (Forme, Couleur, Volume, Son)
@@ -16,6 +22,12 @@ Une application premium conçue pour offrir une analyse approfondie du profil pr
 - **Paiement Stripe** : Intégration paiement sécurisé
 - **Génération PDF** : Export des rapports au format PDF
 - **Tests E2E** : Suite de tests automatisés avec Playwright
+
+## 🧠 À quoi sert PERSPECTA ?
+- Identifier des environnements professionnels compatibles avec son fonctionnement cognitif
+- Mieux comprendre ses leviers naturels d'apprentissage et d'adaptation
+- Explorer des pistes d'évolution ou de reconversion dans un contexte de transformation du travail
+- Mettre en lumière des compétences humaines difficilement automatisables
 
 ## 🛠️ Stack technique
 
@@ -75,6 +87,7 @@ src/
 │   │   └── user/      # Gestion utilisateur
 │   ├── auth/          # Pages d'authentification
 │   ├── dashboard/     # Interface utilisateur
+│   ├── methodology/   # Cadre méthodologique
 │   ├── payment/       # Pages paiement
 │   ├── pricing/       # Pages tarifs
 │   └── (legal)/       # Pages légales
@@ -96,6 +109,9 @@ L'application est configurée pour un déploiement automatique sur Vercel :
 - `/mentions-legales` - Mentions légales
 - `/politique-confidentialite` - Politique RGPD
 - `/cgu` - Conditions générales d'utilisation
+- `/methodologie` - Cadre méthodologique et éthique
+
+> PERSPECTA n'est pas conçu pour le recrutement, la sélection ou l'évaluation de candidats.
 
 ## 🧪 Tests
 

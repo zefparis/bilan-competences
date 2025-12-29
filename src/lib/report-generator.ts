@@ -265,7 +265,7 @@ ${valuesDescription}
 ${experiencesDescription}
 ${lifeEventsDescription}
 
-STRUCTURE OBLIGATOIRE DU DOCUMENT (10 sections) :
+STRUCTURE OBLIGATOIRE DU DOCUMENT (16 sections) :
 
 1. "cadre" - Page d'ouverture — Cadre du bilan
 Explique brièvement : ce qu'est un bilan cognitif professionnel, ce que mesure ce document, comment l'utiliser pour prendre des décisions. Ton posé, sérieux, orienté utilité.
@@ -274,31 +274,49 @@ Explique brièvement : ce qu'est un bilan cognitif professionnel, ce que mesure 
 6-8 lignes maximum répondant à : « Quelle est la logique professionnelle globale de ce profil ? »
 Inclure : fonctionnement cognitif dominant, dynamique générale, type d'environnements favorables, point de vigilance principal, direction professionnelle globale.
 
-3. "fonctionnement" - Fonctionnement cognitif détaillé
+3. "lecture_fonctionnelle" - Lecture fonctionnelle du fonctionnement cognitif (NOUVEAU)
+Expliquer COMMENT la personne traite l'information au quotidien. Utiliser des formulations du type "Votre fonctionnement tend à...", "Dans un contexte professionnel, cela se traduit par...". Pas de "vous êtes", pas de jugement de valeur.
+
+4. "fonctionnement" - Fonctionnement cognitif détaillé
 Décrire le mode de fonctionnement, pas la personnalité : comment la personne traite l'information, décide, s'adapte, réagit à la complexité et au rythme. Langage fonctionnel et professionnel.
 
-4. "forces" - Forces cognitives naturelles
+5. "forces" - Forces cognitives naturelles
 3 à 5 capacités clés : ce que le cerveau fait bien spontanément, ce qui demande peu d'effort, ce qui peut devenir un avantage professionnel. Formulation valorisante mais factuelle.
 
-5. "vigilance" - Points de vigilance cognitifs
+6. "zones_vigilance" - Zones de vigilance cognitive (NOUVEAU)
+2 à 3 points maximum présentés comme des conditions à surveiller, pas des faiblesses. Formulation : "Dans certains contextes, ce fonctionnement peut entraîner..."
+
+7. "environnements_compatibles" - Environnements professionnels compatibles (NOUVEAU)
+Structuré en : Environnements favorables, Environnements neutres, Environnements cognitivement coûteux. Axes abstraits (stimulation, autonomie, pression temporelle, charge sociale, ambiguïté). PAS de métiers.
+
+8. "vigilance" - Points de vigilance cognitifs
 Ce qui fatigue le cerveau, ce qui peut dégrader la performance, ce qui peut générer frustration ou usure à long terme. Orienté prévention de mauvais choix professionnels.
 
-6. "croisement" - Croisement COGNITION × RIASEC
-Analyser comment les intérêts professionnels sont soutenus ou freinés par la cognition. Montrer cohérences fortes, tensions potentielles, zones de compromis intelligentes.
+9. "croisement" - Croisement COGNITION × RIASEC
+Analyser comment les intérêts professionnels sont soutenus ou freinés par la cognition. Montrer cohérences fortes, tensions potentielles, zones de compromis intelligents.
 
-7. "scenarios" - Scénarios professionnels possibles (OBLIGATOIRE)
+10. "leviers_developpement" - Leviers de développement (NOUVEAU)
+Stratégies générales : organisation, environnement, modes de collaboration. Montrer que l'empreinte cognitive n'est PAS figée. Pas de coaching, pas de plan d'action rigide.
+
+11. "scenarios" - Scénarios professionnels possibles (OBLIGATOIRE)
 3 scénarios maximum : Continuité optimisée, Pivot professionnel cohérent, Repositionnement/reconversion.
 Pour chaque : type d'environnement, nature des missions, conditions de réussite, points de vigilance.
 Logique professionnelle, pas fiches métiers.
 
-8. "environnements" - Environnements à privilégier / à éviter
+12. "projection_ia" - Projection dans un contexte de transformation du travail (NOUVEAU)
+Répondre à l'impact de l'IA sans discours anxiogène. Ce que ce fonctionnement favorise dans les contextes changeants, tâches complexes, interactions humaines. Mettre en avant ce qui est difficilement automatisable.
+
+13. "environnements" - Environnements à privilégier / à éviter
 Décrire concrètement : rythme, niveau d'interaction, structure, autonomie, pression sensorielle.
 Permettre une auto-évaluation immédiate des contextes futurs.
 
-9. "leviers" - Leviers d'évolution et de progression
+14. "leviers" - Leviers d'évolution et de progression
 Ce que la personne peut travailler, comment équilibrer son fonctionnement, comment sécuriser une trajectoire long terme. Conseils sobres et applicables.
 
-10. "conclusion" - Conclusion stratégique
+15. "conclusion_enrichie" - Conclusion stratégique enrichie (NOUVEAU)
+Rappel synthétique du fonctionnement cognitif, rôle du rapport comme outil d'aide à la réflexion, invitation à prendre du recul. Pas d'appel à l'action commercial.
+
+16. "conclusion" - Conclusion stratégique
 Vision globale, direction claire, invitation à l'action réfléchie. Pas de répétition, pas de résumé.
 
 Retourne UNIQUEMENT un JSON valide avec la structure demandée.`
@@ -346,6 +364,11 @@ ${sig.cognitiveFlexibility >= 60 ? "Votre flexibilité cognitive facilite l'adap
 **Direction professionnelle** : Privilégiez les contextes qui exploitent vos forces naturelles tout en minimisant l'exposition prolongée à vos zones de vigilance.`,
     },
     {
+      id: "lecture_fonctionnelle",
+      title: "Lecture Fonctionnelle du Fonctionnement Cognitif",
+      content: generateLectureFonctionnelleSection(sig),
+    },
+    {
       id: "fonctionnement",
       title: "Fonctionnement Cognitif Détaillé",
       content: `### Traitement de l'information
@@ -386,6 +409,16 @@ ${sig.accessFluency >= 70
       content: generateForcesSection(sig),
     },
     {
+      id: "zones_vigilance",
+      title: "Zones de Vigilance Cognitive",
+      content: generateZonesVigilanceSection(sig),
+    },
+    {
+      id: "environnements_compatibles",
+      title: "Environnements Professionnels Compatibles",
+      content: generateEnvironnementsCompatiblesSection(sig),
+    },
+    {
       id: "vigilance",
       title: "Points de Vigilance Cognitifs",
       content: generateVigilanceSection(sig),
@@ -398,9 +431,19 @@ ${sig.accessFluency >= 70
         : `*Profil RIASEC non disponible. Complétez le test RIASEC pour obtenir une analyse croisée de vos intérêts professionnels et de votre fonctionnement cognitif.*`,
     },
     {
+      id: "leviers_developpement",
+      title: "Leviers de Développement",
+      content: generateLeviersDeveloppementSection(sig),
+    },
+    {
       id: "scenarios",
       title: "Scénarios Professionnels Possibles",
       content: generateScenariosSection(sig, archetype),
+    },
+    {
+      id: "projection_ia",
+      title: "Projection dans un Contexte de Transformation du Travail",
+      content: generateProjectionIASection(sig),
     },
     {
       id: "environnements",
@@ -411,6 +454,11 @@ ${sig.accessFluency >= 70
       id: "leviers",
       title: "Leviers d'Évolution et de Progression",
       content: generateLeviersSection(sig),
+    },
+    {
+      id: "conclusion_enrichie",
+      title: "Conclusion Stratégique Enrichie",
+      content: generateConclusionEnrichieSection(sig, archetype),
     },
     {
       id: "conclusion",
@@ -698,4 +746,185 @@ function generateLeviersSection(sig: CognitiveSignatureData): string {
 - Réévaluer régulièrement l'adéquation poste/profil`)
 
   return leviers.join("\n\n")
+}
+
+function generateLectureFonctionnelleSection(sig: CognitiveSignatureData): string {
+  return `### Votre mode de traitement de l'information
+
+Votre fonctionnement tend à ${sig.processingSpeed >= 60 ? "traiter les informations de manière rapide et synthétique" : "analyser les informations en profondeur avant de prendre une décision"}. Dans un contexte professionnel, cela se traduit par ${sig.processingSpeed >= 60 ? "une capacité à réagir rapidement aux sollicitations" : "une approche méthodique qui privilégie la précision"}.
+
+### Votre style décisionnel
+
+Dans la prise de décision, votre fonctionnement se caractérise par ${sig.inhibitoryControl >= 60 ? "une bonne résistance aux interférences externes" : "une sensibilité accrue aux contextes chargés en informations"}. Concrètement, cela signifie que ${sig.inhibitoryControl >= 60 ? "vous maintenez votre cap malgré les distractions" : "vous performez mieux dans des environnements calmes et structurés"}.
+
+### Votre adaptabilité cognitive
+
+Face aux changements, votre fonctionnement s'adapte ${sig.cognitiveFlexibility >= 60 ? "avec aisance aux nouvelles règles et contextes" : "de manière plus progressive, nécessitant des périodes d'ajustement"}. Cette caractéristique influence votre manière de ${sig.cognitiveFlexibility >= 60 ? "gérer les imprévus et les transitions" : "privilégier la stabilité et la prévisibilité"}.
+
+### Votre réaction à la complexité
+
+Lorsque vous êtes confronté à des situations complexes, votre traitement ${sig.accessFluency >= 60 ? "s'appuie sur un accès fluide aux représentations visuelles" : "bénéficie d'une approche séquentielle qui décompose les problèmes"}. Dans la pratique, cela se manifeste par ${sig.accessFluency >= 60 ? "une bonne gestion des informations multiples" : "une préférence pour les interfaces épurées et les instructions claires"}.`
+}
+
+function generateZonesVigilanceSection(sig: CognitiveSignatureData): string {
+  const zones: string[] = []
+
+  if (sig.processingSpeed < 40 && sig.inhibitoryControl < 50) {
+    zones.push(`**Contextes à double pression** — Dans certains environnements combinant urgence et forte charge informationnelle, ce fonctionnement peut entraîner une surcharge cognitive rapide. La vigilance s'impose lors des pics d'activité simultanés.`)
+  }
+
+  if (sig.cognitiveFlexibility < 40 && sig.processingSpeed < 50) {
+    zones.push(`**Transitions rapides non préparées** — Face à des changements fréquents et imprévus, ce fonctionnement peut nécessiter plus de temps d'adaptation. Les contextes très volatiles demandent des stratégies d'anticipation.`)
+  }
+
+  if (sig.attentionDrift < 40 && sig.accessFluency < 50) {
+    zones.push(`**Tâches prolongées sur interfaces complexes** — Dans certaines conditions de longue concentration sur des visuels denses, ce fonctionnement peut entraîner une fatigue progressive. La segmentation des tâches est recommandée.`)
+  }
+
+  if (zones.length === 0) {
+    zones.push(`**Équilibre général** — Votre fonctionnement ne présente pas de zone de vigilance critique majeure. Restez attentif aux contextes extrêmes qui sortent de votre zone de confort habituelle.`)
+  }
+
+  return zones.join("\n\n")
+}
+
+function generateEnvironnementsCompatiblesSection(sig: CognitiveSignatureData): string {
+  const favorables: string[] = []
+  const neutres: string[] = []
+  const couteux: string[] = []
+
+  // Niveau de stimulation
+  if (sig.processingSpeed >= 60) {
+    favorables.push("**Niveau de stimulation** : Élevé mais régulier, flux d'informations continu")
+    neutres.push("**Niveau de stimulation** : Modéré avec pics occasionnels")
+    couteux.push("**Niveau de stimulation** : Très faible ou monotone")
+  } else {
+    favorables.push("**Niveau de stimulation** : Modéré, temps de réflexion intégré")
+    neutres.push("**Niveau de stimulation** : Variable avec plages calmes")
+    couteux.push("**Niveau de stimulation** : Constant et intense")
+  }
+
+  // Degré d'autonomie
+  if (sig.inhibitoryControl >= 60 && sig.cognitiveFlexibility >= 50) {
+    favorables.push("**Degré d'autonomie** : Forte avec responsabilités décisionnelles")
+    neutres.push("**Degré d'autonomie** : Encadrée avec marges de manœuvre")
+    couteux.push("**Degré d'autonomie** : Très faible ou isolement total")
+  } else {
+    favorables.push("**Degré d'autonomie** : Structurée avec support disponible")
+    neutres.push("**Degré d'autonomie** : Progressive avec feedback régulier")
+    couteux.push("**Degré d'autonomie** : Sans cadre ni accompagnement")
+  }
+
+  // Pression temporelle
+  if (sig.processingSpeed >= 70 && sig.inhibitoryControl >= 60) {
+    favorables.push("**Pression temporelle** : Gérable avec deadlines claires")
+    neutres.push("**Pression temporelle** : Modérée avec ajustements possibles")
+    couteux.push("**Pression temporelle** : Permanente et imprévisible")
+  } else {
+    favorables.push("**Pression temporelle** : Faible avec délais raisonnables")
+    neutres.push("**Pression temporelle** : Ponctuelle et planifiable")
+    couteux.push("**Pression temporelle** : Constante et urgente")
+  }
+
+  // Charge sociale
+  if (sig.inhibitoryControl >= 60) {
+    favorables.push("**Charge sociale** : Interactions fréquentes gérables")
+    neutres.push("**Charge sociale** : Modérée avec équilibre individuel")
+    couteux.push("**Charge sociale** : Très élevée et continue")
+  } else {
+    favorables.push("**Charge sociale** : Calme avec interactions ciblées")
+    neutres.push("**Charge sociale** : Variable avec temps de retrait")
+    couteux.push("**Charge sociale** : Open space bruyant, interruptions")
+  }
+
+  // Ambiguïté des tâches
+  if (sig.cognitiveFlexibility >= 60) {
+    favorables.push("**Ambiguïté des tâches** : Gérable avec objectifs clairs")
+    neutres.push("**Ambiguïté des tâches** : Modérée avec procédures partielles")
+    couteux.push("**Ambiguïté des tâches** : Totale sans cadre")
+  } else {
+    favorables.push("**Ambiguïté des tâches** : Faible avec instructions précises")
+    neutres.push("**Ambiguïté des tâches** : Contrôlée avec guidelines")
+    couteux.push("**Ambiguïté des tâches** : Élevée et changeante")
+  }
+
+  return `### Environnements Favorables
+
+${favorables.join("\n")}
+
+### Environnements Neutres
+
+${neutres.join("\n")}
+
+### Environnements Cognitivement Coûteux
+
+${couteux.join("\n")}`
+}
+
+function generateLeviersDeveloppementSection(sig: CognitiveSignatureData): string {
+  const leviers: string[] = []
+
+  // Organisation
+  if (sig.processingSpeed < 50) {
+    leviers.push(`**Stratégies d'organisation** — Structurez votre environnement de travail pour optimiser le temps de traitement. Utilisez des systèmes de priorisation clairs et des routines établies pour réduire la charge décisionnelle.`)
+  }
+
+  if (sig.inhibitoryControl < 50) {
+    leviers.push(`**Gestion de l'environnement** — Aménagez des zones de concentration protégée. Utilisez des techniques de filtrage des informations et définissez des plages horaires sans interruptions pour les tâches complexes.`)
+  }
+
+  // Environnement
+  if (sig.cognitiveFlexibility < 50) {
+    leviers.push(`**Aménagement des transitions** — Préparez les changements de contexte à l'avance. Créez des rituels de passage entre différentes tâches et développez des routines pour faciliter les adaptations.`)
+  }
+
+  // Modes de collaboration
+  if (sig.inhibitoryControl >= 60 && sig.processingSpeed >= 50) {
+    leviers.push(`**Modes de collaboration optimisés** — Exploitez votre capacité à gérer des interactions complexes. Positionnez-vous sur des rôles de coordination ou de synthèse qui valorisent votre traitement rapide en environnement social.`)
+  } else {
+    leviers.push(`**Collaboration adaptée** — Choisissez des modes de collaboration qui correspondent à votre fonctionnement. Privilégiez les échanges structurés et les contributions individuelles plutôt que les brainstormings permanents.`)
+  }
+
+  // Développement général
+  leviers.push(`**Évolution progressive** — L'empreinte cognitive n'est pas figée. Développez consciemment des stratégies compensatoires pour vos zones de vigilance et renforcez vos points forts par des pratiques régulières.`)
+
+  return leviers.join("\n\n")
+}
+
+function generateProjectionIASection(sig: CognitiveSignatureData): string {
+  return `### Complémentarité avec les outils numériques
+
+Votre fonctionnement cognitif présente des atouts spécifiques dans un contexte de transformation numérique. ${sig.cognitiveFlexibility >= 60 ? "Votre capacité d'adaptation facilite l'intégration de nouveaux outils et l'évolution des processus." : "Votre approche structurée assure une stabilité précieuse face aux changements technologiques."}
+
+### Compétences difficilement automatisables
+
+${sig.inhibitoryControl >= 60 ? "Votre résistance aux interférences et votre capacité de maintien du focus constituent des compétences humaines précieuses dans un monde saturé d'informations numériques." : "Votre sensibilité aux contextes informationnels développe une expertise dans la curation et la hiérarchisation des informations."}
+
+${sig.cognitiveFlexibility >= 60 ? "Votre flexibilité cognitive vous permet de naviguer entre différents systèmes et de créer des ponts entre solutions techniques." : "Votre préférence pour la structure et la cohérence devient essentielle pour maintenir l'ordre dans des écosystèmes numériques complexes."}
+
+### Adaptation aux contextes changeants
+
+Face à l'évolution rapide des environnements de travail, ${sig.processingSpeed >= 60 ? "votre vitesse de traitement vous permet de rester performant dans des contextes où les outils et les méthodes évoluent rapidement." : "votre approche réfléchie assure une intégration plus profonde et durable des nouvelles technologies."}
+
+### Valeur ajoutée humaine
+
+${sig.accessFluency >= 60 ? "Votre traitement visuel fluide complète avantageusement les outils d'analyse automatique." : "Votre approche séquentielle et méthodique apporte une rigueur essentielle aux processus automatisés."}
+
+Ces caractéristiques cognitives constituent des atouts durablement valorisables dans un marché du travail en transformation.`
+}
+
+function generateConclusionEnrichieSection(sig: CognitiveSignatureData, archetype: { archetype: string; description: string }): string {
+  return `### Synthèse de votre fonctionnement cognitif
+
+Votre signature de type **${archetype.archetype}** révèle un profil cohérent avec des forces naturelles dans ${sig.processingSpeed >= 60 ? "le traitement rapide" : "l'analyse approfondie"}${sig.cognitiveFlexibility >= 60 ? " et l'adaptabilité contextuelle" : " et la stabilité méthodique"}.
+
+### Rôle de ce rapport
+
+Ce document constitue un outil d'aide à la réflexion stratégique sur votre trajectoire professionnelle. Il vous fournit des clés pour comprendre vos modes de fonctionnement naturels et identifier les environnements où votre performance sera optimale.
+
+### Invitation à la prise de recul
+
+Les données comportementales présentées ici ne définissent pas votre potentiel, mais éclairent vos prédispositions cognitives. Utilisez ces informations comme un guide pour prendre des décisions éclairées, pas comme une limitation.
+
+Ce bilan vous appartient. Il constitue une base de réflexion personnelle que vous êtes libre d'interpréter et d'exploiter selon vos propres objectifs professionnels.`
 }
