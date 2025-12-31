@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { Toaster as SonnerToaster } from 'sonner'
 import { AuthSessionProvider } from '@/components/session-provider'
 import { ReactQueryProvider } from '@/components/query-provider'
+import { CookieBanner } from '@/components/cookie-banner'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -33,6 +34,7 @@ export default function RootLayout({
           </AuthSessionProvider>
           <Toaster />
           <SonnerToaster richColors />
+          <CookieBanner />
         </ThemeProvider>
       </body>
     </html>

@@ -246,12 +246,29 @@ L'intégration Stripe permet :
 
 ## 🔄 Mises à jour récentes
 
+### v1.1.0 (Décembre 2024)
+- ✅ **Correction TypeScript** : Résolution erreur variant `CyberButton`
+- ✅ **Nettoyage codebase** : Suppression fichiers `.backup` et pages dupliquées
+- ✅ **Configuration ESLint** : Correction erreur référence circulaire
+- ✅ **Authentification** : Unification page de connexion (`/auth/login`)
+- ✅ **Prisma** : Régénération client et correction commentaires
+- ✅ **Qualité code** : 0 erreur TypeScript, ESLint fonctionnel
+
 ### v1.0.0 (Décembre 2024)
 - ✅ **Correction dashboard** : Indicateurs de progression précis (6/6 modules)
 - ✅ **Amélioration évaluation cognitive** : Logique de completion améliorée
 - ✅ **Optimisation UI/UX** : Interface plus fluide et intuitive
 - ✅ **Corrections bugs** : Tests de réaction sans faux positifs
 - ✅ **Documentation** : README mis à jour et complet
+
+---
+
+## 🛡️ Sécurité
+
+- Les fichiers `.env` sont exclus du versioning (`.gitignore`)
+- Authentification JWT sécurisée via NextAuth.js
+- Paiements sécurisés via Stripe Checkout
+- Base de données PostgreSQL avec connexion SSL
 
 ---
 

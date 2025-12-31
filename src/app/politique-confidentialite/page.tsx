@@ -116,9 +116,19 @@ export default function PolitiqueConfidentialite() {
 
           <section>
             <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">10. Cookies</h2>
+            <p className="mb-4">
+              Notre site utilise <strong>uniquement des cookies essentiels</strong> au fonctionnement du service :
+            </p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li><strong>Cookies d'authentification</strong> : maintien de votre session de connexion</li>
+              <li><strong>Cookies de sécurité</strong> : protection contre les attaques CSRF</li>
+            </ul>
             <p>
-              Notre site utilise des cookies essentiels au fonctionnement du service (authentification, 
-              préférences). Pour plus d'informations, consultez notre politique de cookies.
+              Nous n'utilisons aucun cookie de tracking, d'analyse ou publicitaire. 
+              Pour plus d'informations, consultez notre{" "}
+              <Link href="/politique-cookies" className="text-[#8C5A2B] hover:underline">
+                politique de cookies
+              </Link>.
             </p>
           </section>
 
