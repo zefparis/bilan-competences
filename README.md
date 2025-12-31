@@ -1,277 +1,283 @@
 # PERSPECTA
 
-**Plateforme d'évaluation cognitive et de bilan de compétences**
+**Plateforme d'evaluation cognitive et de bilan de competences professionnelles**
 
-Une application premium conçue pour offrir une analyse approfondie du profil professionnel et cognitif des utilisateurs.
+Application premium concue pour offrir une analyse approfondie du profil professionnel et cognitif des utilisateurs, avec generation de PDF editorial de qualite.
 
----
-
-## 🧩 Empreinte cognitive
-PERSPECTA modélise une empreinte cognitive fonctionnelle : un ensemble d'indicateurs comportementaux décrivant la manière dont une personne traite l'information, prend des décisions et s'adapte à un contexte de travail.
-Cette empreinte n'est ni un diagnostic médical, ni une mesure de QI, ni une évaluation clinique : elle sert uniquement d'outil d'orientation et de compréhension.
+**URL Production** : [perspecta.ia-solution.fr](https://perspecta.ia-solution.fr)
 
 ---
 
-## 🎯 Fonctionnalités
+## Empreinte cognitive
 
-### 🧠 Évaluation Cognitive PERSPECTA
-- **4 Tests comportementaux** : Stroop, Temps de réaction, Trail Making, RAN Visuel
-- **Signature cognitive** : Empreinte unique basée sur 4 dimensions (Forme, Couleur, Volume, Son)
-- **Analyse HCS-U7** : Profil cognitif détaillé
+PERSPECTA modelise une empreinte cognitive fonctionnelle : un ensemble d'indicateurs comportementaux decrivant la maniere dont une personne traite l'information, prend des decisions et s'adapte a un contexte de travail.
 
-### 📊 Bilan de Compétences (6 Modules)
-1. **Parcours de Vie** : Timeline interactive et événements marquants
-2. **Expériences STAR** : Analyse des expériences professionnelles (Situation, Tâche, Action, Résultat)
-3. **Tri des Valeurs** : Hiérarchisation des valeurs fondamentales
-4. **Test RIASEC** : Profil professionnel selon les 6 types Holland (Réaliste, Investigateur, Artistique, Social, Entreprenant, Conventionnel)
-5. **Profil Cognitif** : Analyse HCS-U7 (Forme/Couleur/Volume/Son)
-6. **Évaluation Cognitive PERSPECTA** : Tests comportementaux + signature
+Cette empreinte n'est ni un diagnostic medical, ni une mesure de QI, ni une evaluation clinique : elle sert uniquement d'outil d'orientation et de comprehension.
 
-### 📄 Synthèse et Reporting
-- **Rapport PDF personnalisé** : Synthèse complète avec recommandations
-- **Génération IA** : Sections stratégiques générées par OpenAI
-- **Export professionnel** : Format PDF optimisé
+---
 
-### 💳 Expérience Utilisateur
+## Fonctionnalites
+
+### Evaluation Cognitive PERSPECTA
+- **4 Tests comportementaux** : Stroop, Temps de reaction, Trail Making, RAN Visuel
+- **Signature cognitive** : Empreinte unique basee sur 5 dimensions (Controle inhibiteur, Vitesse de traitement, Flexibilite cognitive, Fluidite d'acces, Derive attentionnelle)
+- **Profil RIASEC** : 6 dimensions Holland (Realiste, Investigateur, Artistique, Social, Entreprenant, Conventionnel)
+
+### Bilan de Competences (6 Modules)
+1. **Parcours de Vie** : Timeline interactive et evenements marquants
+2. **Experiences STAR** : Analyse des experiences professionnelles (Situation, Tache, Action, Resultat)
+3. **Tri des Valeurs** : Hierarchisation des valeurs fondamentales
+4. **Test RIASEC** : Profil professionnel selon les 6 types Holland
+5. **Profil Cognitif** : Analyse des dimensions cognitives
+6. **Evaluation Cognitive PERSPECTA** : Tests comportementaux + signature
+
+### Generation PDF Premium
+- **Resume Executif** : Synthese visuelle avec hexagone RIASEC et jauges cognitives
+- **4 Parties structurees** : Profil, Lecture Approfondie, Projections, Plan d'Action
+- **Graphiques visuels** : Hexagone RIASEC, jauges de progression, matrices de compatibilite
+- **Generation API** : Endpoint `/api/pdf/generate` pour generation cote serveur
+- **Qualite editoriale** : Design premium justifiant le prix de 49EUR
+
+### Experience Utilisateur
 - **Mode clair/sombre** : Interface adaptative professionnelle
-- **Paiement Stripe** : Intégration paiement sécurisé
-- **Dashboard progressif** : Suivi avancé de l'avancement (6/6 modules)
-- **Interface responsive** : Optimisée desktop et mobile
+- **Paiement Stripe** : Integration paiement securise (49EUR)
+- **Dashboard progressif** : Suivi avance de l'avancement (6/6 modules)
+- **Interface responsive** : Optimisee desktop et mobile
 
 ---
 
-## 🧠 À quoi sert PERSPECTA ?
+## A quoi sert PERSPECTA ?
 
-- ✅ Identifier des environnements professionnels compatibles avec son fonctionnement cognitif
-- ✅ Mieux comprendre ses leviers naturels d'apprentissage et d'adaptation
-- ✅ Explorer des pistes d'évolution ou de reconversion dans un contexte de transformation du travail
-- ✅ Mettre en lumière des compétences humaines difficilement automatisables
-- ✅ Obtenir une signature cognitive unique pour l'orientation professionnelle
+- Identifier des environnements professionnels compatibles avec son fonctionnement cognitif
+- Mieux comprendre ses leviers naturels d'apprentissage et d'adaptation
+- Explorer des pistes d'evolution ou de reconversion dans un contexte de transformation du travail
+- Mettre en lumiere des competences humaines difficilement automatisables
+- Obtenir une signature cognitive unique pour l'orientation professionnelle
 
 ---
 
-## 🛠️ Stack technique
+## Stack technique
 
 ### Frontend
 - **Next.js 14** (App Router), **React 18**, **TypeScript**
 - **Styling** : TailwindCSS, **shadcn/ui**, Framer Motion
 - **Charts** : Recharts pour les visualisations
 
-### Backend & Base de données
+### Backend & Base de donnees
 - **API Routes** Next.js, **Prisma ORM**
-- **Base de données** : PostgreSQL (Supabase)
+- **Base de donnees** : PostgreSQL (Supabase)
 - **Authentification** : NextAuth.js + JWT
 
 ### Services externes
-- **AI/ML** : OpenAI API (GPT-4)
-- **Paiements** : Stripe
-- **PDF** : @react-pdf/renderer, pdf-lib
+- **AI/ML** : OpenAI API (GPT-4) pour generation de rapports
+- **Paiements** : Stripe (49EUR one-time)
+- **PDF** : @react-pdf/renderer (generation premium cote serveur)
 
-### Outils de développement
+### Outils de developpement
 - **Tests** : Vitest (unitaires), Playwright (E2E)
 - **Linting** : ESLint, Prettier
 - **Package manager** : pnpm
-- **Déploiement** : Vercel
+- **Deploiement** : Vercel (auto-deploy sur push main)
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 # Cloner le repository
 git clone https://github.com/zefparis/bilan-competences.git
 cd bilan-competences
 
-# Installer les dépendances
+# Installer les dependances
 pnpm install
 
 # Configurer les variables d'environnement
 cp .env.example .env
-# Éditer .env avec vos valeurs
+# Editer .env avec vos valeurs
 
-# Générer le client Prisma
+# Generer le client Prisma
 pnpm db:generate
 
-# Lancer en développement
+# Lancer en developpement
 pnpm dev
 ```
 
 ---
 
-## ⚙️ Variables d'environnement
+## Variables d'environnement
 
 | Variable | Description | Requis |
-|----------|-------------|---------|
-| `DATABASE_URL` | URL de connexion PostgreSQL | ✅ |
-| `NEXTAUTH_URL` | URL de l'application | ✅ |
-| `NEXTAUTH_SECRET` | Secret pour NextAuth (générer avec `openssl rand -base64 32`) | ✅ |
-| `OPENAI_API_KEY` | Clé API OpenAI pour les fonctionnalités IA | ✅ |
-| `STRIPE_SECRET_KEY` | Clé secrète Stripe | ✅ |
-| `STRIPE_PUBLISHABLE_KEY` | Clé publique Stripe | ✅ |
-| `STRIPE_WEBHOOK_SECRET` | Secret webhook Stripe | ✅ |
+|----------|-------------|--------|
+| `DATABASE_URL` | URL de connexion PostgreSQL | Oui |
+| `NEXTAUTH_URL` | URL de l'application | Oui |
+| `NEXTAUTH_SECRET` | Secret pour NextAuth | Oui |
+| `OPENAI_API_KEY` | Cle API OpenAI pour generation rapports | Oui |
+| `STRIPE_SECRET_KEY` | Cle secrete Stripe | Oui |
+| `STRIPE_PUBLISHABLE_KEY` | Cle publique Stripe | Oui |
+| `STRIPE_WEBHOOK_SECRET` | Secret webhook Stripe | Oui |
 
 ---
 
-## 📁 Structure du projet
+## Structure du projet
 
 ```
 src/
 ├── app/
-│   ├── api/                 # Routes API
-│   │   ├── auth/           # Authentification NextAuth
-│   │   ├── cognitive/      # Tests cognitifs & sessions
-│   │   ├── report/         # Génération de rapports PDF
-│   │   ├── stripe/         # Intégration paiements
-│   │   └── user/           # Gestion utilisateur
-│   ├── auth/               # Pages d'authentification
-│   ├── dashboard/          # Interface utilisateur principale
-│   │   ├── parcours/       # Module parcours de vie
-│   │   ├── experiences/    # Module expériences STAR
-│   │   ├── valeurs/        # Module tri des valeurs
-│   │   ├── riasec/         # Module test RIASEC
-│   │   ├── cognitive/      # Module profil cognitif HCS-U7
-│   │   ├── cognitive-assessment/ # Évaluation PERSPECTA
-│   │   └── report/         # Page génération rapport
-│   ├── methodology/        # Cadre méthodologique
-│   ├── payment/            # Pages paiement Stripe
-│   ├── pricing/            # Pages tarifs
-│   └── (legal)/            # Pages légales (RGPD, CGU)
-├── components/             # Composants UI réutilisables
-│   ├── ui/                # Composants shadcn/ui
-│   ├── cognitive-tests/   # Composants tests cognitifs
-│   └── pdf/               # Composants génération PDF
-├── lib/                   # Utilitaires et configuration
-│   ├── auth.ts            # Configuration NextAuth
-│   ├── db.ts              # Client Prisma
-│   ├── stripe.ts          # Configuration Stripe
-│   ├── openai.ts          # Client OpenAI
-│   ├── pdf-renderer.tsx   # Génération PDF
-│   ├── report-generator.ts # Logique génération rapports
-│   └── utils.ts           # Utilitaires divers
-└── prisma/                # Schéma de base de données
-    ├── schema.prisma      # Définition des modèles
-    └── seed.ts           # Données de test
+│   ├── api/                      # Routes API
+│   │   ├── auth/                # Authentification NextAuth
+│   │   ├── cognitive/           # Tests cognitifs & sessions
+│   │   ├── pdf/                 # Generation PDF premium
+│   │   │   ├── generate/        # POST - PDF utilisateur authentifie
+│   │   │   └── demo/            # GET - PDF demo pour tests
+│   │   ├── report/              # Generation rapports IA
+│   │   ├── stripe/              # Integration paiements
+│   │   └── user/                # Gestion utilisateur
+│   ├── auth/                    # Pages d'authentification
+│   ├── dashboard/               # Interface utilisateur principale
+│   │   ├── parcours/            # Module parcours de vie
+│   │   ├── experiences/         # Module experiences STAR
+│   │   ├── valeurs/             # Module tri des valeurs
+│   │   ├── riasec/              # Module test RIASEC
+│   │   ├── cognitive-assessment/ # Evaluation PERSPECTA (4 tests)
+│   │   └── report/              # Page generation rapport + PDF
+│   ├── methodology/             # Cadre methodologique
+│   ├── payment/                 # Pages paiement Stripe
+│   ├── pricing/                 # Pages tarifs
+│   └── (legal)/                 # Pages legales (RGPD, CGU)
+├── components/                  # Composants UI reutilisables
+│   ├── ui/                     # Composants shadcn/ui
+│   └── cognitive-tests/        # Composants tests cognitifs
+├── lib/
+│   ├── pdf/                    # Systeme generation PDF premium
+│   │   ├── components/         # Composants PDF (RiasecHexagon, ScoreGauge, etc.)
+│   │   ├── templates/          # Pages PDF (Cover, ExecutiveSummary, Part1-4)
+│   │   ├── styles/             # Design tokens, typography, layouts
+│   │   ├── utils/              # Validation, enrichissement, generation textes
+│   │   ├── data/               # Types et donnees sample
+│   │   └── generator.tsx       # Point d'entree generation PDF
+│   ├── auth.ts                 # Configuration NextAuth
+│   ├── db.ts                   # Client Prisma
+│   ├── stripe.ts               # Configuration Stripe
+│   ├── openai.ts               # Client OpenAI
+│   ├── report-generator.ts     # Logique generation rapports IA
+│   └── utils.ts                # Utilitaires divers
+└── prisma/
+    └── schema.prisma           # Definition des modeles
 ```
 
 ---
 
-## 🚀 Déploiement
+## Deploiement
 
-L'application est configurée pour un déploiement automatique sur Vercel :
+L'application est deployee automatiquement sur Vercel a chaque push sur `main`.
 
-1. **Connecter le repository GitHub** à Vercel
-2. **Configurer les variables d'environnement** dans le dashboard Vercel
-3. **Déployer automatiquement** à chaque push sur main
-
-### Prérequis déploiement :
-- Variables d'environnement configurées
-- Base de données PostgreSQL accessible
-- Clés API valides (OpenAI, Stripe)
+### Prerequis deploiement
+- Variables d'environnement configurees dans Vercel
+- Base de donnees PostgreSQL accessible (Supabase)
+- Cles API valides (OpenAI, Stripe)
 
 ---
 
-## 📄 Pages légales & Méthodologie
+## API Endpoints
 
-- `/mentions-legales` - Mentions légales
+### Generation PDF
+| Endpoint | Methode | Description |
+|----------|---------|-------------|
+| `/api/pdf/generate` | POST | Genere le PDF pour l'utilisateur authentifie |
+| `/api/pdf/demo` | GET | Genere un PDF demo avec donnees sample |
+
+### Rapports IA
+| Endpoint | Methode | Description |
+|----------|---------|-------------|
+| `/api/report/generate` | GET | Recupere le rapport existant |
+| `/api/report/generate` | POST | Genere un nouveau rapport avec OpenAI |
+
+### Authentification & Utilisateur
+| Endpoint | Methode | Description |
+|----------|---------|-------------|
+| `/api/auth/[...nextauth]` | * | NextAuth.js handlers |
+| `/api/user/profile` | GET | Profil utilisateur + statut paiement |
+
+---
+
+## Pages legales
+
+- `/mentions-legales` - Mentions legales
 - `/politique-confidentialite` - Politique RGPD
-- `/cgu` - Conditions générales d'utilisation
-- `/methodologie` - Cadre méthodologique et éthique
+- `/cgu` - Conditions generales d'utilisation
+- `/methodologie` - Cadre methodologique et ethique
 
-> **⚠️ Important** : PERSPECTA n'est pas conçu pour le recrutement, la sélection ou l'évaluation de candidats. C'est un outil d'orientation personnelle.
+> **Important** : PERSPECTA n'est pas concu pour le recrutement ou l'evaluation de candidats. C'est un outil d'orientation personnelle.
 
 ---
 
-## 🧪 Tests et développement
+## Commandes developpement
 
 ```bash
-# Lancer les tests unitaires (Vitest)
-pnpm test
-
-# Lancer les tests E2E (Playwright)
-pnpm test:e2e
-
-# Ouvrir Prisma Studio (interface base de données)
-pnpm db:studio
-
-# Peupler la base de données avec des données de test
-pnpm db:seed
-
-# Générer le client Prisma après modification du schéma
-pnpm db:generate
-
-# Appliquer les migrations de base de données
-pnpm db:migrate
+pnpm dev              # Lancer en developpement
+pnpm build            # Build production
+pnpm test             # Tests unitaires (Vitest)
+pnpm test:e2e         # Tests E2E (Playwright)
+pnpm db:studio        # Ouvrir Prisma Studio
+pnpm db:generate      # Regenerer client Prisma
+pnpm db:migrate       # Appliquer migrations
 ```
 
 ---
 
-## 💳 Intégration Stripe
+## Integration Stripe
 
-L'intégration Stripe permet :
-- ✅ **Paiement sécurisé par carte** (CB, Visa, MasterCard)
-- ✅ **Webhooks pour confirmation** automatique des paiements
-- ✅ **Gestion des sessions** de paiement
-- ✅ **Interface de paiement personnalisée** intégrée à l'UI
+**Tarif** : 49EUR (paiement unique)
 
-### Flux de paiement :
-1. Sélection du tarif premium
-2. Création d'une session Stripe
+### Flux de paiement
+1. Selection du tarif premium sur `/pricing`
+2. Creation d'une session Stripe
 3. Redirection vers Stripe Checkout
-4. Retour automatique après paiement
-5. Déblocage des fonctionnalités premium
+4. Webhook confirme le paiement
+5. `hasPaid = true` dans la base de donnees
+6. Acces aux fonctionnalites premium (rapport, PDF)
 
 ---
 
-## 📊 Métriques & Analytics
+## Mises a jour recentes
 
-- **Taux de completion** : Suivi des abandons par module
-- **Performance cognitive** : Métriques des tests comportementaux
-- **Génération de rapports** : Statistiques d'utilisation IA
-- **Satisfaction utilisateur** : Feedback et améliorations continues
+### v1.2.0 (Decembre 2024)
+- **Nouveau systeme PDF** : Generation premium avec @react-pdf/renderer
+- **Resume Executif** : Page synthese avec hexagone RIASEC et jauges cognitives
+- **Correction caracteres** : Remplacement emojis par ASCII pour compatibilite PDF
+- **API PDF** : Endpoints `/api/pdf/generate` et `/api/pdf/demo`
+- **4 Parties structurees** : Profil, Lecture Approfondie, Projections, Plan d'Action
 
----
+### v1.1.0 (Decembre 2024)
+- **Correction TypeScript** : Resolution erreur variant CyberButton
+- **Nettoyage codebase** : Suppression fichiers backup
+- **Authentification** : Unification page de connexion
 
-## 👥 Équipe & Support
-
-**Développé par ia-solution**
-- 📍 Alès, France
-- 📧 contact@ia-solution.fr
-- 🌐 [ia-solution.fr](https://ia-solution.fr)
-
-### Support technique :
-- 📧 support@ia-solution.fr
-- 📋 [Issues GitHub](https://github.com/zefparis/bilan-competences/issues)
-
----
-
-## 🔄 Mises à jour récentes
-
-### v1.1.0 (Décembre 2024)
-- ✅ **Correction TypeScript** : Résolution erreur variant `CyberButton`
-- ✅ **Nettoyage codebase** : Suppression fichiers `.backup` et pages dupliquées
-- ✅ **Configuration ESLint** : Correction erreur référence circulaire
-- ✅ **Authentification** : Unification page de connexion (`/auth/login`)
-- ✅ **Prisma** : Régénération client et correction commentaires
-- ✅ **Qualité code** : 0 erreur TypeScript, ESLint fonctionnel
-
-### v1.0.0 (Décembre 2024)
-- ✅ **Correction dashboard** : Indicateurs de progression précis (6/6 modules)
-- ✅ **Amélioration évaluation cognitive** : Logique de completion améliorée
-- ✅ **Optimisation UI/UX** : Interface plus fluide et intuitive
-- ✅ **Corrections bugs** : Tests de réaction sans faux positifs
-- ✅ **Documentation** : README mis à jour et complet
+### v1.0.0 (Decembre 2024)
+- **Dashboard** : Indicateurs de progression (6/6 modules)
+- **Evaluation cognitive** : 4 tests comportementaux + signature
+- **Integration Stripe** : Paiement securise
 
 ---
 
-## 🛡️ Sécurité
+## Securite
 
-- Les fichiers `.env` sont exclus du versioning (`.gitignore`)
-- Authentification JWT sécurisée via NextAuth.js
-- Paiements sécurisés via Stripe Checkout
-- Base de données PostgreSQL avec connexion SSL
+- Fichiers `.env` exclus du versioning
+- Authentification JWT via NextAuth.js
+- Paiements securises via Stripe Checkout
+- Base de donnees PostgreSQL avec SSL
 
 ---
 
-© 2025 PERSPECTA. Tous droits réservés.
+## Equipe & Support
 
-*Plateforme développée avec ❤️ pour l'orientation professionnelle et cognitive.*
+**Developpe par ia-solution**
+- Ales, France
+- contact@ia-solution.fr
+- [ia-solution.fr](https://ia-solution.fr)
+
+**Support** : support@ia-solution.fr | [Issues GitHub](https://github.com/zefparis/bilan-competences/issues)
+
+---
+
+Copyright 2025 PERSPECTA. Tous droits reserves.
