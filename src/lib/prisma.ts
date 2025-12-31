@@ -5,8 +5,8 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 function createPrismaClient() {
-  // Simple initialization for SQLite local dev. 
-  // Native adapters (LibSQL) can be added back when deploying to production.
+  // Simple initialization for PostgreSQL (Supabase).
+  // Uses DATABASE_URL from environment variables.
   return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   })

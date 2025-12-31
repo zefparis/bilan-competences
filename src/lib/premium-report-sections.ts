@@ -276,17 +276,23 @@ export function generateEnvironnementsCompatiblesSection(
   const favorables: string[] = []
   const couteux: string[] = []
 
-  sig.processingSpeed >= 60
-    ? favorables.push("Rythme soutenu avec priorités claires")
-    : couteux.push("Urgences constantes et imprévisibles")
+  if (sig.processingSpeed >= 60) {
+    favorables.push("Rythme soutenu avec priorités claires")
+  } else {
+    couteux.push("Urgences constantes et imprévisibles")
+  }
 
-  sig.cognitiveFlexibility >= 60
-    ? favorables.push("Variété de situations et ajustements fréquents")
-    : couteux.push("Environnements instables sans repères")
+  if (sig.cognitiveFlexibility >= 60) {
+    favorables.push("Variété de situations et ajustements fréquents")
+  } else {
+    couteux.push("Environnements instables sans repères")
+  }
 
-  sig.inhibitoryControl >= 60
-    ? favorables.push("Cadres exigeants avec objectifs définis")
-    : couteux.push("Distractions permanentes et interruptions multiples")
+  if (sig.inhibitoryControl >= 60) {
+    favorables.push("Cadres exigeants avec objectifs définis")
+  } else {
+    couteux.push("Distractions permanentes et interruptions multiples")
+  }
 
   return `
 ### Environnements favorables

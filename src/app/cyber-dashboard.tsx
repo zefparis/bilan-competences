@@ -116,7 +116,7 @@ export default function CyberDashboard() {
     }
   }
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string): 'neon' | 'pink' | 'blue' | 'purple' | 'red' | 'yellow' => {
     switch (status) {
       case 'completed':
         return 'neon'
@@ -125,7 +125,7 @@ export default function CyberDashboard() {
       case 'pending':
         return 'yellow'
       case 'locked':
-        return 'steel'
+        return 'purple'
       default:
         return 'neon'
     }
