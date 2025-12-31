@@ -12,6 +12,7 @@ import { enrichProfileData } from './utils/dataProcessor';
 
 // Templates
 import { CoverPage } from './templates/CoverPage';
+import { ExecutiveSummary } from './templates/ExecutiveSummary';
 import { TableOfContents } from './templates/TableOfContents';
 import { Part1Profile } from './templates/Part1Profile';
 import { Part2Analysis } from './templates/Part2Analysis';
@@ -36,6 +37,7 @@ const PerspectaDocument: React.FC<PerspectaDocumentProps> = ({ data }) => {
       producer="@react-pdf/renderer"
     >
       <CoverPage meta={data.meta} />
+      <ExecutiveSummary data={data} />
       <TableOfContents profileId={data.meta.id} />
       <Part1Profile data={data} />
       <Part2Analysis data={data} />

@@ -29,7 +29,7 @@ const tocData: TOCSection[] = [
     part: 'I',
     title: 'Votre Profil',
     color: colors.primary.blue,
-    icon: '👤',
+    icon: '',
     readTime: '~8 min',
     items: [
       { number: '1.1', title: 'Votre signature cognitive', page: 3 },
@@ -42,7 +42,7 @@ const tocData: TOCSection[] = [
     part: 'II',
     title: 'Lecture Approfondie',
     color: colors.success,
-    icon: '🔍',
+    icon: '',
     readTime: '~12 min',
     items: [
       { number: '2.1', title: 'Cognition × Métiers', page: 7 },
@@ -54,7 +54,7 @@ const tocData: TOCSection[] = [
     part: 'III',
     title: 'Projections',
     color: colors.warning,
-    icon: '🚀',
+    icon: '',
     readTime: '~10 min',
     items: [
       { number: '3.1', title: 'Trois scénarios d\'évolution', page: 10 },
@@ -65,7 +65,7 @@ const tocData: TOCSection[] = [
     part: 'IV',
     title: 'Plan d\'Action',
     color: colors.accent.purple,
-    icon: '✅',
+    icon: '',
     readTime: '~5 min',
     items: [
       { number: '4.1', title: 'Actions prioritaires', page: 12 },
@@ -197,7 +197,6 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ profileId }) =
             <View style={[styles.partBadge, { backgroundColor: section.color }]}>
               <Text style={styles.partText}>PARTIE {section.part}</Text>
             </View>
-            <Text style={styles.icon}>{section.icon}</Text>
             <Text style={[styles.sectionTitle, { color: section.color }]}>
               {section.title}
             </Text>
