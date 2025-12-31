@@ -5,24 +5,24 @@ import { ArrowLeft, Cookie, Shield, Lock } from "lucide-react"
 
 export default function PolitiqueCookies() {
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#2C2C2C]">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="container mx-auto px-6 py-12 max-w-4xl">
         <Link 
           href="/" 
-          className="inline-flex items-center gap-2 text-[#8C5A2B] hover:underline mb-8"
+          className="inline-flex items-center gap-2 text-primary hover:underline mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour à l'accueil
         </Link>
 
         <h1 className="text-3xl font-bold mb-8 flex items-center gap-3">
-          <Cookie className="w-8 h-8 text-[#8C5A2B]" />
+          <Cookie className="w-8 h-8 text-primary" />
           Politique des Cookies
         </h1>
 
-        <div className="space-y-8 text-[#2C2C2C]">
+        <div className="space-y-8">
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">1. Qu'est-ce qu'un cookie ?</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">1. Qu'est-ce qu'un cookie ?</h2>
             <p className="mb-4">
               Un cookie est un petit fichier texte déposé sur votre terminal (ordinateur, tablette, smartphone) 
               lors de la visite d'un site web. Il permet au site de mémoriser des informations sur votre visite, 
@@ -31,15 +31,15 @@ export default function PolitiqueCookies() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">2. Les cookies utilisés par PERSPECTA</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">2. Les cookies utilisés par PERSPECTA</h2>
             <p className="mb-4">
               PERSPECTA utilise <strong>uniquement des cookies strictement nécessaires</strong> au fonctionnement 
               du site. Nous n'utilisons aucun cookie de tracking, d'analyse comportementale ou publicitaire.
             </p>
 
-            <div className="bg-white rounded-lg border border-[#E5E5E5] overflow-hidden mt-6">
+            <div className="bg-card rounded-lg border border-border overflow-hidden mt-6">
               <table className="w-full text-sm">
-                <thead className="bg-[#F5F5F5]">
+                <thead className="bg-muted">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold">Cookie</th>
                     <th className="px-4 py-3 text-left font-semibold">Type</th>
@@ -47,7 +47,7 @@ export default function PolitiqueCookies() {
                     <th className="px-4 py-3 text-left font-semibold">Durée</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E5E5E5]">
+                <tbody className="divide-y divide-border">
                   <tr>
                     <td className="px-4 py-3 font-mono text-xs">next-auth.session-token</td>
                     <td className="px-4 py-3">
@@ -84,7 +84,7 @@ export default function PolitiqueCookies() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">3. Cookies essentiels (strictement nécessaires)</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">3. Cookies essentiels (strictement nécessaires)</h2>
             <p className="mb-4">
               Ces cookies sont indispensables au fonctionnement du site et ne peuvent pas être désactivés. 
               Ils sont généralement établis en réponse à des actions que vous effectuez, comme la définition 
@@ -97,7 +97,7 @@ export default function PolitiqueCookies() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">4. Cookies tiers</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">4. Cookies tiers</h2>
             <p className="mb-4">
               PERSPECTA n'utilise <strong>aucun cookie tiers</strong> à des fins de :
             </p>
@@ -110,7 +110,7 @@ export default function PolitiqueCookies() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">5. Stockage local (localStorage)</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">5. Stockage local (localStorage)</h2>
             <p className="mb-4">
               En plus des cookies, nous utilisons le stockage local de votre navigateur pour :
             </p>
@@ -124,7 +124,7 @@ export default function PolitiqueCookies() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">6. Comment gérer les cookies ?</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">6. Comment gérer les cookies ?</h2>
             <p className="mb-4">
               Vous pouvez configurer votre navigateur pour accepter ou refuser les cookies. 
               Voici comment procéder selon votre navigateur :
@@ -135,14 +135,14 @@ export default function PolitiqueCookies() {
               <li><strong>Safari</strong> : Préférences → Confidentialité → Cookies</li>
               <li><strong>Edge</strong> : Paramètres → Cookies et autorisations de site</li>
             </ul>
-            <p className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <p className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
               <strong>⚠️ Attention :</strong> La désactivation des cookies essentiels peut empêcher 
               le bon fonctionnement du site, notamment la connexion à votre compte.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">7. Base légale</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">7. Base légale</h2>
             <p>
               Cette politique est conforme au Règlement Général sur la Protection des Données (RGPD) 
               et à la directive ePrivacy. Les cookies strictement nécessaires sont exemptés de consentement 
@@ -151,25 +151,25 @@ export default function PolitiqueCookies() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">8. Contact</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">8. Contact</h2>
             <p>
               Pour toute question concernant notre utilisation des cookies :{" "}
-              <a href="mailto:contact@ia-solution.fr" className="text-[#8C5A2B] hover:underline">
+              <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">
                 contact@ia-solution.fr
               </a>
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-[#8C5A2B]">9. Liens utiles</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">9. Liens utiles</h2>
             <ul className="list-disc ml-6 space-y-2">
               <li>
-                <Link href="/politique-confidentialite" className="text-[#8C5A2B] hover:underline">
+                <Link href="/politique-confidentialite" className="text-primary hover:underline">
                   Politique de confidentialité
                 </Link>
               </li>
               <li>
-                <Link href="/cgu" className="text-[#8C5A2B] hover:underline">
+                <Link href="/cgu" className="text-primary hover:underline">
                   Conditions générales d'utilisation
                 </Link>
               </li>
@@ -178,7 +178,7 @@ export default function PolitiqueCookies() {
                   href="https://www.cnil.fr/fr/cookies-et-autres-traceurs" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-[#8C5A2B] hover:underline"
+                  className="text-primary hover:underline"
                 >
                   CNIL - Cookies et traceurs
                 </a>
@@ -187,7 +187,7 @@ export default function PolitiqueCookies() {
           </section>
         </div>
 
-        <p className="mt-12 text-sm text-[#6B6B6B]">
+        <p className="mt-12 text-sm text-muted-foreground">
           Dernière mise à jour : Décembre 2024
         </p>
       </div>
