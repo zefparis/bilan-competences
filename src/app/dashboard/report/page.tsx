@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
-import { pdf, Document, Page, Text } from "@react-pdf/renderer"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { 
@@ -17,7 +16,6 @@ import {
   AlertCircle
 } from "lucide-react"
 import ReactMarkdown from "react-markdown"
-import { PdfDocument } from "@/lib/pdf-renderer"
 import type { CompleteReportSections } from "@/lib/report-generator"
 
 interface ReportSection {
@@ -209,63 +207,25 @@ export default function ReportPage() {
   }, [canRegenerate])
 
   const handleDownloadPdf = useCallback(async () => {
-    if (!report) return
-
     setDownloadingPdf(true)
     setError(null)
 
     try {
-      console.log('🚀 Début génération PDF...')
-      console.log('📊 Sections disponibles:', report.sections.map(s => s.id))
+      console.log('🚀 Appel API /api/pdf/generate...')
 
-      // Reconstituer CompleteReportSections avec nettoyage du contenu
-      const completeSections: Partial<CompleteReportSections> = {}
-      report.sections.forEach((section) => {
-        // Nettoyer le contenu avant de l'ajouter
-        const cleanContent = section.content
-          .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Supprimer caractères de contrôle
-          .replace(/[^\x00-\x7F\u00A0-\u00FF]/g, (char) => {
-            // Garder les caractères UTF-8 valides pour PDF
-            return /[\u00A0-\u00FF]/.test(char) ? char : ''
-          })
-          .replace(/\n{3,}/g, '\n\n') // Normaliser les sauts de ligne
-          .trim()
-
-        if (cleanContent.length >= 50) { // Vérifier que le contenu est suffisant
-          (completeSections as any)[section.id] = cleanContent
-        } else {
-          console.warn(`⚠️ Section ${section.id} trop courte (${cleanContent.length} chars), ignorée`)
-        }
+      const response = await fetch('/api/pdf/generate', {
+        method: 'POST',
       })
 
-      // Vérifier que les sections essentielles sont présentes
-      const essential = ['cadre', 'synthese', 'croisement_riasec']
-      const missing = essential.filter(key => !(completeSections as any)[key])
-
-      if (missing.length > 0) {
-        throw new Error(`Sections essentielles manquantes: ${missing.join(', ')}`)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erreur lors de la generation du PDF')
       }
 
-      console.log('📄 Appel pdf()...')
+      // Telecharger le PDF
+      const blob = await response.blob()
+      console.log('✅ PDF recu:', blob.size, 'bytes')
 
-      // Générer le PDF
-      const blob = await pdf(
-        <PdfDocument
-          sections={completeSections as CompleteReportSections}
-          userName={report.userName || "Utilisateur"}
-          date={new Date(report.generatedAt).toLocaleDateString("fr-FR", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
-          cognitiveHash={`PERSPECTA-${report.version}-${Date.now().toString(36).toUpperCase()}`}
-          chartSvgs={(completeSections as CompleteReportSections).chartSvgs}
-        />
-      ).toBlob()
-
-      console.log('✅ Blob créé:', blob.size, 'bytes')
-
-      // Télécharger
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
@@ -275,71 +235,40 @@ export default function ReportPage() {
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
 
-      console.log('✅ PDF téléchargé')
-
-      // ✅ Nettoyer les graphiques temporaires
-      if ((completeSections as CompleteReportSections).chartSvgs) {
-        try {
-          await fetch('/api/report/cleanup-charts', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              chartSvgs: (completeSections as CompleteReportSections).chartSvgs
-            })
-          })
-          console.log('🗑️ Graphiques temporaires nettoyés')
-        } catch (error) {
-          console.warn('⚠️ Impossible de nettoyer les graphiques temporaires:', error)
-        }
-      }
+      console.log('✅ PDF telecharge')
     } catch (error) {
       console.error('❌ Erreur PDF:', error)
-
-      // Message d'erreur détaillé
-      const errorMessage = error instanceof Error
-        ? error.message
-        : 'Erreur inconnue'
-
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue'
       setError(`Erreur PDF: ${errorMessage}`)
-
-      // Afficher plus de détails dans la console
-      console.error('❌ Stack:', error instanceof Error ? error.stack : 'Pas de stack')
-      console.error('❌ Sections disponibles:', report.sections.map(s => ({ id: s.id, length: s.content.length })))
     } finally {
       setDownloadingPdf(false)
     }
-  }, [report])
+  }, [])
 
-  // Fonction de test PDF minimal
+  // Fonction de test PDF demo
   const handleTestPdf = useCallback(async () => {
     try {
-      console.log('🧪 Test PDF minimal...')
+      console.log('🧪 Test PDF demo...')
 
-      const testBlob = await pdf(
-        <Document>
-          <Page size="A4" style={{ padding: 30 }}>
-            <Text>Test PDF PERSPECTA</Text>
-            <Text>Si vous voyez ce texte, @react-pdf/renderer fonctionne correctement.</Text>
-            <Text>Généré le: {new Date().toLocaleString('fr-FR')}</Text>
-          </Page>
-        </Document>
-      ).toBlob()
+      const response = await fetch('/api/pdf/demo')
+      if (!response.ok) {
+        throw new Error('Erreur API demo')
+      }
 
-      const url = URL.createObjectURL(testBlob)
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = 'test-perspecta.pdf'
+      link.download = 'test-perspecta-demo.pdf'
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
 
-      console.log('✅ Test PDF réussi')
+      console.log('✅ Test PDF reussi')
     } catch (error) {
-      console.error('❌ Test PDF échoué:', error)
-      setError('Erreur de test PDF: @react-pdf/renderer ne fonctionne pas')
+      console.error('❌ Test PDF echoue:', error)
+      setError('Erreur de test PDF')
     }
   }, [])
 
