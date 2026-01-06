@@ -38,13 +38,13 @@ export default function NewHomePage() {
               <Link href="/auth/login">
                 <Button variant="ghost" size="sm">Connexion</Button>
               </Link>
-              <Link href="/auth/signin">
+              <Link href="/pricing">
                 <Button size="sm">Commencer</Button>
               </Link>
             </div>
 
             <div className="md:hidden">
-              <Link href="/auth/signin">
+              <Link href="/pricing">
                 <Button size="sm">Commencer</Button>
               </Link>
             </div>
@@ -73,7 +73,7 @@ export default function NewHomePage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Link href="/auth/signin">
+              <Link href="/pricing">
                 <Button size="lg" className="text-lg px-8">
                   Commencer - 49€
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -838,7 +838,7 @@ export default function NewHomePage() {
                 </li>
               </ul>
               
-              <Link href="/auth/signin" className="block">
+              <Link href="/pricing" className="block">
                 <Button className="w-full" size="lg">
                   Commencer maintenant
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -934,7 +934,7 @@ export default function NewHomePage() {
           <p className="text-xl mb-8 opacity-90">
             Rejoignez les professionnels tech qui utilisent PERSPECTA
           </p>
-          <Link href="/auth/signin">
+          <Link href="/pricing">
             <Button size="lg" variant="secondary" className="text-lg px-8">
               Commencer mon bilan - 49€
               <ArrowRight className="ml-2 h-5 w-5" />
