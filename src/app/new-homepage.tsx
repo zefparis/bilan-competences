@@ -105,7 +105,153 @@ export default function NewHomePage() {
         </div>
       </section>
 
-      {/* Section Différenciation */}
+      {/* Section "Au-delà des approches classiques" */}
+      <section className="py-20 px-4 md:px-6 bg-muted/50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <p className="text-sm uppercase tracking-wide text-primary mb-4">
+              Notre différence
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Au-delà des approches classiques
+            </h2>
+          </div>
+
+          {/* Comparaison visuelle AVANT/APRÈS */}
+          <div className="max-w-5xl mx-auto mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Colonne AVANT - Approches classiques */}
+              <div>
+                <div className="text-center mb-6">
+                  <Badge variant="outline" className="text-muted-foreground">
+                    Approches classiques
+                  </Badge>
+                </div>
+                
+                <Card className="opacity-60">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <X className="w-5 h-5 text-muted-foreground" />
+                      Lister des compétences
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-muted-foreground">
+                    <p>✗ Liste statique de savoir-faire</p>
+                    <p>✗ Pas de contexte d'efficacité</p>
+                    <p>✗ Déclaratif uniquement</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="opacity-60 mt-4">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <X className="w-5 h-5 text-muted-foreground" />
+                      Test de personnalité générique
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-muted-foreground">
+                    <p>✗ Traits généraux décontextualisés</p>
+                    <p>✗ Pas de lien avec performance réelle</p>
+                    <p>✗ Effet Barnum (trop vague)</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="opacity-60 mt-4">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <X className="w-5 h-5 text-muted-foreground" />
+                      Notation arbitraire
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-muted-foreground">
+                    <p>✗ Jugement de valeur ("bon"/"mauvais")</p>
+                    <p>✗ Pas de certificat vérifiable</p>
+                    <p>✗ Pas de connexion emploi</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Colonne APRÈS - Approche PERSPECTA */}
+              <div>
+                <div className="text-center mb-6">
+                  <Badge className="bg-primary">
+                    Approche PERSPECTA
+                  </Badge>
+                </div>
+                
+                <Card className="border-primary border-2">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-primary" />
+                      Mécanismes cognitifs
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    <p>✓ Analyse fonctionnelle : <b>comment</b> vous traitez l'info</p>
+                    <p>✓ Tests comportementaux objectifs</p>
+                    <p>✓ 5 dimensions mesurées (vitesse, flexibilité, etc.)</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-primary border-2 mt-4">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-primary" />
+                      Validation technique
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    <p>✓ 45 questions tech objectives (algo, SQL, crypto)</p>
+                    <p>✓ Détection incohérences (paires antagonistes)</p>
+                    <p>✓ Enrichi par RIASEC + profil cognitif</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-primary border-2 mt-4">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-primary" />
+                      Certificat + Emploi
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    <p>✓ Certificat blockchain SHA-256 infalsifiable</p>
+                    <p>✓ Matching automatique offres France Travail</p>
+                    <p>✓ Score compatibilité 0-100%</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+
+          {/* Citation centrale */}
+          <Card className="max-w-3xl mx-auto border-l-4 border-l-primary bg-primary/5">
+            <CardContent className="py-8">
+              <blockquote className="text-xl md:text-2xl italic text-center text-foreground/90 mb-4">
+                "Deux personnes peuvent avoir les mêmes compétences visibles. 
+                Leur efficacité réelle dépend pourtant de mécanismes cognitifs 
+                très différents."
+              </blockquote>
+              <p className="text-center text-muted-foreground font-medium">
+                C'est précisément ce que PERSPECTA analyse : votre mode de fonctionnement unique, 
+                pas une simple liste de compétences.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* CTA intermédiaire */}
+          <div className="text-center mt-12">
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/methodology">
+                Comprendre notre méthodologie
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Section Différenciation - Tableau comparatif */}
       <section id="differentiation" className="py-20 px-4 md:px-6 bg-muted/30">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
