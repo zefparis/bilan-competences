@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/auth"
 import { fetchFormations } from "@/lib/france-travail/client"
 
+export const dynamic = 'force-dynamic'
+
 async function getUserIdFromRequest(req: NextRequest): Promise<string> {
   const session = await getServerSession(authOptions)
   if (!session?.user?.email) {

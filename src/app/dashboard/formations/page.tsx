@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -23,7 +23,7 @@ interface Formation {
   financement: string[]
 }
 
-export default function FormationsPage() {
+function FormationsContent() {
   const searchParams = useSearchParams()
   const [formations, setFormations] = useState<Formation[]>([])
   const [loading, setLoading] = useState(false)
@@ -282,5 +282,22 @@ export default function FormationsPage() {
         </Card>
       )}
     </div>
+  )
+}
+
+export default function FormationsPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto p-6 max-w-7xl">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Chargement...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <FormationsContent />
+    </Suspense>
   )
 }
