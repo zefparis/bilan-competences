@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUserIdFromRequest } from "@/lib/auth-user";
-import crypto from "crypto";
+import { 
+  generateCertificateHash, 
+  getCertificateVerificationUrl 
+} from "@/lib/blockchain/certificate-hash";
 
 export const dynamic = "force-dynamic";
 
@@ -50,46 +53,43 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    const issuedAt = new Date();
     const certificateData = {
       userId,
       sessionId,
-      primaryRole: certSession.primaryRole,
       scores: {
-        dev: certSession.devScore,
-        data: certSession.dataScore,
-        cyber: certSession.cyberScore,
-        infra: certSession.infraScore,
-        coherence: certSession.coherenceScore
+        dev: certSession.devScore || 0,
+        data: certSession.dataScore || 0,
+        cyber: certSession.cyberScore || 0,
+        infra: certSession.infraScore || 0,
+        coherence: certSession.coherenceScore || 0
       },
-      level: certSession.level,
-      issuedAt: new Date().toISOString()
+      primaryRole: certSession.primaryRole || 'Non déterminé',
+      level: certSession.level || 'junior',
+      issuedAt
     };
 
-    const blockchainHash = crypto
-      .createHash('sha256')
-      .update(JSON.stringify(certificateData))
-      .digest('hex');
+    const hash = generateCertificateHash(certificateData);
+    const verificationUrl = getCertificateVerificationUrl(hash);
 
-    const validUntil = new Date();
-    validUntil.setFullYear(validUntil.getFullYear() + 3);
-
-    const verificationUrl = `${process.env.NEXTAUTH_URL || 'https://perspecta.ia-solution.fr'}/verify/${blockchainHash}`;
+    const validUntil = new Date(issuedAt.getTime() + 3 * 365 * 24 * 60 * 60 * 1000);
 
     const certificate = await (prisma as any).certificate.create({
       data: {
         userId,
         sessionId,
-        issuedAt: new Date(),
+        issuedAt,
         validUntil,
-        blockchainHash,
+        blockchainHash: hash,
         verificationUrl
       }
     });
 
     return NextResponse.json({
       certificateId: certificate.id,
-      blockchainHash: certificate.blockchainHash,
-      verificationUrl: certificate.verificationUrl,
+      blockchainHash: hash,
+      verificationUrl,
+      issuedAt: certificate.issuedAt,
       validUntil: certificate.validUntil
     });
   } catch (error) {
