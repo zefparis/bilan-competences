@@ -124,9 +124,9 @@ export default function AccessibilityPage() {
         </p>
       </div>
 
-      <Alert className="mb-6 border-blue-500 bg-blue-50">
-        <Shield className="w-4 h-4" />
-        <AlertDescription>
+      <Alert className="mb-6 border-blue-500 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
+        <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+        <AlertDescription className="text-blue-900 dark:text-blue-100">
           <strong>Protection des données :</strong> Ces informations ne sont jamais partagées sans votre consentement explicite.
           Elles servent uniquement à améliorer votre matching emploi/formation.
         </AlertDescription>
