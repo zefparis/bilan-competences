@@ -547,6 +547,34 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
+          <Card className="relative overflow-hidden border-pink-500/30 bg-gradient-to-br from-background to-pink-500/5">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CardTitle className="text-pink-600">Accessibilité & Handicap</CardTitle>
+                    <Badge variant="secondary" className="bg-pink-500/10 text-pink-600 border-pink-500/20">
+                      Nouveau
+                    </Badge>
+                    <Badge variant="secondary" className="bg-slate-500/10 text-slate-600 border-slate-500/20">
+                      Optionnel
+                    </Badge>
+                  </div>
+                  <CardDescription>
+                    Module inclusif • RQTH • Aides AGEFIPH
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Link href="/dashboard/accessibility">
+                <Button variant="default" className="w-full bg-pink-600 hover:bg-pink-700">
+                  Accéder
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
           <Card className="hover:border-primary transition-colors">
             <CardHeader>
               <CardTitle>Synthèse Finale</CardTitle>
