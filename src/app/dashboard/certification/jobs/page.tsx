@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +19,7 @@ interface JobOffer {
   matchScore: number;
 }
 
-export default function JobsPage() {
+function JobsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session");
@@ -229,5 +229,13 @@ export default function JobsPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function JobsPage() {
+  return (
+    <Suspense fallback={<div className="container py-8">Chargement des offres...</div>}>
+      <JobsContent />
+    </Suspense>
   );
 }

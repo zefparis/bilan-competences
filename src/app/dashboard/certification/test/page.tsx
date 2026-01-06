@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CERTIFICATION_QUESTIONS, BLOC_DESCRIPTIONS } from "@/lib/certification/questions";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 
-export default function CertificationTestPage() {
+function CertificationTestContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session");
@@ -205,5 +205,13 @@ export default function CertificationTestPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function CertificationTestPage() {
+  return (
+    <Suspense fallback={<div className="container py-8">Chargement...</div>}>
+      <CertificationTestContent />
+    </Suspense>
   );
 }
