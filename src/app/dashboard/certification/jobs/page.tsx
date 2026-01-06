@@ -17,6 +17,7 @@ interface JobOffer {
   salaire?: { libelle?: string };
   dateCreation: string;
   matchScore: number;
+  origineOffre?: { urlOrigine?: string };
 }
 
 function JobsContent() {
@@ -196,7 +197,19 @@ function JobsContent() {
                       {new Date(job.dateCreation).toLocaleDateString("fr-FR")}
                     </span>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      const url = job.origineOffre?.urlOrigine;
+                      if (url) {
+                        window.open(url, '_blank', 'noopener,noreferrer');
+                      } else {
+                        alert("URL de l'offre non disponible");
+                      }
+                    }}
+                    disabled={!job.origineOffre?.urlOrigine}
+                  >
                     <ExternalLink className="mr-2 h-4 w-4" />
                     Voir l'offre
                   </Button>

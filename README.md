@@ -28,17 +28,17 @@ Cette empreinte n'est ni un diagnostic medical, ni une mesure de QI, ni une eval
 2. **Experiences STAR** : Analyse des experiences professionnelles (Situation, Tache, Action, Resultat)
 3. **Tri des Valeurs** : Hierarchisation des valeurs fondamentales
 4. **Test RIASEC** : Profil professionnel selon les 6 types Holland
-5. **Profil Cognitif** : Analyse des dimensions cognitives
-6. **Evaluation Cognitive PERSPECTA** : Tests comportementaux + signature
-7. **Certification Professionnelle** : Tests techniques + Certificat blockchain + Matching emploi (NOUVEAU)
+5. **Profil Cognitif** : Questionnaire sur les preferences cognitives (Form, Color, Volume, Sound)
+6. **Evaluation Cognitive PERSPECTA** : Tests comportementaux + signature cognitive
+7. **Certification Professionnelle** : Tests techniques + Certificat blockchain + Matching emploi
 
 ### Certification Professionnelle (Module 7)
 - **45 Questions techniques** : 4 blocs (Competences objectives, Style cognitif, Scenarios pratiques, Questions ouvertes)
 - **Scoring intelligent** : Evaluation DEV, DATA, CYBER, INFRA avec ponderation et detection d'incoherences
-- **Enrichissement automatique** : Integration des resultats RIASEC et profil cognitif pour plus de precision
+- **Enrichissement automatique** : Integration des resultats RIASEC et profil cognitif PERSPECTA pour plus de precision
 - **Certificat blockchain** : Hash SHA-256 infalsifiable avec URL de verification publique
 - **Matching emploi** : Integration API France Travail avec codes ROME et score de compatibilite
-- **10 Profils professionnels** : Architecte Logiciel, Data Scientist, Security Engineer, DevOps/SRE, etc.
+- **10 Profils professionnels** : Architecte Logiciel, Data Scientist, Security Engineer, DevOps/SRE, Backend/Frontend/Full Stack Developer, Cloud Architect, ML Engineer
 - **4 Niveaux d'expertise** : Junior, Confirme, Senior, Expert
 
 ### Generation PDF Premium
@@ -142,13 +142,15 @@ src/
 ├── app/
 │   ├── api/                      # Routes API
 │   │   ├── auth/                # Authentification NextAuth
-│   │   ├── cognitive/           # Tests cognitifs & sessions
-│   │   ├── certification/       # Module certification professionnelle
+│   │   ├── cognitive/           # Module 5 - Profil cognitif (questionnaire)
+│   │   ├── cognitive-assessment/ # Module 6 - Tests comportementaux PERSPECTA
+│   │   ├── certification/       # Module 7 - Certification professionnelle
 │   │   │   ├── session/        # Gestion sessions certification
 │   │   │   ├── answer/         # Sauvegarde reponses
 │   │   │   ├── results/        # Calcul scores
 │   │   │   ├── certificate/    # Generation certificat blockchain
 │   │   │   └── jobs/           # Matching emploi France Travail
+│   │   ├── dashboard/           # API dashboard (summary)
 │   │   ├── pdf/                 # Generation PDF premium
 │   │   │   ├── generate/        # POST - PDF utilisateur authentifie
 │   │   │   └── demo/            # GET - PDF demo pour tests
@@ -157,17 +159,24 @@ src/
 │   │   └── user/                # Gestion utilisateur
 │   ├── auth/                    # Pages d'authentification
 │   ├── dashboard/               # Interface utilisateur principale
-│   │   ├── parcours/            # Module parcours de vie
-│   │   ├── experiences/         # Module experiences STAR
-│   │   ├── valeurs/             # Module tri des valeurs
-│   │   ├── riasec/              # Module test RIASEC
-│   │   ├── cognitive-assessment/ # Evaluation PERSPECTA (4 tests)
-│   │   ├── certification/       # Module certification professionnelle
+│   │   ├── parcours/            # Module 1 - Parcours de vie
+│   │   ├── experiences/         # Module 2 - Experiences STAR
+│   │   ├── valeurs/             # Module 3 - Tri des valeurs
+│   │   ├── riasec/              # Module 4 - Test RIASEC
+│   │   ├── cognitive/           # Module 5 - Profil cognitif (questionnaire)
+│   │   ├── cognitive-assessment/ # Module 6 - Evaluation PERSPECTA (4 tests)
+│   │   │   ├── stroop/         # Test Stroop
+│   │   │   ├── reaction-time/  # Test temps de reaction
+│   │   │   ├── trail-making/   # Test Trail Making
+│   │   │   ├── ran-visual/     # Test RAN Visuel
+│   │   │   └── results/        # Resultats et signature cognitive
+│   │   ├── certification/       # Module 7 - Certification professionnelle
 │   │   │   ├── page.tsx        # Introduction certification
 │   │   │   ├── test/           # Interface 45 questions
 │   │   │   ├── results/        # Affichage resultats
 │   │   │   ├── certificate/    # Visualisation certificat
 │   │   │   └── jobs/           # Matching offres emploi
+│   │   ├── profile/             # Profil utilisateur
 │   │   └── report/              # Page generation rapport + PDF
 │   ├── methodology/             # Cadre methodologique
 │   ├── payment/                 # Pages paiement Stripe
@@ -290,15 +299,16 @@ pnpm db:migrate       # Appliquer migrations
 ### v2.0.0 (Janvier 2026)
 - **Module 7 - Certification Professionnelle** : Nouveau module complet
   - 45 questions techniques en 4 blocs
-  - Scoring intelligent avec enrichissement RIASEC + Cognitif
+  - Scoring intelligent avec enrichissement RIASEC + Profil Cognitif PERSPECTA
   - Detection d'incoherences via paires antagonistes
-  - 10 profils professionnels (Architecte Logiciel, Data Scientist, etc.)
+  - 10 profils professionnels (Architecte Logiciel, Data Scientist, Security Engineer, DevOps/SRE, Backend/Frontend/Full Stack Developer, Cloud Architect, ML Engineer)
   - 4 niveaux d'expertise (Junior, Confirme, Senior, Expert)
-- **Certificat blockchain** : Hash SHA-256 infalsifiable avec URL de verification
-- **Matching emploi** : Integration API France Travail avec codes ROME
-- **Score de compatibilite** : Algorithme de matching offres/profil (0-100%)
+- **Certificat blockchain** : Hash SHA-256 infalsifiable avec URL de verification publique
+- **Matching emploi** : Integration API France Travail avec codes ROME et score de compatibilite (0-100%)
 - **Dashboard 7/7 modules** : Progression complete du bilan de competences
 - **Suspense boundaries** : Correction build Vercel pour pages dynamiques
+- **Module 5 - Profil Cognitif** : Questionnaire sur les preferences cognitives (Form, Color, Volume, Sound)
+- **Module 6 - Evaluation PERSPECTA** : 4 tests comportementaux (Stroop, Temps de reaction, Trail Making, RAN Visuel) + signature cognitive
 
 ### v1.2.0 (Decembre 2024)
 - **Nouveau systeme PDF** : Generation premium avec @react-pdf/renderer

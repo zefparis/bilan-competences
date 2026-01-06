@@ -120,7 +120,8 @@ function getMockJobOffers(params: JobOfferParams): any[] {
       lieuTravail: { libelle: 'Alès (30100)', commune: '30007' },
       typeContrat: 'CDI',
       salaire: { libelle: '35K-45K EUR/an' },
-      dateCreation: new Date().toISOString()
+      dateCreation: new Date().toISOString(),
+      origineOffre: { urlOrigine: 'https://candidat.francetravail.fr/offres/recherche' }
     },
     {
       id: 'mock-2',
@@ -130,7 +131,8 @@ function getMockJobOffers(params: JobOfferParams): any[] {
       lieuTravail: { libelle: 'Nîmes (30000)', commune: '30189' },
       typeContrat: 'CDI',
       salaire: { libelle: '40K-55K EUR/an' },
-      dateCreation: new Date().toISOString()
+      dateCreation: new Date().toISOString(),
+      origineOffre: { urlOrigine: 'https://candidat.francetravail.fr/offres/recherche' }
     },
     {
       id: 'mock-3',
@@ -140,7 +142,8 @@ function getMockJobOffers(params: JobOfferParams): any[] {
       lieuTravail: { libelle: 'Montpellier (34000)', commune: '34172' },
       typeContrat: 'CDI',
       salaire: { libelle: '45K-60K EUR/an' },
-      dateCreation: new Date().toISOString()
+      dateCreation: new Date().toISOString(),
+      origineOffre: { urlOrigine: 'https://candidat.francetravail.fr/offres/recherche' }
     },
     {
       id: 'mock-4',
@@ -150,7 +153,8 @@ function getMockJobOffers(params: JobOfferParams): any[] {
       lieuTravail: { libelle: 'Alès (30100)', commune: '30007' },
       typeContrat: 'CDI',
       salaire: { libelle: '42K-52K EUR/an' },
-      dateCreation: new Date().toISOString()
+      dateCreation: new Date().toISOString(),
+      origineOffre: { urlOrigine: 'https://candidat.francetravail.fr/offres/recherche' }
     },
     {
       id: 'mock-5',
@@ -160,7 +164,8 @@ function getMockJobOffers(params: JobOfferParams): any[] {
       lieuTravail: { libelle: 'Nîmes (30000)', commune: '30189' },
       typeContrat: 'CDI',
       salaire: { libelle: '55K-70K EUR/an' },
-      dateCreation: new Date().toISOString()
+      dateCreation: new Date().toISOString(),
+      origineOffre: { urlOrigine: 'https://candidat.francetravail.fr/offres/recherche' }
     }
   ];
 
