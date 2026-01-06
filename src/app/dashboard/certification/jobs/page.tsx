@@ -225,17 +225,17 @@ function JobsContent() {
           <CardTitle className="text-lg">Conseils pour postuler</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-2 text-sm">
+          <ul className="space-y-2 text-sm text-gray-700">
             <li className="flex items-start gap-2">
-              <span className="text-blue-600">•</span>
+              <span className="text-blue-700 font-bold">•</span>
               <span>Personnalisez votre CV en mettant en avant les compétences correspondant au poste</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-blue-600">•</span>
+              <span className="text-blue-700 font-bold">•</span>
               <span>Mentionnez votre certification professionnelle dans votre candidature</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-blue-600">•</span>
+              <span className="text-blue-700 font-bold">•</span>
               <span>Utilisez l'URL de vérification de votre certificat dans votre profil LinkedIn</span>
             </li>
           </ul>
