@@ -3,7 +3,7 @@ import Link from "next/link"
 import { 
   Brain, Shield, CheckCircle2, X, AlertCircle, 
   AlertTriangle, Lightbulb, ArrowRight, Target,
-  Zap, Award
+  Zap, Award, ArrowLeft
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,6 +22,12 @@ export default function MethodologyPage() {
       {/* Hero Section */}
       <section className="py-20 px-4 md:px-6 bg-gradient-to-b from-primary/5 to-background">
         <div className="container max-w-4xl">
+          <Button variant="ghost" size="sm" asChild className="mb-6">
+            <Link href="/">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Retour à l'accueil
+            </Link>
+          </Button>
           <Badge className="mb-4">Cadre méthodologique</Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Une approche scientifique de l'orientation professionnelle
