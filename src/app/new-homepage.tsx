@@ -53,8 +53,24 @@ export default function NewHomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 md:px-6">
-        <div className="container mx-auto max-w-6xl">
+      <section className="relative pt-32 pb-20 px-4 md:px-6 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: `url('/image/unnamed%20(1).jpg')`,
+          }}
+        >
+          {/* Overlay pour lisibilité */}
+          <div 
+            className="absolute inset-0"
+            style={{ 
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            }}
+          />
+        </div>
+
+        <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center space-y-6">
             <Badge variant="secondary" className="text-sm px-4 py-1">
               <Sparkles className="h-3 w-3 inline mr-1" />
