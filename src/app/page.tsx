@@ -1,13 +1,13 @@
 import { Metadata } from 'next'
-import NewHomePage from './new-homepage'
+import HomePageV3 from './homepage-v3.1'
 
 export const metadata: Metadata = {
-  title: "PERSPECTA - Bilan de compétences + Certification Blockchain + Emploi",
-  description: "La seule plateforme qui valide vos compétences tech, délivre un certificat blockchain et vous connecte aux offres d'emploi France Travail. Spécialiste métiers du numérique.",
-  keywords: "bilan compétences, certification blockchain, emploi tech, reconversion numérique, test technique, France Travail, développeur, data scientist, devops, cybersécurité",
+  title: "PERSPECTA - Reconversion Professionnelle & Bilan de Compétences",
+  description: "287 métiers français • Analyse IA GPT-4o • Module handicap inclusif • Matching emploi + formations CPF • Certification blockchain • 49€",
+  keywords: "reconversion professionnelle, bilan de compétences, handicap RQTH, formation CPF, analyse IA, AGEFIPH, orientation professionnelle, compétences transférables, France Travail",
   openGraph: {
-    title: "PERSPECTA - Certification Tech + Emploi",
-    description: "Bilan complet + Certificat blockchain + Matching emploi automatique",
+    title: "PERSPECTA - Votre reconversion, étape par étape",
+    description: "Plateforme universelle avec module handicap. 287 métiers • Analyse IA • 49€ • Garantie satisfaction",
     type: "website",
     locale: "fr_FR",
     url: "https://perspecta.ia-solution.fr",
@@ -15,11 +15,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PERSPECTA - Certification Tech + Emploi",
-    description: "Bilan complet + Certificat blockchain + Matching emploi automatique"
+    title: "PERSPECTA - Reconversion professionnelle universelle",
+    description: "287 métiers • Module handicap • Analyse IA • 49€"
   }
 }
 
 export default function Home() {
-  return <NewHomePage />
+  return <HomePageV3 />
 }
