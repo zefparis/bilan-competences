@@ -40,6 +40,9 @@ model User {
   cognitiveTestSessions CognitiveTestSession[]
   // Add report relation
   report Report?
+  // Certification module
+  certificationSessions CertificationSession[]
+  certificates          Certificate[]
 }
 
 model Account {
@@ -158,6 +161,8 @@ model RiasecResult {
   topCode     String    // Ex: "RIS"
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  
+  certificationSession CertificationSession?
 }
 
 model CognitiveProfile {
@@ -176,6 +181,8 @@ model CognitiveProfile {
   completed_at       DateTime?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+  
+  certificationSession CertificationSession?
 }
 
 model CognitiveInsight {
@@ -307,4 +314,77 @@ model Report {
   tokensCost     Int? // Estimated tokens used
 
   updatedAt      DateTime @updatedAt
+}
+
+// ============================================
+// CERTIFICATION PROFESSIONNELLE MODULE
+// ============================================
+
+model CertificationSession {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+  
+  // Liens modules existants
+  riasecResultId  String?  @unique
+  riasecResult    RiasecResult? @relation(fields: [riasecResultId], references: [id])
+  
+  cognitiveProfileId String? @unique
+  cognitiveProfile   CognitiveProfile? @relation(fields: [cognitiveProfileId], references: [id])
+  
+  currentBloc     Int      @default(1)
+  answers         Json     @default("{}")
+  
+  // Scores
+  devScore        Int?
+  dataScore       Int?
+  cyberScore      Int?
+  infraScore      Int?
+  coherenceScore  Int?
+  
+  primaryRole     String?
+  secondaryRoles  String[] @default([])
+  level           String?
+  
+  // Relations
+  certificate     Certificate?
+  
+  @@index([userId])
+}
+
+model Certificate {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId         String   @unique
+  session           CertificationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  issuedAt          DateTime @default(now())
+  validUntil        DateTime
+  blockchainHash    String   @unique
+  blockchainTxHash  String?
+  verificationUrl   String
+  pdfUrl            String?
+  
+  jobMatches        JobMatch[]
+  
+  @@index([userId])
+  @@index([blockchainHash])
+}
+
+model JobMatch {
+  id                String   @id @default(cuid())
+  certificateId     String
+  certificate       Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+  
+  externalJobId     String
+  matchScore        Int
+  fetchedAt         DateTime @default(now())
+  jobData           Json
+  
+  @@index([certificateId])
+  @@unique([certificateId, externalJobId])
 }

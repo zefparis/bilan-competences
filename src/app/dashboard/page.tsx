@@ -175,11 +175,12 @@ export default function DashboardPage() {
     { name: 'Tri des Valeurs', completed: summary?.modules.valeurs.status === 'completed' },
     { name: 'Test RIASEC', completed: summary?.modules.riasec.status === 'completed' },
     { name: 'Profil Cognitif', completed: summary?.modules.cognitive.status === 'completed' },
-    { name: 'Évaluation Cognitive', completed: cognitiveAssessmentCompleted }
+    { name: 'Évaluation Cognitive', completed: cognitiveAssessmentCompleted },
+    { name: 'Certification Professionnelle', completed: false }
   ]
 
   const modulesTermines = modules.filter(m => m.completed).length
-  const totalModules = modules.length // 6
+  const totalModules = modules.length // 7
 
   console.log('📊 Modules terminés:', modulesTermines, '/', totalModules)
   console.log('Détail:', modules.map(m => `${m.name}: ${m.completed ? '✅' : '❌'}`))
@@ -192,7 +193,8 @@ export default function DashboardPage() {
       'Tri des Valeurs': 10,
       'Test RIASEC': 20,
       'Profil Cognitif': 15,
-      'Évaluation Cognitive': 25
+      'Évaluation Cognitive': 25,
+      'Certification Professionnelle': 0
     }
 
     const totalWeight = Object.values(weights).reduce((sum, w) => sum + w, 0)
@@ -464,6 +466,34 @@ export default function DashboardPage() {
                   {testsCompleted}/{totalTests} tests complétés
                 </div>
               )}
+            </CardContent>
+          </Card>
+
+          <Card className="relative overflow-hidden border-yellow-500/30 bg-gradient-to-br from-background to-yellow-500/5">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CardTitle className="text-yellow-600">Certification Professionnelle</CardTitle>
+                    <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                      Nouveau
+                    </Badge>
+                    <Badge variant="secondary" className="bg-amber-500/10 text-amber-600 border-amber-500/20">
+                      Premium
+                    </Badge>
+                  </div>
+                  <CardDescription>
+                    Tests techniques • Certificat blockchain • Matching emploi
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Link href="/dashboard/certification">
+                <Button variant="default" className="w-full bg-yellow-600 hover:bg-yellow-700">
+                  Commencer
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
