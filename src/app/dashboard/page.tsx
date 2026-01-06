@@ -497,6 +497,56 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
+          <Card className="relative overflow-hidden border-blue-500/30 bg-gradient-to-br from-background to-blue-500/5">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CardTitle className="text-blue-600">Projet Professionnel</CardTitle>
+                    <Badge variant="secondary" className="bg-blue-500/10 text-blue-600 border-blue-500/20">
+                      Universel
+                    </Badge>
+                  </div>
+                  <CardDescription>
+                    Définir votre projet • Analyse IA • Formations
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Link href="/dashboard/career-project">
+                <Button variant="default" className="w-full bg-blue-600 hover:bg-blue-700">
+                  Accéder
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="relative overflow-hidden border-purple-500/30 bg-gradient-to-br from-background to-purple-500/5">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CardTitle className="text-purple-600">Formations</CardTitle>
+                    <Badge variant="secondary" className="bg-purple-500/10 text-purple-600 border-purple-500/20">
+                      Universel
+                    </Badge>
+                  </div>
+                  <CardDescription>
+                    Recherche formations • CPF • Organismes
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Link href="/dashboard/formations">
+                <Button variant="default" className="w-full bg-purple-600 hover:bg-purple-700">
+                  Explorer
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
           <Card className="hover:border-primary transition-colors">
             <CardHeader>
               <CardTitle>Synthèse Finale</CardTitle>

@@ -43,6 +43,10 @@ model User {
   // Certification module
   certificationSessions CertificationSession[]
   certificates          Certificate[]
+  // Career project module
+  careerProjects        CareerProject[]
+  // Accessibility module
+  accessibility         Accessibility?
 }
 
 model Account {
@@ -389,4 +393,83 @@ model JobMatch {
   
   @@index([certificateId])
   @@unique([certificateId, externalJobId])
+}
+
+// ============================================
+// CAREER PROJECT MODULE (Universal)
+// ============================================
+
+model CareerProject {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Métier cible
+  targetRomeCode  String
+  targetRomeLabel String
+  targetDomain    String
+  
+  // Motivation et contexte
+  motivation      String?  @db.Text
+  timeline        String?  // "court_terme" | "moyen_terme" | "long_terme"
+  constraints     String?  @db.Text
+  
+  // Compétences
+  currentSkills   String[] @default([])
+  requiredSkills  String[] @default([])
+  skillsGap       String[] @default([])
+  
+  // Formations identifiées
+  formations      Json?    // Array of formation objects
+  
+  // Statut
+  status          String   @default("DRAFT") // DRAFT, ACTIVE, COMPLETED, ARCHIVED
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([targetRomeCode])
+}
+
+// ============================================
+// MODULE ACCESSIBILITÉ HANDICAP
+// ============================================
+
+model Accessibility {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Déclaration handicap
+  hasDisability           Boolean   @default(false)
+  disabilityType          String?   // "moteur" | "visuel" | "auditif" | "cognitif" | "psychique" | "multiple" | "invisible"
+  
+  // Reconnaissance officielle
+  hasRQTH                 Boolean   @default(false)  // Reconnaissance Qualité Travailleur Handicapé
+  rqthNumber              String?
+  rqthExpiryDate          DateTime?
+  
+  // Besoins d'aménagement
+  needsWorkstationAdaptation    Boolean   @default(false)
+  needsScheduleFlexibility      Boolean   @default(false)
+  needsRemoteWork               Boolean   @default(false)
+  needsAccessibleTransport      Boolean   @default(false)
+  needsAssistiveTechnology      Boolean   @default(false)
+  otherNeeds                    String?   @db.Text
+  
+  // Compétences compensatoires développées
+  compensatorySkills      String[]  @default([])
+  
+  // Préférences emploi
+  preferDisabilityFriendlyCompanies  Boolean   @default(false)
+  interestedInAGEFIPHAid             Boolean   @default(false)
+  
+  // Confidentialité
+  shareWithEmployers      Boolean   @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId])
 }

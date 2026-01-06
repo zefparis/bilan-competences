@@ -88,9 +88,14 @@ export default function DashboardLayout({
         </div>
       </header>
 
+      {/* Dashboard Navigation Tabs */}
+      <DashboardNav />
+
       <main className="flex-1 container mx-auto px-6 py-8">
         {children}
       </main>
     </div>
   )
 }
+
+import { DashboardNav } from "@/components/dashboard-nav"
