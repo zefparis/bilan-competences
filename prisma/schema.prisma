@@ -348,6 +348,8 @@ model CertificationSession {
   primaryRole     String?
   secondaryRoles  String[] @default([])
   level           String?
+  strengths       String[] @default([])
+  developmentAreas String[] @default([])
   
   // Relations
   certificate     Certificate?

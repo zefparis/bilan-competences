@@ -68,7 +68,9 @@ export async function POST(req: NextRequest) {
         coherenceScore: result.scores.coherence,
         primaryRole: result.primaryRole,
         secondaryRoles: result.secondaryRoles,
-        level: result.level
+        level: result.level,
+        strengths: result.strengths,
+        developmentAreas: result.developmentAreas
       }
     });
 
@@ -129,6 +131,8 @@ export async function GET(req: NextRequest) {
       primaryRole: certSession.primaryRole,
       secondaryRoles: certSession.secondaryRoles,
       level: certSession.level,
+      strengths: certSession.strengths || [],
+      developmentAreas: certSession.developmentAreas || [],
       sessionId: certSession.id
     });
 

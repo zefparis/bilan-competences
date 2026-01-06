@@ -141,7 +141,7 @@ function CertificationResultsContent() {
                 Profils secondaires
               </h3>
               <ul className="space-y-2">
-                {results.secondaryRoles.map((role, idx) => (
+                {(results.secondaryRoles || []).map((role, idx) => (
                   <li key={idx} className="flex items-center gap-2">
                     <span className="text-primary">•</span>
                     <span>{role}</span>
@@ -216,7 +216,7 @@ function CertificationResultsContent() {
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
-              {results.strengths.map((strength, idx) => (
+              {(results.strengths || []).map((strength, idx) => (
                 <li key={idx} className="flex items-start gap-2">
                   <span className="text-green-500 mt-1">✓</span>
                   <span>{strength}</span>
@@ -227,7 +227,7 @@ function CertificationResultsContent() {
         </Card>
       </div>
 
-      {results.developmentAreas.length > 0 && (
+      {(results.developmentAreas || []).length > 0 && (
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -240,7 +240,7 @@ function CertificationResultsContent() {
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
-              {results.developmentAreas.map((area, idx) => (
+              {(results.developmentAreas || []).map((area, idx) => (
                 <li key={idx} className="flex items-start gap-2">
                   <span className="text-orange-500 mt-1">→</span>
                   <span>{area}</span>
