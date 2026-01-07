@@ -74,6 +74,7 @@ export default function DashboardPage() {
   const [reportGeneratedAt, setReportGeneratedAt] = useState<string | null>(null)
 
   const [certificationCompleted, setCertificationCompleted] = useState(false)
+  const [aiScore, setAiScore] = useState<number | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -181,6 +182,28 @@ export default function DashboardPage() {
     }
 
     checkCertification()
+  }, [])
+
+  useEffect(() => {
+    async function fetchAiScore() {
+      try {
+        const res = await fetch('/api/dashboard/ai-score')
+
+        if (res.ok) {
+          const data = await res.json()
+          setAiScore(data.percentage)
+
+          console.log('🤖 Score IA:', {
+            score: data.percentage,
+            breakdown: data.breakdown
+          })
+        }
+      } catch (error) {
+        console.error('❌ Erreur calcul score IA:', error)
+      }
+    }
+
+    fetchAiScore()
   }, [])
 
   // ✅ Calculer le statut de l'évaluation cognitive
@@ -321,7 +344,22 @@ export default function DashboardPage() {
               <CardTitle className="text-sm font-medium text-muted-foreground">Score IA</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-green-500">94.2%</div>
+              {aiScore !== null ? (
+                <div className={`text-3xl font-bold ${
+                  aiScore >= 80 ? 'text-green-500' : 
+                  aiScore >= 60 ? 'text-yellow-500' : 
+                  'text-orange-500'
+                }`}>
+                  {aiScore.toFixed(1)}%
+                </div>
+              ) : (
+                <div className="text-3xl font-bold text-muted-foreground animate-pulse">
+                  --
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground mt-1">
+                Qualité & complétude des données
+              </p>
             </CardContent>
           </Card>
         </div>
