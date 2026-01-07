@@ -169,13 +169,8 @@ export async function assembleCompleteReport(
   }
 
   try {
-    // Créer le dossier temporaire pour les graphiques
-    const chartsDir = path.join(process.cwd(), 'public', 'temp-charts');
-    if (!fs.existsSync(chartsDir)) {
-      fs.mkdirSync(chartsDir, { recursive: true });
-    }
-
     // Génération parallèle des sections et graphiques
+    // Note: Les graphiques SVG sont générés en mémoire, pas sur le filesystem
     const [generalSections, cognitiveSections, riasecChartSvg, cognitiveChartSvg] = await Promise.all([
       generateGeneralReport({
         cognitive: input.cognitive,
