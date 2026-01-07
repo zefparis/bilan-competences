@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { useEffect, useState } from "react"
 import { getLifeEvents } from "@/app/actions"
 import { useActiveAssessment } from "@/lib/active-assessment"
+import { LifeEventsList } from "./LifeEventsList"
 
 type ChartDataPoint = {
   year: number
@@ -23,9 +24,7 @@ type LifeEvent = {
   description: string | null
 }
 
-function sentimentToSatisfaction(sentiment: number): number {
-  return Math.round(((sentiment + 10) / 2) * 10) / 10
-}
+// Conversion removed - sentiment is now directly 0-10
 
 // ✅ AJOUTER refreshKey comme prop
 interface LifePathChartProps {
@@ -55,7 +54,7 @@ export function LifePathChart({ refreshKey }: LifePathChartProps) {
         
         fetchedEvents.forEach((event: LifeEvent) => {
           const year = event.year
-          const satisfaction = sentimentToSatisfaction(event.sentiment)
+          const satisfaction = event.sentiment
           
           if (!yearMap.has(year)) {
             yearMap.set(year, {
@@ -248,6 +247,9 @@ export function LifePathChart({ refreshKey }: LifePathChartProps) {
           </p>
         )}
       </div>
+
+      {/* Liste chronologique des événements */}
+      <LifeEventsList events={events} />
     </div>
   )
 }

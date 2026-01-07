@@ -42,7 +42,7 @@ export function LifePathForm({ onEventAdded }: LifePathFormProps) {
     resolver: zodResolver(lifeEventSchema),
     defaultValues: {
       year: currentYear,
-      sentiment: 0
+      sentiment: 5
     }
   })
 
@@ -145,22 +145,22 @@ export function LifePathForm({ onEventAdded }: LifePathFormProps) {
           name="sentiment"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Niveau de satisfaction</FormLabel>
+              <FormLabel>Niveau de satisfaction (0 = très insatisfait, 10 = très satisfait)</FormLabel>
               <FormControl>
                 <div className="space-y-2">
                   <Slider
-                    min={-10}
+                    min={0}
                     max={10}
                     step={1}
                     defaultValue={[field.value]}
                     onValueChange={([value]) => field.onChange(value)}
                   />
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-gray-500">😞 Très négatif</span>
-                    <span className="font-semibold text-base">
-                      {field.value > 0 ? '+' : ''}{field.value}/10
+                    <span className="text-red-500">😞 Très insatisfait (0)</span>
+                    <span className="font-semibold text-lg text-white">
+                      {field.value}/10
                     </span>
-                    <span className="text-gray-500">😊 Très positif</span>
+                    <span className="text-green-500">😊 Très satisfait (10)</span>
                   </div>
                 </div>
               </FormControl>
