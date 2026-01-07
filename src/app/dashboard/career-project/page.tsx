@@ -34,6 +34,7 @@ export default function CareerProjectPage() {
   const [loading, setLoading] = useState(true)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
 
   // Form state
   const [searchQuery, setSearchQuery] = useState("")
@@ -65,6 +66,16 @@ export default function CareerProjectPage() {
       const res = await fetch("/api/career-project")
       if (res.ok) {
         const data = await res.json()
+        console.log("📊 Projets récupérés:", data.projects)
+        data.projects.forEach((p: CareerProject) => {
+          console.log(`Projet ${p.id}:`, {
+            currentSkills: p.currentSkills,
+            currentSkillsLength: p.currentSkills?.length || 0,
+            requiredSkills: p.requiredSkills,
+            requiredSkillsLength: p.requiredSkills?.length || 0,
+            buttonDisabled: (p.currentSkills?.length || 0) === 0 || (p.requiredSkills?.length || 0) === 0
+          })
+        })
         setProjects(data.projects)
       }
     } catch (error) {
@@ -85,35 +96,78 @@ export default function CareerProjectPage() {
     setSearchResults([])
     setSkillInput("")
     setRequiredSkillInput("")
+    setEditingId(null)
+    setIsEditing(false)
+  }
+
+  const startEditProject = (project: CareerProject) => {
+    setEditingId(project.id)
+    setIsEditing(true)
+    setSelectedRome({
+      code: project.targetRomeCode,
+      label: project.targetRomeLabel,
+      domain: project.targetDomain,
+      riasecMatch: []
+    })
+    setSearchQuery(project.targetRomeLabel)
+    setMotivation(project.motivation || "")
+    setTimeline(project.timeline || "")
+    setConstraints(project.constraints || "")
+    setCurrentSkills(project.currentSkills || [])
+    setRequiredSkills(project.requiredSkills || [])
+    setShowCreateForm(true)
   }
 
   const handleCreateProject = async () => {
     if (!selectedRome) return
 
     try {
-      const res = await fetch("/api/career-project", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          targetRomeCode: selectedRome.code,
-          targetRomeLabel: selectedRome.label,
-          targetDomain: selectedRome.domain,
-          motivation,
-          timeline,
-          constraints,
-          currentSkills,
-          requiredSkills,
-          skillsGap: requiredSkills.filter(s => !currentSkills.includes(s))
+      if (isEditing && editingId) {
+        // Mode édition
+        const res = await fetch(`/api/career-project/${editingId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            motivation,
+            timeline,
+            constraints,
+            currentSkills,
+            requiredSkills,
+            skillsGap: requiredSkills.filter(s => !currentSkills.includes(s))
+          })
         })
-      })
 
-      if (res.ok) {
-        await fetchProjects()
-        setShowCreateForm(false)
-        resetForm()
+        if (res.ok) {
+          await fetchProjects()
+          setShowCreateForm(false)
+          resetForm()
+        }
+      } else {
+        // Mode création
+        const res = await fetch("/api/career-project", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            targetRomeCode: selectedRome.code,
+            targetRomeLabel: selectedRome.label,
+            targetDomain: selectedRome.domain,
+            motivation,
+            timeline,
+            constraints,
+            currentSkills,
+            requiredSkills,
+            skillsGap: requiredSkills.filter(s => !currentSkills.includes(s))
+          })
+        })
+
+        if (res.ok) {
+          await fetchProjects()
+          setShowCreateForm(false)
+          resetForm()
+        }
       }
     } catch (error) {
-      console.error("Error creating project:", error)
+      console.error("Error saving project:", error)
     }
   }
 
@@ -206,9 +260,9 @@ export default function CareerProjectPage() {
       {showCreateForm && (
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Créer un projet professionnel</CardTitle>
+            <CardTitle>{isEditing ? "Modifier le projet professionnel" : "Créer un projet professionnel"}</CardTitle>
             <CardDescription>
-              Sélectionnez un métier cible et définissez votre projet
+              {isEditing ? "Modifiez les informations de votre projet" : "Sélectionnez un métier cible et définissez votre projet"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -355,7 +409,7 @@ export default function CareerProjectPage() {
                 disabled={!selectedRome}
               >
                 <Save className="mr-2 h-4 w-4" />
-                Créer le projet
+                {isEditing ? "Enregistrer les modifications" : "Créer le projet"}
               </Button>
               <Button
                 variant="outline"
@@ -412,6 +466,13 @@ export default function CareerProjectPage() {
                         <SelectItem value="ARCHIVED">Archivé</SelectItem>
                       </SelectContent>
                     </Select>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => startEditProject(project)}
+                    >
+                      <Edit className="h-4 w-4 text-blue-600" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"
