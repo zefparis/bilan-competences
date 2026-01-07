@@ -1,9 +1,5 @@
-import OpenAI from "openai"
+import { anthropic, MODEL } from "./anthropic"
 import { getROMEByCode } from "./france-travail/rome-codes"
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
 
 export interface TransferableSkillsInput {
   currentJob: {
@@ -137,29 +133,25 @@ Fournis une analyse structurée au format JSON avec les clés suivantes :
 Réponds UNIQUEMENT avec le JSON, sans texte avant ou après.`
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+    const message = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: 4096,
       messages: [
-        {
-          role: "system",
-          content: "Tu es un expert en reconversion professionnelle. Tu réponds toujours en JSON valide."
-        },
         {
           role: "user",
           content: prompt
         }
-      ],
-      temperature: 0.7,
-      max_tokens: 2500,
-      response_format: { type: "json_object" }
+      ]
     })
 
-    const content = completion.choices[0]?.message?.content
-    if (!content) {
-      throw new Error("No response from OpenAI")
+    const content = message.content[0]
+    if (content.type !== 'text') {
+      throw new Error("Invalid response from Claude")
     }
 
-    const analysis = JSON.parse(content) as TransferableSkillsAnalysis
+    // Claude peut entourer le JSON de ```json, on nettoie
+    const jsonText = content.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    const analysis = JSON.parse(jsonText) as TransferableSkillsAnalysis
     
     console.log("[Transferable Skills] Analysis completed:", {
       transferableCount: analysis.transferableSkills?.length || 0,
@@ -169,7 +161,7 @@ Réponds UNIQUEMENT avec le JSON, sans texte avant ou après.`
 
     return analysis
   } catch (error) {
-    console.error("[Transferable Skills] OpenAI error:", error)
+    console.error("[Transferable Skills] Claude error:", error)
     
     // Fallback analysis
     return generateFallbackAnalysis(input)

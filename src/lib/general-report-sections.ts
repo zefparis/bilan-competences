@@ -1,11 +1,7 @@
 // src/lib/general-report-sections.ts
 
-import OpenAI from "openai";
+import { callClaude } from "./ai-helper";
 import type { CompleteReportInput } from '@/types/report';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export interface GeneralReportInput extends Omit<CompleteReportInput, 'user'> {
   userName?: string;
@@ -74,24 +70,10 @@ Rédige la section "Cadre stratégique" (800-1000 mots) qui :
 - Prépare le terrain pour l'analyse détaillée à suivre`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o", // ou "gpt-4-turbo" selon ton accès
-      messages: [
-        {
-          role: "system",
-          content: "Tu es un expert en orientation professionnelle et psychologie cognitive."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 2000,
-    });
-
-    return completion.choices[0]?.message?.content?.trim() || 
-      "Erreur lors de la génération du cadre stratégique.";
+    return await callClaude(
+      prompt,
+      "Tu es un expert en orientation professionnelle et psychologie cognitive."
+    );
   } catch (error) {
     console.error("❌ Erreur génération cadre stratégique:", error);
     // Fallback content
@@ -138,24 +120,10 @@ Rédige une synthèse générale (1000-1200 mots) qui :
 - Évite les répétitions`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "Tu es un psychologue du travail expert en orientation professionnelle."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 2500,
-    });
-
-    return completion.choices[0]?.message?.content?.trim() || 
-      "Erreur lors de la génération de la synthèse générale.";
+    return await callClaude(
+      prompt,
+      "Tu es un psychologue du travail expert en orientation professionnelle."
+    );
   } catch (error) {
     console.error("❌ Erreur génération synthèse:", error);
     // Fallback content
@@ -212,24 +180,10 @@ Rédige l'analyse croisée Cognition × RIASEC (1200-1500 mots) :
 - Nuances (pas de jugement binaire)`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "Tu es un expert en psychologie différentielle et orientation professionnelle."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 3000,
-    });
-
-    return completion.choices[0]?.message?.content?.trim() || 
-      "Erreur lors de la génération du croisement Cognition × RIASEC.";
+    return await callClaude(
+      prompt,
+      "Tu es un expert en psychologie différentielle et orientation professionnelle."
+    );
   } catch (error) {
     console.error("❌ Erreur génération croisement RIASEC:", error);
     // Fallback content
@@ -285,24 +239,10 @@ Propose 3 scénarios professionnels concrets (1500-1800 mots au total) :
 - Exemples de métiers précis (pas "secteur tech")`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "Tu es un conseiller en évolution professionnelle spécialisé dans les transitions de carrière."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.8,
-      max_tokens: 3500,
-    });
-
-    return completion.choices[0]?.message?.content?.trim() || 
-      "Erreur lors de la génération des scénarios professionnels.";
+    return await callClaude(
+      prompt,
+      "Tu es un conseiller en évolution professionnelle spécialisé dans les transitions de carrière."
+    );
   } catch (error) {
     console.error("❌ Erreur génération scénarios:", error);
     // Fallback content
@@ -356,24 +296,10 @@ Décris les environnements professionnels compatibles (1000-1200 mots) :
 - Rester pragmatique (pas utopique)`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "Tu es un consultant en psychologie des organisations et management."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 2500,
-    });
-
-    return completion.choices[0]?.message?.content?.trim() || 
-      "Erreur lors de la génération des environnements compatibles.";
+    return await callClaude(
+      prompt,
+      "Tu es un consultant en psychologie des organisations et management."
+    );
   } catch (error) {
     console.error("❌ Erreur génération environnements:", error);
     // Fallback content
@@ -434,18 +360,10 @@ Rédige une analyse approfondie des valeurs professionnelles (800-1000 mots) qui
 - Valoriser la cohérence ou expliquer les tensions constructivement`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        { role: "system", content: "Tu es un expert en psychologie du travail et orientation professionnelle, spécialisé dans l'analyse des valeurs et leur impact sur la satisfaction professionnelle." },
-        { role: "user", content: prompt }
-      ],
-      temperature: 0.7,
-      max_tokens: 2000,
-    });
-
-    return completion.choices[0]?.message?.content?.trim() || 
-      "Erreur lors de la génération de l'analyse des valeurs professionnelles.";
+    return await callClaude(
+      prompt,
+      "Tu es un expert en psychologie du travail et orientation professionnelle, spécialisé dans l'analyse des valeurs et leur impact sur la satisfaction professionnelle."
+    );
   } catch (error) {
     console.error("❌ Erreur génération valeurs:", error);
     // Fallback content
@@ -509,18 +427,10 @@ Rédige une analyse stratégique du parcours professionnel (1000-1200 mots) qui 
 - Identifier les compétences transférables vers d'autres secteurs/métiers`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        { role: "system", content: "Tu es un expert en gestion de carrière, analyse de parcours professionnels et conseil en évolution. Tu maîtrises l'approche par compétences et l'analyse des trajectoires." },
-        { role: "user", content: prompt }
-      ],
-      temperature: 0.7,
-      max_tokens: 2500,
-    });
-
-    return completion.choices[0]?.message?.content?.trim() || 
-      "Erreur lors de la génération de l'analyse du parcours professionnel.";
+    return await callClaude(
+      prompt,
+      "Tu es un expert en gestion de carrière, analyse de parcours professionnels et conseil en évolution. Tu maîtrises l'approche par compétences et l'analyse des trajectoires."
+    );
   } catch (error) {
     console.error("❌ Erreur génération parcours:", error);
     // Fallback content
@@ -538,7 +448,7 @@ Les leçons tirées de votre parcours constituent un atout précis pour orienter
 export async function generateGeneralReport(
   input: GeneralReportInput
 ): Promise<GeneralReportSections> {
-  console.log("🚀 Génération sections générales avec OpenAI...");
+  console.log("🚀 Génération sections générales avec Claude 3.5 Sonnet...");
 
   try {
     // Génération en parallèle pour optimiser le temps

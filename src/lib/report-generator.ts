@@ -91,7 +91,7 @@ async function generateCognitiveSections(
 ): Promise<CognitiveSections> {
   const { cognitiveSignature, riasecProfile } = input;
 
-  console.log("🤖 Génération des sections cognitives avec OpenAI...");
+  console.log("🤖 Génération des sections cognitives avec Claude 3.5 Sonnet...");
 
   // Générer les 4 sections Part II en parallèle
   const [
@@ -150,7 +150,7 @@ Les recommandations formulées dans ce rapport visent à identifier les environn
  * Fonction principale : génère le rapport complet PERSPECTA (11 sections)
  * 
  * Pipeline :
- * 1. Génère les sections générales via API OpenAI (async)
+ * 1. Génère les sections générales via API Claude (async)
  * 2. Génère les sections cognitives (déterministe)
  * 3. Assemble les 11 sections dans l'ordre canonique
  * 

@@ -1,9 +1,5 @@
 import { createHash } from 'crypto'
-import OpenAI from "openai"
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+import { callClaude } from './ai-helper'
 
 export interface CognitiveSignatureData {
   inhibitoryControl: number
@@ -71,14 +67,7 @@ export async function generateSignatureCentraleSection(
 [2 situations délicates + stratégies]`
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 1200,
-      temperature: 0.7,
-    })
-
-    return response.choices[0]?.message?.content?.trim() || "Erreur de génération"
+    return await callClaude(prompt)
   } catch (error) {
     console.error("Erreur génération signature centrale:", error)
     return "Erreur lors de la génération de la signature cognitive centrale."
@@ -132,14 +121,7 @@ export async function generateLectureFonctionnelleSection(
 - **Outils de support** : [recommandation]`
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 1400,
-      temperature: 0.7,
-    })
-
-    return response.choices[0]?.message?.content?.trim() || "Erreur de génération"
+    return await callClaude(prompt)
   } catch (error) {
     console.error("Erreur génération lecture fonctionnelle:", error)
     return "Erreur lors de la génération de la lecture fonctionnelle."
@@ -196,14 +178,7 @@ export async function generateCarteTensionsSection(
 ✓ [Stratégie 3]`
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 1200,
-      temperature: 0.7,
-    })
-
-    return response.choices[0]?.message?.content?.trim() || "Erreur de génération"
+    return await callClaude(prompt)
   } catch (error) {
     console.error("Erreur génération tensions cognitives:", error)
     return "Erreur lors de la génération de la carte des tensions cognitives."
@@ -253,14 +228,7 @@ export async function generateZonesVigilanceSection(
 [Routine de micro-pauses, exercices, etc.]`
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 1400,
-      temperature: 0.7,
-    })
-
-    return response.choices[0]?.message?.content?.trim() || "Erreur de génération"
+    return await callClaude(prompt)
   } catch (error) {
     console.error("Erreur génération zones vigilance:", error)
     return "Erreur lors de la génération des zones de vigilance cognitive."
