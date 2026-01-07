@@ -73,6 +73,8 @@ export default function DashboardPage() {
   const [reportGenerated, setReportGenerated] = useState(false)
   const [reportGeneratedAt, setReportGeneratedAt] = useState<string | null>(null)
 
+  const [certificationCompleted, setCertificationCompleted] = useState(false)
+
   useEffect(() => {
     let cancelled = false
 
@@ -156,6 +158,31 @@ export default function DashboardPage() {
     checkReport()
   }, [])
 
+  useEffect(() => {
+    async function checkCertification() {
+      try {
+        const res = await fetch('/api/certification/session')
+
+        if (res.ok) {
+          const data = await res.json()
+          const completed = data.isCompleted && data.hasCertificate
+
+          console.log('🎓 Certification:', {
+            isCompleted: data.isCompleted,
+            hasCertificate: data.hasCertificate,
+            status: completed ? '✅' : '❌'
+          })
+
+          setCertificationCompleted(completed)
+        }
+      } catch (error) {
+        console.error('❌ Erreur vérification certification:', error)
+      }
+    }
+
+    checkCertification()
+  }, [])
+
   // ✅ Calculer le statut de l'évaluation cognitive
   const cognitiveCompleted = cognitiveSession?.allTestsCompleted && cognitiveSession?.hasSignature
 
@@ -176,7 +203,7 @@ export default function DashboardPage() {
     { name: 'Test RIASEC', completed: summary?.modules.riasec.status === 'completed' },
     { name: 'Profil Cognitif', completed: summary?.modules.cognitive.status === 'completed' },
     { name: 'Évaluation Cognitive', completed: cognitiveAssessmentCompleted },
-    { name: 'Certification Professionnelle', completed: false }
+    { name: 'Certification Professionnelle', completed: certificationCompleted }
   ]
 
   const modulesTermines = modules.filter(m => m.completed).length
