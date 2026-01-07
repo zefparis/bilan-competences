@@ -61,21 +61,28 @@ export default function CognitivePage() {
   const [data, setData] = useState<{ analysis: CognitiveAnalysis | null; insights: CognitiveInsight[]; radarData?: RadarDataPoint[] } | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isResetting, setIsResetting] = useState(false)
 
   useEffect(() => {
     setMounted(true)
     async function fetchProfile() {
       try {
         setLoading(true)
+        setError(null)
+        console.log("[Cognitive Page] Fetching profile...")
         const res = await fetch("/api/cognitive/profile")
-        if (!res.ok) {
-          const body = await res.json().catch(() => null)
-          throw new Error(body?.message || `Erreur ${res.status}`)
-        }
+        console.log("[Cognitive Page] Response status:", res.status)
+        
         const json = await res.json()
+        console.log("[Cognitive Page] Response data:", json)
+        
+        if (!res.ok) {
+          throw new Error(json?.message || `Erreur ${res.status}`)
+        }
+        
         setData(json)
       } catch (err) {
-        console.error("Fetch error:", err)
+        console.error("[Cognitive Page] Fetch error:", err)
         setError(err instanceof Error ? err.message : "Erreur de chargement")
       } finally {
         setLoading(false)
@@ -83,6 +90,9 @@ export default function CognitivePage() {
     }
     fetchProfile()
   }, [])
+
+  const analysis = data?.analysis ?? null
+  const insights = data?.insights ?? []
 
   if (!mounted) {
     return (
@@ -92,11 +102,6 @@ export default function CognitivePage() {
       </div>
     )
   }
-
-  const analysis = data?.analysis ?? null
-  const insights = data?.insights ?? []
-
-  const [isResetting, setIsResetting] = useState(false)
 
   const handleReset = async () => {
     setIsResetting(true)
@@ -183,7 +188,13 @@ export default function CognitivePage() {
           <div className="space-y-4 text-center">
             <AlertTriangle className="h-10 w-10 text-destructive mx-auto" />
             <p className="text-destructive font-medium">Impossible de charger votre profil.</p>
-            <Button variant="outline" onClick={() => window.location.reload()}>Réessayer</Button>
+            <p className="text-sm text-muted-foreground">{error}</p>
+            <div className="flex gap-2 justify-center">
+              <Button variant="outline" onClick={() => window.location.reload()}>Réessayer</Button>
+              <Link href="/dashboard/cognitive/test">
+                <Button>Passer le test</Button>
+              </Link>
+            </div>
           </div>
         </Card>
       )}

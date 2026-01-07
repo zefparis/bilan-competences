@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { getUserIdFromRequest } from "@/lib/auth-user"
-import { analyzeCognitiveProfile, CognitiveAnalysis } from "@/lib/cognitive-engine"
+import { analyzeCognitiveProfile } from "@/lib/cognitive-engine"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -9,21 +10,37 @@ export const dynamic = "force-dynamic"
 export async function GET(req: NextRequest) {
   console.log("[API/Cognitive/Profile] GET request START")
   try {
-    const userId = await getUserIdFromRequest(req)
-    console.log("[API/Cognitive/Profile] User ID from request:", userId)
+    // Use NextAuth session instead of custom auth
+    const session = await getServerSession(authOptions)
+    console.log("[API/Cognitive/Profile] Session:", !!session)
     
-    if (!userId) {
-      console.warn("[API/Cognitive/Profile] Unauthorized access attempt")
+    if (!session?.user?.email) {
+      console.warn("[API/Cognitive/Profile] No session found")
       return NextResponse.json({ 
-        message: "Non authentifié", 
         analysis: null, 
-        insights: [] 
-      }, { status: 200 }) // Return 200 instead of 401 to avoid error page
+        insights: [],
+        radarData: []
+      }, { status: 200 })
     }
 
-    console.log("[API/Cognitive/Profile] Fetching profile for user:", userId)
+    // Get user from email
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { id: true }
+    })
+
+    if (!user) {
+      console.warn("[API/Cognitive/Profile] User not found")
+      return NextResponse.json({ 
+        analysis: null, 
+        insights: [],
+        radarData: []
+      }, { status: 200 })
+    }
+
+    console.log("[API/Cognitive/Profile] Fetching profile for user:", user.id)
     const profile = await prisma.cognitiveProfile.findUnique({
-      where: { userId },
+      where: { userId: user.id },
     })
     console.log("[API/Cognitive/Profile] Profile found:", !!profile)
 
@@ -66,9 +83,9 @@ export async function GET(req: NextRequest) {
       { dimension: "Sound", label: "Relation", level: getQualitativeLevel(profile.sound_score) },
     ]
 
-    console.log("[API/Cognitive/Profile] Fetching insights for user:", userId)
+    console.log("[API/Cognitive/Profile] Fetching insights for user:", user.id)
     const insights = await prisma.cognitiveInsight.findMany({
-      where: { userId },
+      where: { userId: user.id },
       orderBy: { priority: "desc" },
     })
     console.log("[API/Cognitive/Profile] Insights found:", insights.length)
