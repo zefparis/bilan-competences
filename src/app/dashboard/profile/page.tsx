@@ -156,66 +156,100 @@ export default function ProfilePage() {
   }
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("[CLIENT] ========== Avatar Upload START ==========")
     const file = e.target.files?.[0]
-    if (!file) return
+    console.log("[CLIENT] File selected:", file ? `${file.name} (${file.size} bytes, ${file.type})` : "null")
+    
+    if (!file) {
+      console.log("[CLIENT] No file selected, aborting")
+      return
+    }
 
     // Validate file type
+    console.log("[CLIENT] Validating file type...")
     const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"]
     if (!allowedTypes.includes(file.type)) {
+      console.error("[CLIENT] Invalid file type:", file.type)
       toast.error("Type de fichier non autorisé. Utilisez JPG, PNG, GIF ou WebP.")
       return
     }
+    console.log("[CLIENT] ✅ File type valid")
 
     // Validate file size (max 5MB)
+    console.log("[CLIENT] Validating file size...")
     if (file.size > 5 * 1024 * 1024) {
+      console.error("[CLIENT] File too large:", file.size)
       toast.error("Fichier trop volumineux. Maximum 5 Mo.")
       return
     }
+    console.log("[CLIENT] ✅ File size valid")
 
     // Show preview
+    console.log("[CLIENT] Creating preview...")
     const reader = new FileReader()
     reader.onload = (event) => {
       setAvatarPreview(event.target?.result as string)
+      console.log("[CLIENT] ✅ Preview created")
     }
     reader.readAsDataURL(file)
 
     // Upload file
     setUploadingAvatar(true)
     try {
+      console.log("[CLIENT] Creating FormData...")
       const formData = new FormData()
       formData.append("file", file)
+      console.log("[CLIENT] ✅ FormData created")
 
+      console.log("[CLIENT] Sending request to /api/upload/avatar...")
       const res = await fetch("/api/upload/avatar", {
         method: "POST",
         body: formData,
       })
+      console.log("[CLIENT] Response received:", res.status, res.statusText)
 
       if (!res.ok) {
         const data = await res.json()
+        console.error("[CLIENT] ❌ Upload failed:", data)
         throw new Error(data.error || "Erreur lors de l'upload")
       }
 
-      const { url } = await res.json()
+      const responseData = await res.json()
+      console.log("[CLIENT] ✅ Upload successful:", responseData)
+      const { url } = responseData
+      console.log("[CLIENT] Image URL:", url)
       
       // Update profile with new image URL
+      console.log("[CLIENT] Updating profile with new image URL...")
       const updateRes = await fetch("/api/user/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: url }),
       })
+      console.log("[CLIENT] Profile update response:", updateRes.status, updateRes.statusText)
 
-      if (!updateRes.ok) throw new Error("Erreur lors de la mise à jour du profil")
+      if (!updateRes.ok) {
+        const updateData = await updateRes.json()
+        console.error("[CLIENT] ❌ Profile update failed:", updateData)
+        throw new Error("Erreur lors de la mise à jour du profil")
+      }
 
       const updatedUser = await updateRes.json()
+      console.log("[CLIENT] ✅ Profile updated:", updatedUser)
       setUser(updatedUser)
       reset({ ...updatedUser, image: url })
       toast.success("Photo de profil mise à jour")
+      console.log("[CLIENT] ========== Avatar Upload SUCCESS ==========")
     } catch (error) {
-      console.error(error)
+      console.error("[CLIENT] ========== Avatar Upload ERROR ==========")
+      console.error("[CLIENT] Error:", error)
+      console.error("[CLIENT] Error type:", error instanceof Error ? error.constructor.name : typeof error)
+      console.error("[CLIENT] Error message:", error instanceof Error ? error.message : String(error))
       toast.error(error instanceof Error ? error.message : "Erreur lors de l'upload")
       setAvatarPreview(null)
     } finally {
       setUploadingAvatar(false)
+      console.log("[CLIENT] Upload process finished")
     }
   }
 
