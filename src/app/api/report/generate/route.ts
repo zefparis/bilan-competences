@@ -75,16 +75,24 @@ export async function POST() {
     });
 
     if (existingReport) {
-      // Si generationCount n'existe pas (ancien rapport avant migration), le traiter comme génération #1
+      // LOGS DE DEBUG DÉTAILLÉS
+      console.log('🔍 [DEBUG] existingReport.generationCount (brut):', existingReport.generationCount);
+      console.log('🔍 [DEBUG] existingReport.hasExtraGenerationPaid:', existingReport.hasExtraGenerationPaid);
+      
+      // Si generationCount n'existe pas (ancien rapport avant migration), le traiter comme génération #0
       const currentCount = existingReport.generationCount ?? 0;
       console.log(`📊 [API POST] Rapport existant - Génération actuelle: ${currentCount}`);
       
-      // Si c'est un ancien rapport sans generationCount, on le considère comme la 1ère génération
-      // Donc la régénération sera la 2ème (gratuite)
+      // Si c'est un ancien rapport sans generationCount, on le considère comme génération #0
+      // Donc la régénération sera la #1 (gratuite)
       const nextCount = currentCount + 1;
+      console.log(`📊 [API POST] Prochaine génération sera: #${nextCount}`);
       
       // Vérifier si l'utilisateur peut régénérer
       // Bloquer seulement si on a déjà fait 2 générations ET pas payé pour extra
+      console.log(`🔍 [DEBUG] Test: currentCount (${currentCount}) >= 2 ? ${currentCount >= 2}`);
+      console.log(`🔍 [DEBUG] Test: !hasExtraGenerationPaid ? ${!existingReport.hasExtraGenerationPaid}`);
+      
       if (currentCount >= 2 && !existingReport.hasExtraGenerationPaid) {
         console.warn('⚠️ [API POST] Limite de 2 générations gratuites atteinte');
         return NextResponse.json(
