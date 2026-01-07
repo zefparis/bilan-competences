@@ -1,21 +1,50 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { CheckCircle, ArrowRight, Loader2 } from "lucide-react"
 
 export default function PaymentSuccessPage() {
   const [verified, setVerified] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
   useEffect(() => {
     // Vérifier que le paiement a bien été traité
     const checkPaymentStatus = async () => {
       try {
-        const res = await fetch("/api/user/profile")
+        const sessionId = searchParams.get("session_id")
+        
+        if (!sessionId) {
+          console.error("Session ID manquant")
+          setLoading(false)
+          return
+        }
+
+        // Vérifier le paiement via l'API publique
+        const res = await fetch(`/api/stripe/verify-session?session_id=${sessionId}`)
+        
         if (res.ok) {
           const data = await res.json()
-          setVerified(data.hasPaid === true)
+          setVerified(data.verified === true)
+          setUserEmail(data.email)
+          
+          // Si le paiement est vérifié, rediriger vers la connexion avec l'email
+          if (data.verified && data.email) {
+            // Stocker temporairement l'info de paiement réussi
+            sessionStorage.setItem("payment_success", "true")
+            sessionStorage.setItem("payment_email", data.email)
+            
+            // Rediriger vers la connexion avec callback vers le dashboard
+            setTimeout(() => {
+              router.push(`/auth/login?callbackUrl=/dashboard&email=${encodeURIComponent(data.email)}`)
+            }, 3000)
+          }
+        } else {
+          console.error("Erreur lors de la vérification du paiement")
         }
       } catch (error) {
         console.error("Erreur vérification:", error)
@@ -27,7 +56,7 @@ export default function PaymentSuccessPage() {
     // Attendre un peu pour laisser le webhook traiter
     const timer = setTimeout(checkPaymentStatus, 2000)
     return () => clearTimeout(timer)
-  }, [])
+  }, [searchParams, router])
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6">
