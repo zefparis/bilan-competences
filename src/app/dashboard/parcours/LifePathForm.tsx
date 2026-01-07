@@ -34,10 +34,14 @@ interface LifePathFormProps {
 export function LifePathForm({ onEventAdded }: LifePathFormProps) {
   const router = useRouter()
   const { data: activeAssessment, isLoading: isLoadingAssessment } = useActiveAssessment()
+  
+  const currentYear = new Date().getFullYear()
+  const years = Array.from({ length: currentYear - 1950 + 1 }, (_, i) => currentYear - i)
+  
   const form = useForm<LifeEventData>({
     resolver: zodResolver(lifeEventSchema),
     defaultValues: {
-      year: new Date().getFullYear(),
+      year: currentYear,
       sentiment: 0
     }
   })
@@ -77,9 +81,23 @@ export function LifePathForm({ onEventAdded }: LifePathFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Année</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
-              </FormControl>
+              <Select 
+                onValueChange={(value) => field.onChange(parseInt(value))} 
+                value={field.value?.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner une année" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="max-h-[300px]">
+                  {years.map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
