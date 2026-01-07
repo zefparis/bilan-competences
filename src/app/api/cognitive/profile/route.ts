@@ -14,23 +14,40 @@ export async function GET(req: NextRequest) {
     
     if (!userId) {
       console.warn("[API/Cognitive/Profile] Unauthorized access attempt")
-      return NextResponse.json({ message: "Non authentifié" }, { status: 401 })
+      return NextResponse.json({ 
+        message: "Non authentifié", 
+        analysis: null, 
+        insights: [] 
+      }, { status: 200 }) // Return 200 instead of 401 to avoid error page
     }
 
     console.log("[API/Cognitive/Profile] Fetching profile for user:", userId)
-    const profile = await (prisma as any).cognitiveProfile.findUnique({
+    const profile = await prisma.cognitiveProfile.findUnique({
       where: { userId },
     })
     console.log("[API/Cognitive/Profile] Profile found:", !!profile)
 
     if (!profile) {
-      return NextResponse.json({ analysis: null, insights: [] })
+      console.log("[API/Cognitive/Profile] No profile found, returning empty state")
+      return NextResponse.json({ analysis: null, insights: [], radarData: [] })
     }
 
     // Transformation en analyse qualitative
     const analysis = analyzeCognitiveProfile({
-      ...profile,
-      dominant_cognition: profile.dominant_cognition as any
+      id: profile.id,
+      userId: profile.userId,
+      form_score: profile.form_score,
+      color_score: profile.color_score,
+      volume_score: profile.volume_score,
+      sound_score: profile.sound_score,
+      dominant_cognition: profile.dominant_cognition as "form" | "color" | "volume" | "sound",
+      profile_code: profile.profile_code,
+      communication_style: profile.communication_style as "analytical" | "visual" | "kinesthetic" | "auditory" | null,
+      detail_level: profile.detail_level as "high" | "medium" | "low" | null,
+      learning_preference: profile.learning_preference,
+      completed_at: profile.completed_at?.toISOString() || null,
+      createdAt: profile.createdAt.toISOString(),
+      updatedAt: profile.updatedAt.toISOString(),
     })
 
     // Niveaux qualitatifs pour le diagramme radar (pas de scores bruts)
@@ -50,7 +67,7 @@ export async function GET(req: NextRequest) {
     ]
 
     console.log("[API/Cognitive/Profile] Fetching insights for user:", userId)
-    const insights = await (prisma as any).cognitiveInsight.findMany({
+    const insights = await prisma.cognitiveInsight.findMany({
       where: { userId },
       orderBy: { priority: "desc" },
     })
