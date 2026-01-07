@@ -33,7 +33,7 @@ export default function MentionsLegales() {
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">2. Hébergement</h2>
             <p>
-              Le site est hébergé par Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis.
+              Le site est hébergé par LWS (Line Web Services), 10 rue de Penthièvre, 75008 Paris, France.
             </p>
           </section>
 
