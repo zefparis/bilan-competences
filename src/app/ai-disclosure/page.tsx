@@ -51,7 +51,7 @@ export default function AIDisclosure() {
               <ul className="space-y-2 text-sm">
                 <li><strong>Technologie :</strong> Anthropic Claude 3.5 Haiku</li>
                 <li><strong>Usage :</strong> Synthèse personnalisée de votre bilan de compétences</li>
-                <li><strong>Résultat :</strong> Rapport PDF de 50 pages avec recommandations stratégiques</li>
+                <li><strong>Résultat :</strong> Rapport PDF personnalisé avec recommandations stratégiques</li>
               </ul>
             </div>
           </section>

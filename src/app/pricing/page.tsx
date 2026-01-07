@@ -62,7 +62,7 @@ export default function PricingPage() {
     "🎓 Certification professionnelle avec blockchain",
     "📊 Analyse IA Claude 3.5 (compétences transférables)",
     "💼 Matching emploi + formations CPF",
-    "📄 Rapport PDF premium 50 pages",
+    "📄 Rapport PDF premium personnalisé",
     "🔒 Données privées, conformes RGPD",
   ]
 

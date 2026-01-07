@@ -408,7 +408,7 @@ export default function HomePageV3() {
                   <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
                 </tr>
                 <tr className="border-b">
-                  <td className="p-4">PDF premium 50 pages</td>
+                  <td className="p-4">PDF premium personnalisé</td>
                   <td className="text-right p-4">80€</td>
                   <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
                 </tr>

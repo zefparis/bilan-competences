@@ -12,7 +12,7 @@
 - 🤖 **Analyse IA Claude 3.5** : Compétences transférables + gap identifié
 - 💼 **Matching emploi + formations** : API France Travail intégrée
 - 🏆 **Certificat blockchain** : Validation infalsifiable de vos compétences
-- 📄 **PDF Premium 50 pages** : Rapport complet personnalisé
+- 📄 **PDF Premium personnalisé** : Rapport complet avec recommandations
 - ♿ **Accessibilité handicap** : Matching adapté + aides AGEFIPH
 - 💰 **49€ = Solution concrète garantie** : Valeur marché ~2000€
 
@@ -85,7 +85,7 @@
 | Analyse IA Claude 3.5 personnalisée | 100€ | ✅ Inclus |
 | Recherche formations + emplois | 10h × 50€ | ✅ Automatisé |
 | Certificat blockchain | N/A | ✅ Unique |
-| PDF premium 50 pages | 80€ | ✅ Inclus |
+| PDF premium personnalisé | 80€ | ✅ Inclus |
 | Module accessibilité handicap | N/A | ✅ Inclus |
 | **TOTAL VALEUR** | **~2000€** | **49€** |
 
@@ -461,7 +461,7 @@ L'application est deployee automatiquement sur Vercel a chaque push sur `main`.
 - **Image Optimization** : Next.js Image (WebP)
 - **Bundle Size** : <250KB initial JS
 - **API Response** : <200ms p95
-- **PDF Generation** : <3s pour 50 pages
+- **PDF Generation** : <3s pour rapport complet
 
 ### Cache Strategy
 - **Static Pages** : 1h (ISR)
