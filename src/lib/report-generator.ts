@@ -244,7 +244,7 @@ export async function assembleCompleteReport(
 function generateCompleteFallbackReport(input: CompleteReportInput): CompleteReportSections {
   return {
     // Partie I - Synthèse Générale (7 sections)
-    cadre: `Ce bilan cognitif professionnel PERSPECTA vise à éclairer votre réflexion professionnelle en croisant votre fonctionnement cognitif avec vos intérêts professionnels selon le modèle RIASEC.
+    cadre: `Ce bilan cognitif professionnel PERSPECTA-COMPETENCES vise à éclairer votre réflexion professionnelle en croisant votre fonctionnement cognitif avec vos intérêts professionnels selon le modèle RIASEC.
 
 L'analyse repose sur une mesure de vos fonctions exécutives (contrôle inhibiteur, vitesse de traitement, flexibilité cognitive, fluidité d'accès) et de vos préférences d'activité professionnelle.
 

@@ -242,7 +242,7 @@ const ActionsPage: React.FC<{ data: ProfileData }> = ({ data }) => {
       tasks: [
         { text: 'Choisir 1 scénario prioritaire (1, 2 ou 3)', detail: 'Revisiter page 10 · Critères : épanouissement + faisabilité' },
         { text: 'Construire roadmap 12 mois', detail: 'Formations, réseau, candidatures' },
-        { text: 'Réserver session accompagnement', detail: '1h stratégique avec coach PERSPECTA · Personnalisation approfondie' },
+        { text: 'Réserver session accompagnement', detail: '1h stratégique avec coach PERSPECTA-COMPETENCES · Personnalisation approfondie' },
       ],
     },
   ];
@@ -406,7 +406,7 @@ const NextStepPage: React.FC<{ data: ProfileData }> = ({ data }) => {
           SESSION STRATEGIQUE PERSONNALISEE (1h)
         </Text>
         <Text style={styles.accompagnementText}>
-          Avec un consultant PERSPECTA, vous :
+          Avec un consultant PERSPECTA-COMPETENCES, vous :
         </Text>
         {[
           'Approfondissez votre profil (zones grises)',
@@ -433,7 +433,7 @@ const NextStepPage: React.FC<{ data: ProfileData }> = ({ data }) => {
         <Text style={styles.contactTitle}>RESTONS EN CONTACT</Text>
         <Text style={styles.contactText}>
           Questions sur votre bilan ? support@perspecta.fr (reponse sous 48h){'\n'}
-          Partagez votre experience PERSPECTA : Trustpilot | Google Reviews
+          Partagez votre experience PERSPECTA-COMPETENCES : Trustpilot | Google Reviews
         </Text>
       </View>
 
@@ -444,7 +444,7 @@ const NextStepPage: React.FC<{ data: ProfileData }> = ({ data }) => {
           Bon voyage vers votre prochaine étape.
         </Text>
         <Text style={styles.closingEmoji}>***</Text>
-        <Text style={styles.logo}>PERSPECTA</Text>
+        <Text style={styles.logo}>PERSPECTA-COMPETENCES</Text>
       </View>
 
       <PageFooter profileId={data.meta.id} />

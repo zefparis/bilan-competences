@@ -357,14 +357,14 @@ export function PdfDocument({
 
   return (
     <Document
-      title="Bilan Cognitif Professionnel PERSPECTA"
-      author="PERSPECTA by IA-SOLUTION"
+      title="Bilan Cognitif Professionnel PERSPECTA-COMPETENCES"
+      author="PERSPECTA-COMPETENCES by IA-SOLUTION"
       subject="Analyse cognitive professionnelle individuelle"
       keywords="cognition, bilan professionnel, RIASEC, orientation"
     >
       {/* ================= COVER PAGE ================= */}
       <Page size="A4" style={styles.coverPage}>
-        <Text style={styles.coverBrand}>PERSPECTA</Text>
+        <Text style={styles.coverBrand}>PERSPECTA-COMPETENCES</Text>
 
         <Text style={styles.coverTitle}>
           Bilan Cognitif{"\n"}Professionnel
@@ -483,7 +483,7 @@ export function PdfDocument({
         <View style={styles.footer} fixed>
           <View style={styles.footerContent}>
             <View>
-              <Text style={styles.footerBrand}>PERSPECTA</Text>
+              <Text style={styles.footerBrand}>PERSPECTA-COMPETENCES</Text>
               <Text style={styles.footerText}>
                 Document personnel et confidentiel
               </Text>
