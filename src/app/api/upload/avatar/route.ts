@@ -74,6 +74,15 @@ export async function POST(req: NextRequest) {
 
     // Step 7: Upload to Supabase Storage
     console.log("[API/Upload/Avatar] Step 7: Uploading to Supabase Storage...")
+    
+    // Check if Supabase is configured
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.error("[API/Upload/Avatar] ❌ Supabase not configured")
+      return NextResponse.json({ 
+        error: "Service de stockage non configuré. Contactez l'administrateur." 
+      }, { status: 500 })
+    }
+    
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
     
