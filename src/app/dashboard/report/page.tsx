@@ -204,8 +204,10 @@ export default function ReportPage() {
         }
         setReport(data)
         setActiveSection(data.sections[0]?.id || "cadre")
-        setCanRegenerate(false) // ✅ Bloquer les futures régénérations
-        console.log('✅ Rapport généré et sauvegardé')
+        setCanRegenerate(true) // ✅ Permettre la régénération
+        setGenerationCount(data.generationCount || 1)
+        setRemainingFreeGenerations(data.remainingFreeGenerations ?? 1)
+        console.log('✅ Rapport généré et sauvegardé - Génération #' + (data.generationCount || 1))
       } else {
         const errorData = await res.json()
         if (res.status === 402) {
