@@ -168,6 +168,12 @@ export const CoverPage: React.FC<CoverPageProps> = ({ meta }) => {
         <Text style={styles.footerText}>
           © 2025 PERSPECTA-COMPETENCES by ia-solution - Document confidentiel
         </Text>
+        <Text style={[styles.footerText, { fontSize: 8, marginTop: 4, color: '#666' }]}>
+          🤖 Ce rapport contient des analyses générées par Intelligence Artificielle (GPT-4o). Les recommandations sont indicatives.
+        </Text>
+        <Text style={[styles.footerText, { fontSize: 8, color: '#666' }]}>
+          Vous restez maître de vos décisions professionnelles. Plus d'infos : perspecta.fr/ai-disclosure
+        </Text>
       </View>
     </Page>
   );

@@ -616,6 +616,30 @@ pnpm db:migrate       # Appliquer migrations
 
 ---
 
+## 🤖 Conformité IA Act (UE 2024/1689)
+
+PERSPECTA-COMPETENCES est conforme au Règlement européen sur l'Intelligence Artificielle.
+
+### Classification
+- **Niveau de risque** : Limité
+- **Obligations** : Transparence, information utilisateur, contrôle humain
+
+### Systèmes IA
+1. **Analyse compétences** : OpenAI GPT-4o
+2. **Matching emploi** : Algorithmes propriétaires
+3. **Génération rapports** : OpenAI GPT-4o
+
+### Droits utilisateurs
+✅ Information complète sur usage IA  
+✅ Droit de refus  
+✅ Droit de contestation  
+✅ Support humain disponible  
+✅ Contrôle final garanti  
+
+**Page dédiée** : [/ai-disclosure](https://perspecta.fr/ai-disclosure)
+
+---
+
 ## 🏆 Engagement Social
 
 PERSPECTA-COMPETENCES s'engage à :
