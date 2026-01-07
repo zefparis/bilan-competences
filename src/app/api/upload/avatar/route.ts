@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic"
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 })
     }
 
@@ -39,9 +39,10 @@ export async function POST(req: NextRequest) {
       await mkdir(uploadsDir, { recursive: true })
     }
 
-    // Generate unique filename
+    // Generate unique filename using email hash
+    const emailHash = Buffer.from(session.user.email).toString('base64').replace(/[^a-zA-Z0-9]/g, '').substring(0, 10)
     const ext = file.name.split(".").pop() || "jpg"
-    const filename = `${session.user.id}-${Date.now()}.${ext}`
+    const filename = `${emailHash}-${Date.now()}.${ext}`
     const filepath = path.join(uploadsDir, filename)
 
     // Convert file to buffer and save
