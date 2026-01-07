@@ -232,11 +232,23 @@ export async function assembleCompleteReport(
     return completeReport;
 
   } catch (error) {
-    console.error(" [REPORT] Erreur assembleCompleteReport:", error);
+    console.error(" [REPORT] ERREUR CRITIQUE assembleCompleteReport ");
+    console.error(" [REPORT] Type d'erreur:", error instanceof Error ? error.constructor.name : typeof error);
+    console.error(" [REPORT] Message:", error instanceof Error ? error.message : String(error));
     console.error(" [REPORT] Stack trace:", (error as Error).stack);
-    console.warn(" [REPORT] FALLBACK ACTIVÉ - Utilisation du rapport de secours complet");
+    
+    // Si c'est une erreur Anthropic spécifique
+    if (error && typeof error === 'object' && 'status' in error) {
+      console.error(" [REPORT] Status HTTP:", (error as any).status);
+      console.error(" [REPORT] Détails API:", JSON.stringify(error, null, 2));
+    }
+    
+    console.warn(" [REPORT] FALLBACK ACTIVÉ - Utilisation du rapport de secours complet ");
     console.warn(" [REPORT] Cela signifie que Claude n'a PAS généré le contenu!");
-    return generateCompleteFallbackReport(input);
+    console.warn(" [REPORT] Vérifiez les logs ci-dessus pour comprendre pourquoi!");
+    
+    // NE PAS utiliser le fallback - PROPAGER L'ERREUR pour debugging
+    throw error; 
   }
 }
 
