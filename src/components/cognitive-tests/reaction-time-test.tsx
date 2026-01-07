@@ -242,7 +242,7 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
     }
   }, [phase, stimulusStartTime, trials, startTrial])
 
-  // ✅ Détection des vrais faux départs SEULEMENT pendant la phase waiting (cercle rouge)
+  // ✅ Détection des faux départs SEULEMENT pendant la phase waiting (avant l'apparition du cercle)
   useEffect(() => {
     if (phase !== "waiting") return
 
@@ -250,7 +250,7 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
       e.preventDefault()
       e.stopPropagation()
 
-      console.log('🚩 TRUE false start detected - user clicked during red circle')
+      console.log('🚩 False start detected - user clicked before stimulus appeared')
 
       // False start logic
       setIsTransitioning(true)
@@ -404,16 +404,25 @@ export function ReactionTimeTest({ onComplete }: ReactionTimeTestProps) {
           )}
           
           {phase === "feedback" && lastResult && (
-            <div className="text-center">
+            <div className="text-center space-y-2">
               {lastResult.correct ? (
                 <>
                   <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-2" />
-                  {lastResult.time && (
+                  {lastResult.time ? (
                     <p className="text-sm text-muted-foreground">{Math.round(lastResult.time)} ms</p>
+                  ) : (
+                    <p className="text-sm text-green-600 font-medium">Bonne réponse !</p>
                   )}
                 </>
               ) : (
-                <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+                <>
+                  <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-2" />
+                  {falseStart ? (
+                    <p className="text-sm text-red-600 font-medium">Faux départ</p>
+                  ) : (
+                    <p className="text-sm text-red-600 font-medium">Erreur</p>
+                  )}
+                </>
               )}
             </div>
           )}
