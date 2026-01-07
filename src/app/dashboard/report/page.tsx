@@ -30,6 +30,8 @@ interface GeneratedReport {
   generatedAt: string
   version: string
   userName?: string
+  generationCount?: number
+  remainingFreeGenerations?: number
 }
 
 export default function ReportPage() {
@@ -42,6 +44,8 @@ export default function ReportPage() {
   const [error, setError] = useState<string | null>(null)
   const [activeSection, setActiveSection] = useState<string>("cadre")
   const [canRegenerate, setCanRegenerate] = useState(false)
+  const [generationCount, setGenerationCount] = useState<number>(1)
+  const [remainingFreeGenerations, setRemainingFreeGenerations] = useState<number>(1)
 
   useEffect(() => {
     async function fetchData() {
@@ -71,6 +75,11 @@ export default function ReportPage() {
 
         if (reportRes.ok) {
           const reportData = await reportRes.json();
+          setReport(reportData);
+          setCanRegenerate(true);
+          setGenerationCount(reportData.generationCount || 1);
+          setRemainingFreeGenerations(reportData.remainingFreeGenerations ?? 1);
+          setError(null);
           console.log('✅ [Report] Rapport existant trouvé:', {
             hasSections: !!reportData.sections,
             sectionsCount: reportData.sections?.length,
@@ -81,7 +90,9 @@ export default function ReportPage() {
             setReport(reportData);
             setHasCognitiveSession(true);
             setActiveSection(reportData.sections[0]?.id || 'cadre');
-            setCanRegenerate(false);
+            setCanRegenerate(true);
+            setGenerationCount(reportData.generationCount || 1);
+            setRemainingFreeGenerations(reportData.remainingFreeGenerations ?? 1);
             setLoading(false);
             return;
           } else {
@@ -197,7 +208,11 @@ export default function ReportPage() {
         console.log('✅ Rapport généré et sauvegardé')
       } else {
         const errorData = await res.json()
-        setError(errorData.message || errorData.error || "Erreur lors de la génération")
+        if (res.status === 402) {
+          setError(`⚠️ ${errorData.message}\n\nVous avez utilisé vos 2 générations gratuites. Une 3ème génération coûte 9€.`)
+        } else {
+          setError(errorData.message || errorData.error || "Erreur lors de la génération")
+        }
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : "Erreur de connexion")
@@ -454,7 +469,26 @@ export default function ReportPage() {
             <FileText className="w-4 h-4" />
             Test PDF (debug)
           </Button>
-          {/* Removed regenerate button to prevent multiple generations */}
+          <Button 
+            variant="outline" 
+            onClick={generateReport} 
+            disabled={generating || !canRegenerate}
+            className="gap-2"
+          >
+            {generating ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Régénération...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="w-4 h-4" />
+                {remainingFreeGenerations > 0 
+                  ? `Régénérer (${remainingFreeGenerations} gratuite${remainingFreeGenerations > 1 ? 's' : ''})` 
+                  : 'Régénérer (9€)'}
+              </>
+            )}
+          </Button>
           <Button onClick={handleDownloadPdf} disabled={downloadingPdf} className="gap-2">
             {downloadingPdf ? (
               <>
@@ -470,6 +504,30 @@ export default function ReportPage() {
           </Button>
         </div>
       </div>
+
+      {/* Generation counter badge */}
+      {generationCount > 0 && (
+        <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                <span className="font-semibold">Génération #{generationCount}/2 gratuite</span>
+                {remainingFreeGenerations > 0 && (
+                  <span className="ml-2">
+                    • {remainingFreeGenerations} régénération{remainingFreeGenerations > 1 ? 's' : ''} gratuite{remainingFreeGenerations > 1 ? 's' : ''} restante{remainingFreeGenerations > 1 ? 's' : ''}
+                  </span>
+                )}
+                {remainingFreeGenerations === 0 && (
+                  <span className="ml-2 text-amber-700 dark:text-amber-400">
+                    • Prochaine régénération : 9€
+                  </span>
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-[250px_1fr] gap-8">
         {/* Navigation sidebar */}
