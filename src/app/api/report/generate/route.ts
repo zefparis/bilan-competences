@@ -69,27 +69,37 @@ export async function POST() {
 
     console.log('🚀 [API POST] Demande génération pour:', session.user.id);
 
-    // ✅ VÉRIFIER si un rapport existe déjà
+    // ✅ VÉRIFIER si un rapport existe déjà et gérer la régénération
     const existingReport = await (prisma as any).report.findUnique({
       where: { userId: session.user.id }
     });
 
     if (existingReport) {
-      console.warn('⚠️ [API POST] Rapport déjà existant, génération refusée');
+      const currentCount = existingReport.generationCount || 1;
+      console.log(`📊 [API POST] Rapport existant - Génération #${currentCount}`);
 
-      return NextResponse.json(
-        {
-          error: "Rapport déjà généré",
-          message: "Vous avez déjà généré votre rapport. Consultez-le depuis votre profil. Pour générer un nouveau rapport, contactez le support.",
-          generatedAt: existingReport.generatedAt.toISOString(),
-          existingReport: {
-            sections: existingReport.sections,
-            generatedAt: existingReport.generatedAt.toISOString(),
-            version: existingReport.version
-          }
-        },
-        { status: 409 } // 409 Conflict
-      );
+      // Vérifier si l'utilisateur peut régénérer
+      if (currentCount >= 2 && !existingReport.hasExtraGenerationPaid) {
+        console.warn('⚠️ [API POST] Limite de 2 générations gratuites atteinte');
+        return NextResponse.json(
+          {
+            error: "Limite atteinte",
+            message: "Vous avez déjà généré votre rapport 2 fois. Pour une 3ème génération, un paiement supplémentaire de 9€ est requis.",
+            generationCount: currentCount,
+            requiresPayment: true,
+            generatedAt: existingReport.generatedAt.toISOString()
+          },
+          { status: 402 } // 402 Payment Required
+        );
+      }
+
+      // Autoriser la régénération (2ème fois gratuite ou payée)
+      console.log(`✅ [API POST] Régénération autorisée (${currentCount + 1}/2 gratuite ou payée)`);
+      
+      // Supprimer l'ancien rapport pour le remplacer
+      await (prisma as any).report.delete({
+        where: { userId: session.user.id }
+      });
     }
 
     // 1. Récupérer les données
@@ -133,19 +143,21 @@ export async function POST() {
       { id: "conclusion", title: "Conclusion stratégique", content: completeSections.conclusion, part: 4 },
     ];
 
-    // 4. ✅ SAUVEGARDER en base de données
+    // 4. ✅ SAUVEGARDER en base de données avec compteur de génération
+    const newGenerationCount = existingReport ? (existingReport.generationCount || 1) + 1 : 1;
     const savedReport = await (prisma as any).report.create({
       data: {
         userId: session.user.id,
         sections: sectionsArray as any,
         completeSections: completeSections as any,
         version: "2.0",
-        // Optionnel : estimer le coût en tokens
-        tokensCost: estimateTokensCost(completeSections),
+        tokensCost: 0,
+        generationCount: newGenerationCount,
+        hasExtraGenerationPaid: existingReport?.hasExtraGenerationPaid || false
       }
     });
 
-    console.log('💾 [API POST] Rapport sauvegardé en DB:', savedReport.id);
+    console.log(`📊 [API POST] Rapport sauvegardé - Génération #${newGenerationCount}/${newGenerationCount >= 2 ? '2 (limite gratuite)' : '2'}`);
 
     return NextResponse.json({
       sections: sectionsArray,
@@ -153,6 +165,8 @@ export async function POST() {
       generatedAt: new Date().toISOString(),
       version: "2.0",
       reportId: savedReport.id,
+      generationCount: newGenerationCount,
+      remainingFreeGenerations: Math.max(0, 2 - newGenerationCount),
       alreadyGenerated: false
     });
 

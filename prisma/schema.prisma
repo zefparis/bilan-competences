@@ -316,6 +316,10 @@ model Report {
   generatedAt    DateTime @default(now())
   version        String   @default("2.0")
   tokensCost     Int? // Estimated tokens used
+  
+  // Regeneration tracking
+  generationCount       Int      @default(1)     // Compteur de générations (1ère, 2ème, 3ème...)
+  hasExtraGenerationPaid Boolean @default(false) // A payé pour générations supplémentaires (3+)
 
   updatedAt      DateTime @updatedAt
 }

@@ -228,12 +228,14 @@ export async function assembleCompleteReport(
     // Validation
     validateReportSections(completeReport);
 
-    console.log("✅ Rapport complet généré (13 sections)");
+    console.log(" Rapport complet généré (13 sections)");
     return completeReport;
 
   } catch (error) {
-    console.error("❌ Erreur assembleCompleteReport:", error);
-    console.warn("⚠️ Utilisation du rapport de secours complet");
+    console.error(" [REPORT] Erreur assembleCompleteReport:", error);
+    console.error(" [REPORT] Stack trace:", (error as Error).stack);
+    console.warn(" [REPORT] FALLBACK ACTIVÉ - Utilisation du rapport de secours complet");
+    console.warn(" [REPORT] Cela signifie que Claude n'a PAS généré le contenu!");
     return generateCompleteFallbackReport(input);
   }
 }

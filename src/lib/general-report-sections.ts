@@ -26,48 +26,50 @@ export interface GeneralReportSections {
 async function generateCadreStrategique(
   input: GeneralReportInput
 ): Promise<string> {
-  const prompt = `Tu es un consultant en orientation professionnelle spécialisé en psychologie cognitive et bilan de compétences.
+  const prompt = `Tu es un consultant senior en orientation professionnelle avec 15 ans d'expérience en psychologie cognitive et bilan de compétences. Tu as accompagné plus de 500 personnes en reconversion.
 
-**CONTEXTE**
-Profil utilisateur :
-${input.userName ? `- Nom : ${input.userName}` : ""}
-${input.age ? `- Âge : ${input.age} ans` : ""}
-${input.occupation ? `- Fonction actuelle : ${input.occupation}` : ""}
-${input.experience ? `- Expérience : ${input.experience}` : ""}
+**PROFIL DE LA PERSONNE**
+${input.userName ? `Prénom : ${input.userName}` : "Cette personne"}
+${input.age ? `Âge : ${input.age} ans` : ""}
+${input.occupation ? `Fonction actuelle : ${input.occupation}` : ""}
+${input.experience ? `Expérience : ${input.experience}` : ""}
 
-Signature cognitive (scores sur 100) :
-- Contrôle inhibiteur : ${input.cognitive.inhibitoryControl}/100
-- Vitesse de traitement : ${input.cognitive.processingSpeed}/100
-- Flexibilité cognitive : ${input.cognitive.cognitiveFlexibility}/100
-- Fluidité d'accès : ${input.cognitive.accessFluency}/100
-- Dérive attentionnelle : ${input.cognitive.attentionDrift}/100
+**DONNÉES COGNITIVES**
+Signature cognitive (scores /100) :
+- Contrôle inhibiteur : ${input.cognitive.inhibitoryControl}
+- Vitesse de traitement : ${input.cognitive.processingSpeed}
+- Flexibilité cognitive : ${input.cognitive.cognitiveFlexibility}
+- Fluidité d'accès : ${input.cognitive.accessFluency}
+- Dérive attentionnelle : ${input.cognitive.attentionDrift}
 
-Profil RIASEC (scores sur 100) :
-- Réaliste (R) : ${input.riasec.realistic}/100
-- Investigateur (I) : ${input.riasec.investigative}/100
-- Artistique (A) : ${input.riasec.artistic}/100
-- Social (S) : ${input.riasec.social}/100
-- Entreprenant (E) : ${input.riasec.enterprising}/100
-- Conventionnel (C) : ${input.riasec.conventional}/100
+Profil RIASEC (intérêts professionnels /100) :
+- Réaliste : ${input.riasec.realistic} | Investigateur : ${input.riasec.investigative} | Artistique : ${input.riasec.artistic}
+- Social : ${input.riasec.social} | Entreprenant : ${input.riasec.enterprising} | Conventionnel : ${input.riasec.conventional}
 
-**CONSIGNE**
-Rédige la section "Cadre stratégique" (800-1000 mots) qui :
+**TA MISSION**
+Rédige une introduction personnalisée et engageante (800-1000 mots) qui :
 
-1. Explique le contexte et l'objectif de ce bilan cognitif professionnel
-2. Présente brièvement la méthodologie PERSPECTA (croisement cognition × intérêts)
-3. Décrit les bénéfices attendus pour le bénéficiaire
-4. Pose le cadre de lecture des sections suivantes
+1. Accueille la personne avec empathie et reconnaissance de sa démarche
+2. Explique CONCRÈTEMENT ce qu'est PERSPECTA et pourquoi c'est différent d'un bilan classique
+3. Présente la méthodologie (croisement cognition × intérêts) avec des exemples CONCRETS
+4. Décrit les bénéfices TANGIBLES qu'elle va retirer de ce rapport
+5. Donne des INDICES subtils sur son profil sans révéler les scores (créer de la curiosité)
 
-**FORMAT**
-- 4-5 paragraphes fluides et professionnels
-- Ton bienveillant et expert
-- Pas de bullet points, uniquement de la prose
-- Éviter le jargon technique excessif
+**STYLE D'ÉCRITURE**
+- Ton chaleureux, expert mais accessible
+- Utilise "vous" pour parler à la personne directement
+- Prose fluide et naturelle (pas de bullet points)
+- Métaphores et exemples concrets du monde du travail
+- Évite le jargon - explique simplement
+- Crée de l'engagement et de la curiosité pour la suite
 
-**IMPORTANT**
-- Ne mentionne PAS les scores bruts dans cette section
-- Reste général et introductif
-- Prépare le terrain pour l'analyse détaillée à suivre`;
+**CE QU'IL NE FAUT PAS FAIRE**
+- Ne donne PAS les scores bruts
+- Ne sois pas trop académique ou distant
+- Ne fais pas de listes à puces
+- Ne sois pas générique - personnalise selon le profil
+
+Rédige maintenant cette introduction en gardant à l'esprit que cette personne a pris le temps de faire ce bilan et mérite une analyse réfléchie et personnalisée.`;
 
   try {
     return await callClaude(
