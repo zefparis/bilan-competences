@@ -6,8 +6,20 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ModulePageHeader } from "@/components/module-page-header"
-import { Brain, Lightbulb, Target, Sparkles, AlertTriangle, ArrowRight } from "lucide-react"
+import { Brain, Lightbulb, Target, Sparkles, AlertTriangle, ArrowRight, RotateCcw } from "lucide-react"
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts"
+import { toast } from "sonner"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 type CognitiveDimension = "form" | "color" | "volume" | "sound"
 
@@ -84,17 +96,78 @@ export default function CognitivePage() {
   const analysis = data?.analysis ?? null
   const insights = data?.insights ?? []
 
+  const [isResetting, setIsResetting] = useState(false)
+
+  const handleReset = async () => {
+    setIsResetting(true)
+    try {
+      const res = await fetch('/api/assessment/reset-cognitive', {
+        method: 'DELETE'
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        toast.success('Test cognitif réinitialisé', {
+          description: data.message
+        })
+        window.location.reload()
+      } else {
+        const error = await res.json()
+        toast.error('Erreur', {
+          description: error.error || 'Impossible de réinitialiser'
+        })
+      }
+    } catch (error) {
+      toast.error('Erreur réseau')
+    } finally {
+      setIsResetting(false)
+    }
+  }
+
   return (
     <div className="space-y-8">
-      <ModulePageHeader
-        title="Profil Cognitif HCS-U7"
-        description="Analyse de votre fonctionnement mental et recommandations stratégiques."
-        actions={
-          <Link href="/dashboard/cognitive/test">
-            <Button size="sm" variant="outline">Repasser le test</Button>
-          </Link>
-        }
-      />
+      <div className="flex items-start justify-between">
+        <ModulePageHeader
+          title="Profil Cognitif HCS-U7"
+          description="Analyse de votre fonctionnement mental et recommandations stratégiques."
+          actions={
+            <Link href="/dashboard/cognitive/test">
+              <Button size="sm" variant="outline">Repasser le test</Button>
+            </Link>
+          }
+        />
+        
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" size="sm" className="text-orange-400 border-orange-400/30 hover:bg-orange-400/10">
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Réinitialiser
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-orange-400" />
+                Réinitialiser le test cognitif ?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                Cette action supprimera <strong>votre profil cognitif HCS-U7</strong> et toutes vos sessions de test. 
+                Vous devrez refaire le test complet. Cette action est <strong>irréversible</strong>.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleReset}
+                disabled={isResetting}
+                className="bg-orange-600 hover:bg-orange-700"
+              >
+                {isResetting ? 'Suppression...' : 'Oui, réinitialiser'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
 
       {loading && (
         <Card className="p-12 border-none bg-transparent shadow-none">
