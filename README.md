@@ -16,7 +16,7 @@
 - ♿ **Accessibilité handicap** : Matching adapté + aides AGEFIPH
 - 💰 **49€ = Solution concrète garantie** : Valeur marché ~2000€
 
-**URL Production** : [perspecta.ia-solution.fr](https://perspecta.ia-solution.fr)
+**URL Production** : [perspecta.fr](https://perspecta.fr)
 
 ---
 

@@ -93,6 +93,24 @@ export async function saveRiasecResults(assessmentId: string, scores: {
   return results
 }
 
+// Action pour récupérer les événements du parcours
+export async function getLifeEvents(lifePathId: string) {
+  const events = await (prisma as any).lifeEvent.findMany({
+    where: { lifePathId },
+    orderBy: { year: 'asc' },
+    select: {
+      id: true,
+      year: true,
+      title: true,
+      type: true,
+      sentiment: true,
+      description: true
+    }
+  })
+
+  return events
+}
+
 // Action pour sauvegarder les valeurs
 export async function saveUserValues(assessmentId: string, values: {
   valueName: string

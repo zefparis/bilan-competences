@@ -119,15 +119,24 @@ export function LifePathForm() {
           name="sentiment"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Sentiment ({field.value})</FormLabel>
+              <FormLabel>Niveau de satisfaction</FormLabel>
               <FormControl>
-                <Slider
-                  min={-10}
-                  max={10}
-                  step={1}
-                  defaultValue={[field.value]}
-                  onValueChange={([value]) => field.onChange(value)}
-                />
+                <div className="space-y-2">
+                  <Slider
+                    min={-10}
+                    max={10}
+                    step={1}
+                    defaultValue={[field.value]}
+                    onValueChange={([value]) => field.onChange(value)}
+                  />
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-gray-500">😞 Très négatif</span>
+                    <span className="font-semibold text-base">
+                      {field.value > 0 ? '+' : ''}{field.value}/10
+                    </span>
+                    <span className="text-gray-500">😊 Très positif</span>
+                  </div>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
