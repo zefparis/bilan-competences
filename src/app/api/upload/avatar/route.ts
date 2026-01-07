@@ -2,16 +2,29 @@ import { NextRequest, NextResponse } from "next/server"
 import { writeFile, mkdir } from "fs/promises"
 import { existsSync } from "fs"
 import path from "path"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/auth"
+import { getUserIdFromRequest } from "@/lib/auth-user"
+import { prisma } from "@/lib/prisma"
 
 export const dynamic = "force-dynamic"
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.email) {
+    const userId = await getUserIdFromRequest(req)
+    console.log("[API/Upload/Avatar] User ID:", userId)
+    
+    if (!userId) {
+      console.error("[API/Upload/Avatar] No user ID found")
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 })
+    }
+
+    // Get user email for filename generation
+    const user = await (prisma as any).user.findUnique({
+      where: { id: userId },
+      select: { email: true }
+    })
+
+    if (!user) {
+      return NextResponse.json({ error: "Utilisateur non trouvé" }, { status: 404 })
     }
 
     const formData = await req.formData()
@@ -40,7 +53,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate unique filename using email hash
-    const emailHash = Buffer.from(session.user.email).toString('base64').replace(/[^a-zA-Z0-9]/g, '').substring(0, 10)
+    const emailHash = Buffer.from(user.email).toString('base64').replace(/[^a-zA-Z0-9]/g, '').substring(0, 10)
     const ext = file.name.split(".").pop() || "jpg"
     const filename = `${emailHash}-${Date.now()}.${ext}`
     const filepath = path.join(uploadsDir, filename)
