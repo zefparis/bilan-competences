@@ -15,8 +15,10 @@ export type LifeEventData = z.infer<typeof lifeEventSchema>
 export const experienceSchema = z.object({
   title: z.string().min(2).max(100),
   company: z.string().min(2).max(100),
-  startDate: z.date(),
-  endDate: z.date().optional(),
+  startYear: z.number().min(1950).max(new Date().getFullYear()),
+  startMonth: z.number().min(1).max(12),
+  endYear: z.number().min(1950).max(new Date().getFullYear()).optional(),
+  endMonth: z.number().min(1).max(12).optional(),
   situation: z.string().max(500).optional(),
   task: z.string().max(500).optional(),
   action: z.string().max(500).optional(),

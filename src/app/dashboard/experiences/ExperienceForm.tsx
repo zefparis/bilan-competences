@@ -237,8 +237,8 @@ export function ExperienceForm({ onExperienceAdded }: ExperienceFormProps) {
                 <FormItem>
                   <FormLabel>Mois de fin (optionnel)</FormLabel>
                   <Select 
-                    onValueChange={(value) => field.onChange(value ? parseInt(value) : undefined)} 
-                    value={field.value?.toString() || ''}
+                    onValueChange={(value) => field.onChange(parseInt(value))} 
+                    value={field.value?.toString()}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -246,7 +246,6 @@ export function ExperienceForm({ onExperienceAdded }: ExperienceFormProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">En cours</SelectItem>
                       {months.map((month) => (
                         <SelectItem key={month.value} value={month.value.toString()}>
                           {month.label}
@@ -269,8 +268,8 @@ export function ExperienceForm({ onExperienceAdded }: ExperienceFormProps) {
                 <FormItem>
                   <FormLabel>Année de fin (optionnel)</FormLabel>
                   <Select 
-                    onValueChange={(value) => field.onChange(value ? parseInt(value) : undefined)} 
-                    value={field.value?.toString() || ''}
+                    onValueChange={(value) => field.onChange(parseInt(value))} 
+                    value={field.value?.toString()}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -278,7 +277,6 @@ export function ExperienceForm({ onExperienceAdded }: ExperienceFormProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="max-h-[300px]">
-                      <SelectItem value="">En cours</SelectItem>
                       {years.map((year) => (
                         <SelectItem key={year} value={year.toString()}>
                           {year}

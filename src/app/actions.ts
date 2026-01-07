@@ -40,21 +40,29 @@ export async function addLifeEvent(lifePathId: string, data: {
 export async function createExperience(assessmentId: string, data: {
   title: string
   company: string
-  startDate: Date
-  endDate?: Date
+  startYear: number
+  startMonth: number
+  endYear?: number
+  endMonth?: number
   situation?: string
   task?: string
   action?: string
   result?: string
   skills: string
 }) {
+  // Convertir année/mois en dates
+  const startDate = new Date(data.startYear, data.startMonth - 1, 1)
+  const endDate = data.endYear && data.endMonth 
+    ? new Date(data.endYear, data.endMonth - 1, 1) 
+    : null
+
   const experience = await (prisma as any).experience.create({
     data: {
       assessmentId,
       title: data.title,
       company: data.company,
-      startDate: data.startDate,
-      endDate: data.endDate ?? null,
+      startDate,
+      endDate,
       situation: data.situation ?? null,
       task: data.task ?? null,
       action: data.action ?? null,
