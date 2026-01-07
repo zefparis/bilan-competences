@@ -67,6 +67,28 @@ export async function createExperience(assessmentId: string, data: {
   return experience
 }
 
+// Action pour récupérer les expériences
+export async function getExperiences(assessmentId: string) {
+  const experiences = await (prisma as any).experience.findMany({
+    where: { assessmentId },
+    orderBy: { startDate: 'desc' },
+    select: {
+      id: true,
+      title: true,
+      company: true,
+      startDate: true,
+      endDate: true,
+      skills: true,
+      situation: true,
+      task: true,
+      action: true,
+      result: true
+    }
+  })
+
+  return experiences
+}
+
 // Action pour sauvegarder les résultats RIASEC
 export async function saveRiasecResults(assessmentId: string, scores: {
   scoreR: number
