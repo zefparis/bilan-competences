@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Target, Briefcase, TrendingUp, Trash2, Edit, Save, X, BookOpen, Sparkles } from "lucide-react"
 import { searchROMECodes, type ROMECode } from "@/lib/france-travail/rome-codes"
+import { toast } from "sonner"
 
 interface CareerProject {
   id: string
@@ -172,7 +173,7 @@ export default function CareerProjectPage() {
   }
 
   const handleDeleteProject = async (id: string) => {
-    if (!confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) return
+    if (!confirm("Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.")) return
 
     try {
       const res = await fetch(`/api/career-project/${id}`, {
@@ -180,10 +181,19 @@ export default function CareerProjectPage() {
       })
 
       if (res.ok) {
+        toast.success("Projet supprimé avec succès")
         await fetchProjects()
+      } else {
+        const error = await res.json()
+        toast.error("Erreur lors de la suppression", {
+          description: error.error || "Impossible de supprimer le projet"
+        })
       }
     } catch (error) {
       console.error("Error deleting project:", error)
+      toast.error("Erreur lors de la suppression", {
+        description: "Une erreur est survenue"
+      })
     }
   }
 
