@@ -3,7 +3,7 @@ import HomePageV3 from './homepage-v3.1'
 
 export const metadata: Metadata = {
   title: "PERSPECTA-COMPETENCES - Reconversion Professionnelle & Bilan de Compétences",
-  description: "287 métiers français • Analyse IA GPT-4o • Module handicap inclusif • Matching emploi + formations CPF • Certification blockchain • 49€",
+  description: "287 métiers français • Analyse IA Claude 3.5 • Module handicap inclusif • Matching emploi + formations CPF • Certification blockchain • 49€",
   keywords: "reconversion professionnelle, bilan de compétences, handicap RQTH, formation CPF, analyse IA, AGEFIPH, orientation professionnelle, compétences transférables, France Travail",
   openGraph: {
     title: "PERSPECTA-COMPETENCES - Votre reconversion, étape par étape",

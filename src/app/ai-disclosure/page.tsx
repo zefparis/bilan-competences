@@ -28,7 +28,7 @@ export default function AIDisclosure() {
             <div className="bg-blue-50 dark:bg-blue-950 p-6 rounded-lg mb-6 border border-blue-200 dark:border-blue-800">
               <h3 className="text-xl font-semibold mb-3">🤖 1. Analyse des Compétences Transférables</h3>
               <ul className="space-y-2 text-sm">
-                <li><strong>Technologie :</strong> OpenAI GPT-4o</li>
+                <li><strong>Technologie :</strong> Anthropic Claude 3.5 Haiku</li>
                 <li><strong>Usage :</strong> Analyse vos compétences actuelles vs métier cible</li>
                 <li><strong>Données traitées :</strong> Expériences professionnelles, compétences déclarées, projet professionnel</li>
                 <li><strong>Résultat :</strong> Score de compatibilité (0-100), identification des compétences transférables, gap de compétences avec priorités</li>
@@ -49,7 +49,7 @@ export default function AIDisclosure() {
             <div className="bg-purple-50 dark:bg-purple-950 p-6 rounded-lg mb-6 border border-purple-200 dark:border-purple-800">
               <h3 className="text-xl font-semibold mb-3">📄 3. Génération de Rapports</h3>
               <ul className="space-y-2 text-sm">
-                <li><strong>Technologie :</strong> OpenAI GPT-4o</li>
+                <li><strong>Technologie :</strong> Anthropic Claude 3.5 Haiku</li>
                 <li><strong>Usage :</strong> Synthèse personnalisée de votre bilan de compétences</li>
                 <li><strong>Résultat :</strong> Rapport PDF de 50 pages avec recommandations stratégiques</li>
               </ul>
@@ -87,7 +87,7 @@ export default function AIDisclosure() {
             <ul className="space-y-2 text-sm">
               <li>🔐 Vos données personnelles ne sont jamais utilisées pour entraîner les modèles IA</li>
               <li>🔐 Conformité RGPD : stockage sécurisé, chiffrement, anonymisation</li>
-              <li>🔐 OpenAI respecte des accords de confidentialité stricts (DPA)</li>
+              <li>🔐 Anthropic respecte des accords de confidentialité stricts (DPA) et héberge ses serveurs en Europe</li>
               <li>🔐 Aucune donnée sensible (handicap, santé) transmise à l'IA sans consentement explicite</li>
             </ul>
           </section>
@@ -127,7 +127,7 @@ export default function AIDisclosure() {
           </section>
 
           <p className="text-sm text-muted-foreground mt-8">
-            Dernière mise à jour : Janvier 2025 | Conforme IA Act (UE 2024/1689)
+            Dernière mise à jour : Janvier 2026 | Conforme IA Act (UE 2024/1689)
           </p>
         </div>
       </div>

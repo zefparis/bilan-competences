@@ -111,9 +111,9 @@ export default function CGU() {
               au Règlement européen IA Act (UE 2024/1689) :
             </p>
             <ul className="list-disc ml-6 space-y-2 mb-4">
-              <li>Analyse des compétences transférables (OpenAI GPT-4o)</li>
+              <li>Analyse des compétences transférables (Anthropic Claude 3.5 Haiku)</li>
               <li>Matching emploi et formations (algorithmes propriétaires)</li>
-              <li>Génération de rapports personnalisés (OpenAI GPT-4o)</li>
+              <li>Génération de rapports personnalisés (Anthropic Claude 3.5 Haiku)</li>
             </ul>
 
             <h3 className="text-lg font-semibold mb-3 mt-4">8.2 Classification</h3>

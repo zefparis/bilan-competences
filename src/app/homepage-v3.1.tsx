@@ -393,7 +393,7 @@ export default function HomePageV3() {
                   <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
                 </tr>
                 <tr className="border-b">
-                  <td className="p-4">Analyse IA GPT-4o personnalisée</td>
+                  <td className="p-4">Analyse IA Claude 3.5 personnalisée</td>
                   <td className="text-right p-4">100€</td>
                   <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
                 </tr>

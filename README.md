@@ -1,6 +1,6 @@
-# PERSPECTA-COMPETENCES v3.1 🎯
+# PERSPECTA-COMPETENCES v3.2 🎯
 
-![Version](https://img.shields.io/badge/version-3.1.0-blue) ![Status](https://img.shields.io/badge/status-Production-success) ![License](https://img.shields.io/badge/license-Proprietary-red) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue) ![Prisma](https://img.shields.io/badge/Prisma-5.22-green)
+![Version](https://img.shields.io/badge/version-3.2.0-blue) ![Status](https://img.shields.io/badge/status-Production-success) ![License](https://img.shields.io/badge/license-Proprietary-red) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue) ![Prisma](https://img.shields.io/badge/Prisma-5.22-green)
 
 **Plateforme universelle de reconversion professionnelle et bilan de compétences**
 
@@ -9,7 +9,7 @@
 ## 🚀 En 30 secondes
 
 - ✅ **Bilan de compétences universel** : 287 métiers français (codes ROME)
-- 🤖 **Analyse IA GPT-4o** : Compétences transférables + gap identifié
+- 🤖 **Analyse IA Claude 3.5** : Compétences transférables + gap identifié
 - 💼 **Matching emploi + formations** : API France Travail intégrée
 - 🏆 **Certificat blockchain** : Validation infalsifiable de vos compétences
 - 📄 **PDF Premium 50 pages** : Rapport complet personnalisé
@@ -82,7 +82,7 @@
 | Bilan de compétences classique | 1500-3000€ | ✅ Inclus |
 | Test RIASEC professionnel | 150€ | ✅ Inclus |
 | Évaluation cognitive (4 tests) | 200€ | ✅ Inclus |
-| Analyse IA GPT-4o personnalisée | 100€ | ✅ Inclus |
+| Analyse IA Claude 3.5 personnalisée | 100€ | ✅ Inclus |
 | Recherche formations + emplois | 10h × 50€ | ✅ Automatisé |
 | Certificat blockchain | N/A | ✅ Unique |
 | PDF premium 50 pages | 80€ | ✅ Inclus |
@@ -96,7 +96,47 @@
 
 ---
 
-## 🎯 Nouveautés v3.1 - Accessibilité Universelle
+## 🎯 Nouveautés v3.2 - Qualité & Stabilité (Janvier 2026)
+
+### 🆕 Améliorations Majeures (v3.2)
+
+#### 1. Système de Réinitialisation des Modules Gratuits
+- ✅ **Boutons de reset** sur tous les modules gratuits (Parcours, Expériences, RIASEC, Cognitif)
+- 🔒 **Confirmation sécurisée** avec AlertDialog avant suppression
+- 🔄 **Refresh automatique** des données après réinitialisation
+- 💬 **Notifications toast** pour feedback utilisateur
+- 🎨 **Design cohérent** avec icônes et couleurs d'avertissement
+
+#### 2. Amélioration du Graphique Parcours de Vie
+- 📊 **Échelle simplifiée** : Satisfaction de 0 à 10 (au lieu de -10/+10)
+- 📝 **Liste chronologique** des événements sous le graphique
+- 🎨 **Badges colorés** par type d'événement (Pro, Perso, Formation)
+- 😊 **Emojis de satisfaction** pour meilleure lisibilité
+- ✅ **Cohérence** entre formulaire, graphique et schéma Prisma
+
+#### 3. Score IA Dynamique
+- 🤖 **Calcul en temps réel** basé sur vos vraies données
+- 📊 **4 Dimensions évaluées** :
+  - Complétude (40%) : Nombre de modules terminés
+  - Qualité (30%) : Richesse des réponses et diversité
+  - Cohérence (20%) : Alignement entre modules
+  - Engagement (10%) : Temps passé et certification
+- 🎨 **Code couleur** : Vert (≥80%), Jaune (60-79%), Orange (<60%)
+- 📈 **Détails disponibles** dans la console pour debug
+
+#### 4. Compteur de Modules Corrigé
+- ✅ **7/7 modules** affichés correctement quand tout est complété
+- 🎓 **Certification détectée** automatiquement via API
+- 📊 **Progression à 100%** quand tous les modules sont terminés
+- 🔍 **Logs détaillés** pour chaque module dans la console
+
+#### 5. Corrections Techniques
+- 🐛 **Page Cognitive fixée** : Erreur React #310 résolue (hooks order)
+- 🔐 **Authentification robuste** : Migration vers NextAuth pour l'API cognitive
+- 🎯 **Types TypeScript** : Corrections des casts et enums Prisma
+- 📝 **Logs améliorés** : Meilleure traçabilité des erreurs
+
+### 🆕 Module Accessibilité & Handicap (v3.1)
 
 PERSPECTA-COMPETENCES v3.1 devient la **première plateforme de reconversion inclusive** avec un module dédié aux 2,8 millions de travailleurs handicapés en France.
 
@@ -123,7 +163,7 @@ PERSPECTA-COMPETENCES v3.1 devient la **première plateforme de reconversion inc
 - Timeline : court/moyen/long terme
 
 #### 2. Analyse IA Compétences Transférables
-- **GPT-4o** : Analyse approfondie personnalisée
+- **Claude 3.5 Haiku** : Analyse approfondie personnalisée
 - Compétences transférables : high/medium/low
 - Gap avec priorités : critical/important/nice-to-have
 - **Score compatibilité** : 0-100
@@ -190,10 +230,12 @@ Cette empreinte n'est ni un diagnostic médical, ni une mesure de QI, ni une év
 
 ### Experience Utilisateur
 - **Mode clair/sombre** : Interface adaptative professionnelle
-- **Navigation par onglets** 🆕 : Système d'onglets sticky pour 10 modules
+- **Navigation par onglets** : Système d'onglets sticky pour 10 modules
 - **Paiement Stripe** : Intégration paiement sécurisé (49EUR)
-- **Dashboard progressif** : Suivi avancé de l'avancement (10/10 modules)
+- **Dashboard progressif** : Suivi avancé de l'avancement (7/7 modules) avec Score IA dynamique 🆕
 - **Interface responsive** : Optimisée desktop et mobile
+- **Réinitialisation modules** : Boutons de reset avec confirmation sur modules gratuits 🆕
+- **Graphiques améliorés** : Parcours de vie avec échelle 0-10 et liste chronologique 🆕
 
 ---
 
@@ -228,11 +270,12 @@ Cette empreinte n'est ni un diagnostic médical, ni une mesure de QI, ni une év
 - **Stockage fichiers** : Supabase Storage (avatars utilisateurs)
 
 ### Services externes
-- **AI/ML** : Anthropic Claude 3.5 Sonnet (hébergé EU) pour génération de rapports et analyse compétences transférables 🆕
+- **AI/ML** : Anthropic Claude 3.5 Haiku (hébergé EU) pour génération de rapports et analyse compétences transférables
 - **Paiements** : Stripe (49EUR one-time)
 - **PDF** : @react-pdf/renderer (génération premium côté serveur)
-- **Emploi & Formations** : API France Travail (matching offres et formations avec codes ROME) 🆕
+- **Emploi & Formations** : API France Travail (matching offres et formations avec codes ROME)
 - **Blockchain** : Hash SHA-256 pour certification (Polygon/Ethereum prévu)
+- **Score IA** : Calcul dynamique basé sur complétude, qualité, cohérence et engagement 🆕
 
 ### Outils de developpement
 - **Tests** : Vitest (unitaires), Playwright (E2E)
@@ -279,7 +322,7 @@ pnpm dev
 | `NEXTAUTH_SECRET` | Secret pour NextAuth | ✅ Oui |
 | `NEXT_PUBLIC_SUPABASE_URL` | URL Supabase pour Storage | ✅ Oui |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé publique Supabase | ✅ Oui |
-| `ANTHROPIC_API_KEY` | Clé API Anthropic Claude pour génération rapports | ✅ Oui |
+| `ANTHROPIC_API_KEY` | Clé API Anthropic Claude 3.5 Haiku pour génération rapports | ✅ Oui |
 | `STRIPE_SECRET_KEY` | Clé secrète Stripe | ✅ Oui |
 | `STRIPE_PUBLISHABLE_KEY` | Clé publique Stripe | ✅ Oui |
 | `STRIPE_WEBHOOK_SECRET` | Secret webhook Stripe | ✅ Oui |
@@ -354,7 +397,7 @@ src/
 │   ├── france-travail/         # Integration API France Travail
 │   │   ├── client.ts           # Client OAuth2 + recherche offres/formations 🆕
 │   │   └── rome-codes.ts       # 287 codes ROME tous secteurs 🆕
-│   ├── transferable-skills-analyzer.ts # Analyse IA GPT-4o 🆕
+│   ├── transferable-skills-analyzer.ts # Analyse IA Claude 3.5 🆕
 │   ├── pdf/                    # Systeme generation PDF premium
 │   │   ├── components/         # Composants PDF (RiasecHexagon, ScoreGauge, etc.)
 │   │   ├── templates/          # Pages PDF (Cover, ExecutiveSummary, Part1-4)
@@ -465,7 +508,7 @@ L'application est deployee automatiquement sur Vercel a chaque push sur `main`.
 ### Analyse IA 🆕
 | Endpoint | Methode | Description |
 |----------|---------|-------------|
-| `/api/transferable-skills` | POST | Analyser competences transferables avec GPT-4o |
+| `/api/transferable-skills` | POST | Analyser competences transferables avec Claude 3.5 |
 
 ### Generation PDF
 | Endpoint | Methode | Description |
@@ -503,7 +546,7 @@ L'application est deployee automatiquement sur Vercel a chaque push sur `main`.
 ### Coverage Actuel
 - **Unitaires (Vitest)** : 45% coverage (objectif 80%)
 - **E2E (Playwright)** : Parcours critiques couverts
-- **Tests IA** : Prompts GPT-4o validés manuellement
+- **Tests IA** : Prompts Claude 3.5 validés manuellement
 
 ### Commandes Tests
 ```bash
@@ -637,7 +680,7 @@ pnpm db:migrate       # Appliquer migrations
   - Informations CPF, coût, certification
   - Filtrage ROME + localisation
   
-- **Analyse IA GPT-4o** 🆕
+- **Analyse IA Claude 3.5** 🆕
   - Score compatibilité (0-100)
   - Compétences transférables identifiées
   - Gap avec priorités
@@ -741,7 +784,7 @@ PERSPECTA-COMPETENCES est **propriétaire** mais nous envisageons d'ouvrir certa
 - 📍 Alès, France
 - 📧 contact@ia-solution.fr
 - 🌐 [ia-solution.fr](https://ia-solution.fr)
-- **Version** : 3.1.0
+- **Version** : 3.2.0
 - **Statut** : ✅ Production Ready
 
 **Support utilisateurs**
@@ -766,9 +809,9 @@ PERSPECTA-COMPETENCES est conforme au Règlement européen sur l'Intelligence Ar
 - **Obligations** : Transparence, information utilisateur, contrôle humain
 
 ### Systèmes IA
-1. **Analyse compétences** : OpenAI GPT-4o
+1. **Analyse compétences** : Anthropic Claude 3.5 Haiku
 2. **Matching emploi** : Algorithmes propriétaires
-3. **Génération rapports** : OpenAI GPT-4o
+3. **Génération rapports** : Anthropic Claude 3.5 Haiku
 
 ### Droits utilisateurs
 ✅ Information complète sur usage IA  

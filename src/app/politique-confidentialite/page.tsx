@@ -119,8 +119,8 @@ export default function PolitiqueConfidentialite() {
 
             <h3 className="text-lg font-semibold mb-3 mt-4">9.2 Fournisseur IA</h3>
             <p className="mb-2">
-              Nous utilisons OpenAI (GPT-4o) comme prestataire IA. OpenAI est conforme RGPD 
-              et a signé un Data Processing Agreement (DPA) garantissant :
+              Nous utilisons Anthropic (Claude 3.5 Haiku) comme prestataire IA. Anthropic est conforme RGPD, 
+              héberge ses serveurs en Europe et a signé un Data Processing Agreement (DPA) garantissant :
             </p>
             <ul className="list-disc ml-6 space-y-2 mb-4">
               <li>Non-utilisation de vos données pour entraîner leurs modèles</li>
