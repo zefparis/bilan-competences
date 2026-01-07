@@ -2,17 +2,16 @@
 
 "use client"
 
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot } from "recharts"
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import { useEffect, useState } from "react"
 import { getLifeEvents } from "@/app/actions"
 import { useActiveAssessment } from "@/lib/active-assessment"
 
 type ChartDataPoint = {
   year: number
-  satisfaction: number
-  name: string
-  category: string
-  isInterpolated: boolean
+  pro: number | null
+  perso: number | null
+  formation: number | null
 }
 
 type LifeEvent = {
@@ -28,38 +27,6 @@ function sentimentToSatisfaction(sentiment: number): number {
   return Math.round(((sentiment + 10) / 2) * 10) / 10
 }
 
-function interpolateData(data: ChartDataPoint[]): ChartDataPoint[] {
-  if (data.length < 2) return data
-  
-  const interpolated: ChartDataPoint[] = []
-  
-  for (let i = 0; i < data.length - 1; i++) {
-    const current = data[i]
-    const next = data[i + 1]
-    
-    interpolated.push(current)
-    
-    const yearGap = next.year - current.year
-    if (yearGap > 2) {
-      for (let j = 1; j < yearGap; j++) {
-        const ratio = j / yearGap
-        const interpolatedSat = current.satisfaction + (next.satisfaction - current.satisfaction) * ratio
-        
-        interpolated.push({
-          year: current.year + j,
-          satisfaction: Math.round(interpolatedSat * 10) / 10,
-          name: '',
-          category: 'interpolated',
-          isInterpolated: true
-        })
-      }
-    }
-  }
-  
-  interpolated.push(data[data.length - 1])
-  return interpolated
-}
-
 // ✅ AJOUTER refreshKey comme prop
 interface LifePathChartProps {
   refreshKey?: number
@@ -70,64 +37,67 @@ export function LifePathChart({ refreshKey }: LifePathChartProps) {
   const [events, setEvents] = useState<LifeEvent[]>([])
   const [chartData, setChartData] = useState<ChartDataPoint[]>([])
 
-  // ✅ AJOUTER refreshKey dans les dépendances
   useEffect(() => {
     async function fetchEvents() {
       if (!activeAssessment?.lifePathId) return
       
       try {
         const fetchedEvents = await getLifeEvents(activeAssessment.lifePathId)
-        console.log('📊 Événements chargés:', fetchedEvents.length) // Debug
+        console.log('📊 Événements chargés:', fetchedEvents.length)
         setEvents(fetchedEvents)
         
-        let data: ChartDataPoint[] = fetchedEvents.map((event: LifeEvent) => ({
-          year: event.year,
-          satisfaction: sentimentToSatisfaction(event.sentiment),
-          name: event.title,
-          category: event.type.toLowerCase(),
-          isInterpolated: false
-        }))
-        
-        if (data.length === 0) {
+        if (fetchedEvents.length === 0) {
           setChartData([])
           return
         }
+
+        const yearMap = new Map<number, ChartDataPoint>()
         
-        if (data.length < 3) {
-          const firstYear = data[0]?.year || new Date().getFullYear() - 10
-          const lastYear = new Date().getFullYear()
+        fetchedEvents.forEach((event: LifeEvent) => {
+          const year = event.year
+          const satisfaction = sentimentToSatisfaction(event.sentiment)
           
-          if (!data.find(d => d.year === firstYear)) {
-            data.unshift({
-              year: firstYear,
-              satisfaction: 5,
-              name: 'Début',
-              category: 'milestone',
-              isInterpolated: false
+          if (!yearMap.has(year)) {
+            yearMap.set(year, {
+              year,
+              pro: null,
+              perso: null,
+              formation: null
             })
           }
           
-          if (!data.find(d => d.year === lastYear)) {
-            data.push({
-              year: lastYear,
-              satisfaction: 7,
-              name: "Aujourd'hui",
-              category: 'milestone',
-              isInterpolated: false
-            })
+          const dataPoint = yearMap.get(year)!
+          
+          switch (event.type) {
+            case 'PRO':
+              dataPoint.pro = dataPoint.pro === null 
+                ? satisfaction 
+                : (dataPoint.pro + satisfaction) / 2
+              break
+            case 'PERSO':
+              dataPoint.perso = dataPoint.perso === null 
+                ? satisfaction 
+                : (dataPoint.perso + satisfaction) / 2
+              break
+            case 'FORMATION':
+              dataPoint.formation = dataPoint.formation === null 
+                ? satisfaction 
+                : (dataPoint.formation + satisfaction) / 2
+              break
           }
-        }
+        })
+
+        const data = Array.from(yearMap.values()).sort((a, b) => a.year - b.year)
+        const interpolated = interpolateAllCurves(data)
         
-        data.sort((a, b) => a.year - b.year)
-        const smoothData = interpolateData(data)
-        setChartData(smoothData)
+        setChartData(interpolated)
       } catch (error) {
         console.error('Error fetching life events:', error)
       }
     }
     
     fetchEvents()
-  }, [activeAssessment?.lifePathId, refreshKey]) // ✅ AJOUTER refreshKey
+  }, [activeAssessment?.lifePathId, refreshKey])
 
   if (isLoading) {
     return (
@@ -150,21 +120,46 @@ export function LifePathChart({ refreshKey }: LifePathChartProps) {
     )
   }
 
+  const stats = {
+    pro: events.filter(e => e.type === 'PRO').length,
+    perso: events.filter(e => e.type === 'PERSO').length,
+    formation: events.filter(e => e.type === 'FORMATION').length,
+  }
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/20">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-blue-500" />
+            <span className="text-sm text-gray-400">Professionnel</span>
+          </div>
+          <p className="text-2xl font-bold text-blue-500 mt-2">{stats.pro}</p>
+        </div>
+        
+        <div className="bg-green-500/10 rounded-lg p-4 border border-green-500/20">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-green-500" />
+            <span className="text-sm text-gray-400">Personnel</span>
+          </div>
+          <p className="text-2xl font-bold text-green-500 mt-2">{stats.perso}</p>
+        </div>
+        
+        <div className="bg-amber-500/10 rounded-lg p-4 border border-amber-500/20">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-amber-500" />
+            <span className="text-sm text-gray-400">Formation</span>
+          </div>
+          <p className="text-2xl font-bold text-amber-500 mt-2">{stats.formation}</p>
+        </div>
+      </div>
+
       <div className="h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
+          <LineChart
             data={chartData}
             margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
           >
-            <defs>
-              <linearGradient id="satisfactionGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#ef4444" stopOpacity={0.8}/>
-              </linearGradient>
-            </defs>
-            
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             
             <XAxis 
@@ -176,7 +171,12 @@ export function LifePathChart({ refreshKey }: LifePathChartProps) {
             <YAxis 
               stroke="#9ca3af"
               domain={[0, 10]}
-              label={{ value: 'Satisfaction (0-10)', angle: -90, position: 'insideLeft', style: { fill: '#9ca3af' } }}
+              label={{ 
+                value: 'Satisfaction (0-10)', 
+                angle: -90, 
+                position: 'insideLeft', 
+                style: { fill: '#9ca3af' } 
+              }}
             />
             
             <Tooltip 
@@ -186,53 +186,122 @@ export function LifePathChart({ refreshKey }: LifePathChartProps) {
                 borderRadius: '8px'
               }}
               labelStyle={{ color: '#f3f4f6' }}
-              itemStyle={{ color: '#22c55e' }}
-              formatter={(value: number, name: string, props: any) => {
-                const event = props.payload
-                return [
-                  `${value}/10`,
-                  event.name ? event.name : 'Satisfaction'
-                ]
+              formatter={(value: any) => {
+                if (value === null || value === undefined) return ['N/A', '']
+                return [`${value}/10`, '']
               }}
             />
             
-            <Area 
-              type="monotone" 
-              dataKey="satisfaction" 
-              stroke="#22c55e"
-              strokeWidth={3}
-              fill="url(#satisfactionGradient)"
-              fillOpacity={0.6}
+            <Legend 
+              wrapperStyle={{ paddingTop: '20px' }}
+              iconType="line"
             />
             
-            {chartData
-              .filter(d => !d.isInterpolated)
-              .map((event, idx) => (
-                <ReferenceDot
-                  key={`${event.year}-${idx}`} // ✅ Clé unique
-                  x={event.year}
-                  y={event.satisfaction}
-                  r={6}
-                  fill="#22c55e"
-                  stroke="#fff"
-                  strokeWidth={2}
-                />
-              ))}
-          </AreaChart>
+            <Line 
+              type="monotone" 
+              dataKey="pro" 
+              name="Professionnel"
+              stroke="#3b82f6"
+              strokeWidth={3}
+              dot={{ fill: '#3b82f6', r: 5 }}
+              activeDot={{ r: 7 }}
+              connectNulls={false}
+            />
+            
+            <Line 
+              type="monotone" 
+              dataKey="perso" 
+              name="Personnel"
+              stroke="#22c55e"
+              strokeWidth={3}
+              dot={{ fill: '#22c55e', r: 5 }}
+              activeDot={{ r: 7 }}
+              connectNulls={false}
+            />
+            
+            <Line 
+              type="monotone" 
+              dataKey="formation" 
+              name="Formation"
+              stroke="#f59e0b"
+              strokeWidth={3}
+              dot={{ fill: '#f59e0b', r: 5 }}
+              activeDot={{ r: 7 }}
+              connectNulls={false}
+            />
+          </LineChart>
         </ResponsiveContainer>
       </div>
       
-      <div className="text-sm text-gray-400">
+      <div className="text-sm text-gray-400 space-y-2">
         <p>
-          Cette courbe représente votre satisfaction globale au fil des années, 
-          basée sur les événements que vous avez déclarés (échelle 0-10).
+          Ces courbes représentent votre satisfaction dans chaque domaine au fil des années (échelle 0-10).
         </p>
-        {events.length < 3 && (
+        <ul className="list-disc list-inside space-y-1 text-xs">
+          <li><span className="text-blue-500">●</span> <strong>Professionnel</strong> : carrière, emploi, projets pro</li>
+          <li><span className="text-green-500">●</span> <strong>Personnel</strong> : vie privée, famille, loisirs</li>
+          <li><span className="text-amber-500">●</span> <strong>Formation</strong> : études, certifications, apprentissages</li>
+        </ul>
+        {events.length < 5 && (
           <p className="text-amber-500 mt-2">
-            ⚠️ Ajoutez plus d'événements pour une visualisation plus précise
+            ⚠️ Ajoutez plus d'événements pour une visualisation plus riche
           </p>
         )}
       </div>
     </div>
   )
+}
+
+function interpolateAllCurves(data: ChartDataPoint[]): ChartDataPoint[] {
+  if (data.length < 2) return data
+  
+  const result: ChartDataPoint[] = []
+  const minYear = data[0].year
+  const maxYear = data[data.length - 1].year
+  
+  for (let year = minYear; year <= maxYear; year++) {
+    const existing = data.find(d => d.year === year)
+    
+    if (existing) {
+      result.push({ ...existing })
+    } else {
+      result.push({
+        year,
+        pro: interpolateValue(data, year, 'pro'),
+        perso: interpolateValue(data, year, 'perso'),
+        formation: interpolateValue(data, year, 'formation')
+      })
+    }
+  }
+  
+  return result
+}
+
+function interpolateValue(
+  data: ChartDataPoint[], 
+  targetYear: number, 
+  key: 'pro' | 'perso' | 'formation'
+): number | null {
+  let before: ChartDataPoint | null = null
+  let after: ChartDataPoint | null = null
+  
+  for (const point of data) {
+    if (point.year < targetYear && point[key] !== null) {
+      before = point
+    }
+    if (point.year > targetYear && point[key] !== null && !after) {
+      after = point
+      break
+    }
+  }
+  
+  if (!before && !after) return null
+  if (!before) return after![key]
+  if (!after) return before[key]
+  
+  const beforeVal = before[key]!
+  const afterVal = after[key]!
+  const ratio = (targetYear - before.year) / (after.year - before.year)
+  
+  return Math.round((beforeVal + (afterVal - beforeVal) * ratio) * 10) / 10
 }
