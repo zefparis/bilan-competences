@@ -527,6 +527,7 @@ export default function HomePageV3() {
                 <Link href="/mentions-legales" className="hover:text-foreground transition-colors">Mentions légales</Link>
                 <Link href="/politique-confidentialite" className="hover:text-foreground transition-colors">Politique de confidentialité</Link>
                 <Link href="/cgu" className="hover:text-foreground transition-colors">CGU</Link>
+                <Link href="/ai-disclosure" className="hover:text-foreground transition-colors">Utilisation de l'IA</Link>
                 <Link href="/methodology" className="hover:text-foreground transition-colors">Méthodologie</Link>
               </div>
             </div>

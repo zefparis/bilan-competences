@@ -103,7 +103,53 @@ export default function CGU() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">8. Données personnelles</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">8. Utilisation de l'Intelligence Artificielle</h2>
+            
+            <h3 className="text-lg font-semibold mb-3 mt-4">8.1 Systèmes IA déployés</h3>
+            <p className="mb-4">
+              PERSPECTA-COMPETENCES utilise des systèmes d'intelligence artificielle conformes 
+              au Règlement européen IA Act (UE 2024/1689) :
+            </p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Analyse des compétences transférables (OpenAI GPT-4o)</li>
+              <li>Matching emploi et formations (algorithmes propriétaires)</li>
+              <li>Génération de rapports personnalisés (OpenAI GPT-4o)</li>
+            </ul>
+
+            <h3 className="text-lg font-semibold mb-3 mt-4">8.2 Classification</h3>
+            <p className="mb-4">
+              Notre système est classé <strong>IA à risque limité</strong>. Nous respectons 
+              nos obligations de transparence et vous garantissons le contrôle final.
+            </p>
+
+            <h3 className="text-lg font-semibold mb-3 mt-4">8.3 Vos droits</h3>
+            <p className="mb-2">Conformément à l'IA Act, vous disposez des droits suivants :</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Droit à l'information sur l'utilisation de l'IA</li>
+              <li>Droit de refuser l'analyse IA (bilan manuel possible)</li>
+              <li>Droit de contester les résultats générés par l'IA</li>
+              <li>Droit d'accès à vos données traitées</li>
+              <li>Support humain disponible</li>
+            </ul>
+
+            <h3 className="text-lg font-semibold mb-3 mt-4">8.4 Limites</h3>
+            <p className="mb-4">
+              L'IA peut commettre des erreurs. Les recommandations sont indicatives et ne 
+              constituent jamais des décisions automatisées définitives. Vous restez maître 
+              de vos choix professionnels.
+            </p>
+
+            <h3 className="text-lg font-semibold mb-3 mt-4">8.5 Information détaillée</h3>
+            <p className="mb-4">
+              Pour une information complète sur notre usage de l'IA, consultez notre 
+              <Link href="/ai-disclosure" className="text-primary hover:underline ml-1">
+                page de divulgation IA
+              </Link>.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-primary">9. Données personnelles</h2>
             <p>
               Le traitement des données personnelles est régi par notre 
               <Link href="/politique-confidentialite" className="text-primary hover:underline ml-1">
@@ -114,7 +160,7 @@ export default function CGU() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">9. Modification des CGU</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">10. Modification des CGU</h2>
             <p>
               ia-solution se réserve le droit de modifier les présentes CGU à tout moment. 
               Les utilisateurs seront informés de toute modification substantielle. 
@@ -123,7 +169,7 @@ export default function CGU() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">10. Droit applicable et juridiction</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">11. Droit applicable et juridiction</h2>
             <p>
               Les présentes CGU sont régies par le droit français. En cas de litige, et après tentative 
               de résolution amiable, les tribunaux français seront seuls compétents.
@@ -131,7 +177,7 @@ export default function CGU() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">11. Contact</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">12. Contact</h2>
             <p>
               Pour toute question concernant ces CGU : 
               <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline ml-1">contact@ia-solution.fr</a>

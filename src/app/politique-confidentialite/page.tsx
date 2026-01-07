@@ -106,16 +106,47 @@ export default function PolitiqueConfidentialite() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">9. Transfert de données</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">9. Traitement par Intelligence Artificielle</h2>
+            
+            <h3 className="text-lg font-semibold mb-3 mt-4">9.1 Données traitées par IA</h3>
+            <p className="mb-2">Les données suivantes peuvent être traitées par nos systèmes IA :</p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Expériences professionnelles</li>
+              <li>Compétences déclarées</li>
+              <li>Objectifs professionnels</li>
+              <li>Résultats des tests cognitifs et RIASEC</li>
+            </ul>
+
+            <h3 className="text-lg font-semibold mb-3 mt-4">9.2 Fournisseur IA</h3>
+            <p className="mb-2">
+              Nous utilisons OpenAI (GPT-4o) comme prestataire IA. OpenAI est conforme RGPD 
+              et a signé un Data Processing Agreement (DPA) garantissant :
+            </p>
+            <ul className="list-disc ml-6 space-y-2 mb-4">
+              <li>Non-utilisation de vos données pour entraîner leurs modèles</li>
+              <li>Suppression des données après traitement</li>
+              <li>Chiffrement des communications</li>
+              <li>Respect du RGPD européen</li>
+            </ul>
+
+            <h3 className="text-lg font-semibold mb-3 mt-4">9.3 Données sensibles</h3>
+            <p className="mb-4">
+              Les données sensibles (handicap, santé) ne sont <strong>jamais</strong> 
+              transmises à l'IA sans votre consentement explicite et séparé.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-4 text-primary">10. Transfert de données</h2>
             <p>
               Vos données peuvent être hébergées sur des serveurs situés en dehors de l'Union Européenne 
-              (notamment aux États-Unis via notre hébergeur Vercel). Ces transferts sont encadrés par 
+              (notamment aux États-Unis via notre hébergeur et nos prestataires IA). Ces transferts sont encadrés par 
               des garanties appropriées conformément au RGPD.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">10. Cookies</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">11. Cookies</h2>
             <p className="mb-4">
               Notre site utilise <strong>uniquement des cookies essentiels</strong> au fonctionnement du service :
             </p>
@@ -142,7 +173,7 @@ export default function PolitiqueConfidentialite() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">12. Contact</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">13. Contact</h2>
             <p>
               Pour toute question concernant cette politique de confidentialité : 
               <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline ml-1">contact@ia-solution.fr</a>

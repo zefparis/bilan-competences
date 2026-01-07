@@ -7,6 +7,7 @@ import { Toaster as SonnerToaster } from 'sonner'
 import { AuthSessionProvider } from '@/components/session-provider'
 import { ReactQueryProvider } from '@/components/query-provider'
 import { CookieBanner } from '@/components/cookie-banner'
+import { AIConsentBanner } from '@/components/ai-consent-banner'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -59,6 +60,7 @@ export default function RootLayout({
           <Toaster />
           <SonnerToaster richColors />
           <CookieBanner />
+          <AIConsentBanner />
         </ThemeProvider>
       </body>
     </html>
