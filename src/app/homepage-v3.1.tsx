@@ -20,7 +20,7 @@ export default function HomePageV3() {
           <nav className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
               <Award className="h-6 w-6 text-primary" />
-              <span className="font-bold text-xl">PERSPECTA</span>
+              <span className="font-bold text-xl">PERSPECTA-COMPETENCES</span>
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
@@ -125,7 +125,7 @@ export default function HomePageV3() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              PERSPECTA s'adapte à votre situation
+              PERSPECTA-COMPETENCES s'adapte à votre situation
             </h2>
             <p className="text-lg text-muted-foreground">
               Que vous soyez en reconversion, en évolution ou en recherche d'emploi
@@ -230,7 +230,7 @@ export default function HomePageV3() {
               Ils ont réussi leur reconversion
             </h2>
             <p className="text-lg text-muted-foreground">
-              Témoignages réels d'utilisateurs PERSPECTA
+              Témoignages réels d'utilisateurs PERSPECTA-COMPETENCES
             </p>
           </div>
 
@@ -247,7 +247,7 @@ export default function HomePageV3() {
                   </div>
                 </div>
                 <p className="text-sm italic">
-                  "À 45 ans, je pensais être coincé. PERSPECTA m'a montré que mes compétences en lecture de plans étaient transférables. 6 mois après, nouveau job !"
+                  "À 45 ans, je pensais être coincé. PERSPECTA-COMPETENCES m'a montré que mes compétences en lecture de plans étaient transférables. 6 mois après, nouveau job !"
                 </p>
               </CardContent>
             </Card>
@@ -363,7 +363,7 @@ export default function HomePageV3() {
               Un seul tarif, tout inclus
             </h2>
             <p className="text-lg text-muted-foreground">
-              Valeur marché ~2000€ • Prix PERSPECTA : 49€
+              Valeur marché ~2000€ • Prix PERSPECTA-COMPETENCES : 49€
             </p>
           </div>
 
@@ -373,7 +373,7 @@ export default function HomePageV3() {
                 <tr className="border-b-2">
                   <th className="text-left p-4 font-semibold">Prestation</th>
                   <th className="text-right p-4 font-semibold">Valeur marché</th>
-                  <th className="text-center p-4 font-semibold">PERSPECTA</th>
+                  <th className="text-center p-4 font-semibold">PERSPECTA-COMPETENCES</th>
                 </tr>
               </thead>
               <tbody>
@@ -493,7 +493,7 @@ export default function HomePageV3() {
             Prêt à changer de vie professionnelle ?
           </h2>
           <p className="text-xl mb-8 text-blue-100">
-            Rejoignez les centaines de personnes qui ont réussi leur reconversion avec PERSPECTA
+            Rejoignez les centaines de personnes qui ont réussi leur reconversion avec PERSPECTA-COMPETENCES
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" asChild>
@@ -515,7 +515,7 @@ export default function HomePageV3() {
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-              <span className="font-semibold text-lg">PERSPECTA</span>
+              <span className="font-semibold text-lg">PERSPECTA-COMPETENCES</span>
               <p className="mt-2 text-sm text-muted-foreground">
                 Plateforme universelle de reconversion professionnelle et bilan de compétences.
               </p>
@@ -544,7 +544,7 @@ export default function HomePageV3() {
           </div>
 
           <div className="pt-8 border-t text-center text-sm text-muted-foreground">
-            <p>© 2025 PERSPECTA by ia-solution. Tous droits réservés.</p>
+            <p>© 2025 PERSPECTA-COMPETENCES by ia-solution. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
