@@ -53,7 +53,7 @@ export default function PaymentSuccessPage() {
                 Paiement confirmé
               </h1>
               <p className="text-muted-foreground">
-                Votre bilan PERSPECTA est maintenant débloqué.
+                Votre bilan PERSPECTA-COMPETENCES est maintenant débloqué.
                 Vous avez accès à l'ensemble des modules et à votre synthèse stratégique.
               </p>
             </div>

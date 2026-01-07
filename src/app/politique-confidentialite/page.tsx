@@ -21,7 +21,7 @@ export default function PolitiqueConfidentialite() {
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">1. Introduction</h2>
             <p className="mb-4">
-              ia-solution, éditeur de PERSPECTA, s'engage à protéger la vie privée des utilisateurs de son site. 
+              ia-solution, éditeur de PERSPECTA-COMPETENCES, s'engage à protéger la vie privée des utilisateurs de son site. 
               Cette politique de confidentialité explique comment nous collectons, utilisons et protégeons vos 
               données personnelles conformément au Règlement Général sur la Protection des Données (RGPD).
             </p>

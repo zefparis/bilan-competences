@@ -1,4 +1,4 @@
-# PERSPECTA v3.1 🎯
+# PERSPECTA-COMPETENCES v3.1 🎯
 
 ![Version](https://img.shields.io/badge/version-3.1.0-blue) ![Status](https://img.shields.io/badge/status-production-green) ![License](https://img.shields.io/badge/license-proprietary-red)
 
@@ -25,7 +25,7 @@
 ### Scénario 1 : Plombier → Technicien de maintenance
 **Jean, 45 ans, 20 ans d'expérience en plomberie, problèmes de dos**
 
-**Résultats PERSPECTA** :
+**Résultats PERSPECTA-COMPETENCES** :
 - ✅ Score compatibilité : **78/100**
 - 🎯 Compétences transférables : Lecture de plans, Diagnostic panne, Relation client, Autonomie
 - 📊 Gap : Électricité industrielle, Automatismes
@@ -35,7 +35,7 @@
 ### Scénario 2 : Développeur Junior → Data Analyst
 **Marie, 2 ans en dev web, veut pivoter vers la data**
 
-**Résultats PERSPECTA** :
+**Résultats PERSPECTA-COMPETENCES** :
 - ✅ Score compatibilité : **85/100**
 - 🎯 Compétences transférables : Python, SQL, Logique algorithmique, Git
 - 📊 Gap : Machine Learning, Statistiques avancées, Visualisation données
@@ -45,7 +45,7 @@
 ### Scénario 3 : Assistant RH → Conseiller Insertion (Handicap)
 **Sophie, RQTH, 5 ans en RH, souhaite accompagner personnes handicapées**
 
-**Résultats PERSPECTA** :
+**Résultats PERSPECTA-COMPETENCES** :
 - ✅ Score compatibilité : **92/100**
 - 🎯 Compétences transférables : Écoute active, Gestion administrative, Connaissance droit social
 - 📊 Gap : Législation handicap, Techniques d'accompagnement
@@ -58,7 +58,7 @@
 
 ### Ce que vous recevez
 
-| Prestation | Valeur marché | PERSPECTA |
+| Prestation | Valeur marché | PERSPECTA-COMPETENCES |
 |------------|---------------|-----------|
 | Bilan de compétences classique | 1500-3000€ | ✅ Inclus |
 | Test RIASEC professionnel | 150€ | ✅ Inclus |
@@ -79,7 +79,7 @@
 
 ## 🎯 Nouveautés v3.1 - Accessibilité Universelle
 
-PERSPECTA v3.1 devient la **première plateforme de reconversion inclusive** avec un module dédié aux 2,8 millions de travailleurs handicapés en France.
+PERSPECTA-COMPETENCES v3.1 devient la **première plateforme de reconversion inclusive** avec un module dédié aux 2,8 millions de travailleurs handicapés en France.
 
 ### 🆕 Module Accessibilité & Handicap (v3.1)
 
@@ -123,7 +123,7 @@ PERSPECTA v3.1 devient la **première plateforme de reconversion inclusive** ave
 
 ## Empreinte cognitive
 
-PERSPECTA modélise une empreinte cognitive fonctionnelle : un ensemble d'indicateurs comportementaux décrivant la manière dont une personne traite l'information, prend des décisions et s'adapte à un contexte de travail.
+PERSPECTA-COMPETENCES modélise une empreinte cognitive fonctionnelle : un ensemble d'indicateurs comportementaux décrivant la manière dont une personne traite l'information, prend des décisions et s'adapte à un contexte de travail.
 
 Cette empreinte n'est ni un diagnostic médical, ni une mesure de QI, ni une évaluation clinique : elle sert uniquement d'outil d'orientation et de compréhension.
 
@@ -139,7 +139,7 @@ Cette empreinte n'est ni un diagnostic médical, ni une mesure de QI, ni une év
 3. **Tri des Valeurs** : Hiérarchisation des valeurs fondamentales
 4. **Test RIASEC** : Profil professionnel selon les 6 types Holland
 5. **Profil Cognitif** : Questionnaire sur les préférences cognitives (Form, Color, Volume, Sound)
-6. **Évaluation Cognitive PERSPECTA** : Tests comportementaux + signature cognitive
+6. **Évaluation Cognitive PERSPECTA-COMPETENCES** : Tests comportementaux + signature cognitive
 
 #### Modules Premium (7-11)
 7. **Certification Professionnelle** : Tests techniques + Certificat blockchain + Matching emploi
@@ -148,7 +148,7 @@ Cette empreinte n'est ni un diagnostic médical, ni une mesure de QI, ni une év
 9. **Formations** 🆕 : Catalogue formations avec financement CPF
 10. **Rapport Final** : Synthèse PDF complète
 
-### Évaluation Cognitive PERSPECTA
+### Évaluation Cognitive PERSPECTA-COMPETENCES
 - **4 Tests comportementaux** : Stroop, Temps de réaction, Trail Making, RAN Visuel
 - **Signature cognitive** : Empreinte unique basée sur 5 dimensions (Contrôle inhibiteur, Vitesse de traitement, Flexibilité cognitive, Fluidité d'accès, Dérive attentionnelle)
 - **Profil RIASEC** : 6 dimensions Holland (Réaliste, Investigateur, Artistique, Social, Entreprenant, Conventionnel)
@@ -156,7 +156,7 @@ Cette empreinte n'est ni un diagnostic médical, ni une mesure de QI, ni une év
 ### Certification Professionnelle (Module 7)
 - **45 Questions techniques** : 4 blocs (Compétences objectives, Style cognitif, Scénarios pratiques, Questions ouvertes)
 - **Scoring intelligent** : Évaluation DEV, DATA, CYBER, INFRA avec pondération et détection d'incohérences
-- **Enrichissement automatique** : Intégration des résultats RIASEC et profil cognitif PERSPECTA pour plus de précision
+- **Enrichissement automatique** : Intégration des résultats RIASEC et profil cognitif PERSPECTA-COMPETENCES pour plus de précision
 - **Certificat blockchain** : Hash SHA-256 infalsifiable avec URL de vérification publique
 - **Matching emploi** : Intégration API France Travail avec codes ROME et score de compatibilité
 - **10 Profils professionnels** : Architecte Logiciel, Data Scientist, Security Engineer, DevOps/SRE, Backend/Frontend/Full Stack Developer, Cloud Architect, ML Engineer
@@ -425,7 +425,7 @@ L'application est deployee automatiquement sur Vercel a chaque push sur `main`.
 - `/cgu` - Conditions generales d'utilisation
 - `/methodologie` - Cadre methodologique et ethique
 
-> **Important** : PERSPECTA n'est pas concu pour le recrutement ou l'evaluation de candidats. C'est un outil d'orientation personnelle.
+> **Important** : PERSPECTA-COMPETENCES n'est pas concu pour le recrutement ou l'evaluation de candidats. C'est un outil d'orientation personnelle.
 
 ---
 
@@ -494,14 +494,14 @@ pnpm db:migrate       # Appliquer migrations
 - [ ] Financement CPF intégré (paiement direct)
 - [ ] Suivi post-reconversion (6 mois)
 - [ ] Communauté entraide utilisateurs
-- [ ] Label "Entreprise Inclusive PERSPECTA"
+- [ ] Label "Entreprise Inclusive PERSPECTA-COMPETENCES"
 
 ---
 
 ## Mises à jour récentes
 
 ### v3.1.0 (Janvier 2025) - ♿ Accessibilité Universelle
-**Impact social** : PERSPECTA devient la première plateforme de reconversion inclusive
+**Impact social** : PERSPECTA-COMPETENCES devient la première plateforme de reconversion inclusive
 
 - **Module 8.5 - Accessibilité & Handicap** 🆕
   - Déclaration confidentielle (7 types de handicap)
@@ -551,7 +551,7 @@ pnpm db:migrate       # Appliquer migrations
 ### v2.0.0 (Janvier 2026)
 - **Module 7 - Certification Professionnelle** : Nouveau module complet
   - 45 questions techniques en 4 blocs
-  - Scoring intelligent avec enrichissement RIASEC + Profil Cognitif PERSPECTA
+  - Scoring intelligent avec enrichissement RIASEC + Profil Cognitif PERSPECTA-COMPETENCES
   - 10 profils professionnels tech
   - Certificat blockchain SHA-256
   - Matching emploi API France Travail
@@ -618,15 +618,15 @@ pnpm db:migrate       # Appliquer migrations
 
 ## 🏆 Engagement Social
 
-PERSPECTA s'engage à :
+PERSPECTA-COMPETENCES s'engage à :
 1. **Inclusion** : Rendre la reconversion accessible à tous
 2. **Non-discrimination** : Garantir égalité des chances
 3. **Valorisation** : Mettre en avant les compétences compensatoires
 4. **Accompagnement** : Orienter vers les bonnes ressources
 
 > "Le handicap n'est pas une limite, c'est une différence qui enrichit."
-> — PERSPECTA, plateforme universelle de reconversion professionnelle
+> — PERSPECTA-COMPETENCES, plateforme universelle de reconversion professionnelle
 
 ---
 
-Copyright 2025 PERSPECTA by ia-solution. Tous droits réservés.
+Copyright 2025 PERSPECTA-COMPETENCES by ia-solution. Tous droits réservés.

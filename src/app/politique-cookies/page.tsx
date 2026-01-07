@@ -31,9 +31,9 @@ export default function PolitiqueCookies() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">2. Les cookies utilisés par PERSPECTA</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">2. Les cookies utilisés par PERSPECTA-COMPETENCES</h2>
             <p className="mb-4">
-              PERSPECTA utilise <strong>uniquement des cookies strictement nécessaires</strong> au fonctionnement 
+              PERSPECTA-COMPETENCES utilise <strong>uniquement des cookies strictement nécessaires</strong> au fonctionnement 
               du site. Nous n'utilisons aucun cookie de tracking, d'analyse comportementale ou publicitaire.
             </p>
 
@@ -99,7 +99,7 @@ export default function PolitiqueCookies() {
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">4. Cookies tiers</h2>
             <p className="mb-4">
-              PERSPECTA n'utilise <strong>aucun cookie tiers</strong> à des fins de :
+              PERSPECTA-COMPETENCES n'utilise <strong>aucun cookie tiers</strong> à des fins de :
             </p>
             <ul className="list-disc ml-6 space-y-2">
               <li>Publicité ciblée</li>

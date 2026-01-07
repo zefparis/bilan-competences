@@ -65,7 +65,7 @@ export default function PricingPage() {
         <div className="container mx-auto px-6">
           <nav className="flex h-16 items-center justify-between">
             <Link href="/" className="font-semibold text-lg text-primary">
-              PERSPECTA
+              PERSPECTA-COMPETENCES
             </Link>
             <Link 
               href="/auth/signin"
@@ -103,7 +103,7 @@ export default function PricingPage() {
 
             {/* Title & Price */}
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              Bilan PERSPECTA — Analyse complète
+              Bilan PERSPECTA-COMPETENCES — Analyse complète
             </h2>
             <div className="flex items-baseline gap-2 mb-6">
               <span className="text-5xl font-bold text-primary">49 €</span>
@@ -171,7 +171,7 @@ export default function PricingPage() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-border">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>© 2025 PERSPECTA. Tous droits réservés.</p>
+          <p>© 2025 PERSPECTA-COMPETENCES. Tous droits réservés.</p>
           <div className="flex gap-6">
             <Link href="/mentions-legales" className="hover:text-foreground transition-colors">
               Mentions légales

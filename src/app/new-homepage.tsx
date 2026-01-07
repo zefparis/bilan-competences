@@ -22,7 +22,7 @@ export default function NewHomePage() {
           <nav className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
               <Award className="h-6 w-6 text-primary" />
-              <span className="font-bold text-xl">PERSPECTA</span>
+              <span className="font-bold text-xl">PERSPECTA-COMPETENCES</span>
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
@@ -84,7 +84,7 @@ export default function NewHomePage() {
             </h1>
             
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-              PERSPECTA valide vos compétences techniques, délivre un certificat blockchain infalsifiable 
+              PERSPECTA-COMPETENCES valide vos compétences techniques, délivre un certificat blockchain infalsifiable 
               et vous connecte automatiquement aux offres d'emploi France Travail.
             </p>
 
@@ -97,7 +97,7 @@ export default function NewHomePage() {
               </Link>
               <a href="#differentiation">
                 <Button size="lg" variant="outline" className="text-lg px-8">
-                  Pourquoi PERSPECTA ?
+                  Pourquoi PERSPECTA-COMPETENCES ?
                 </Button>
               </a>
             </div>
@@ -191,7 +191,7 @@ export default function NewHomePage() {
               <div>
                 <div className="text-center mb-6">
                   <Badge className="bg-primary">
-                    Approche PERSPECTA
+                    Approche PERSPECTA-COMPETENCES
                   </Badge>
                 </div>
                 
@@ -249,7 +249,7 @@ export default function NewHomePage() {
                 très différents."
               </blockquote>
               <p className="text-center text-muted-foreground font-medium">
-                C'est précisément ce que PERSPECTA analyse : votre mode de fonctionnement unique, 
+                C'est précisément ce que PERSPECTA-COMPETENCES analyse : votre mode de fonctionnement unique, 
                 pas une simple liste de compétences.
               </p>
             </CardContent>
@@ -272,7 +272,7 @@ export default function NewHomePage() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Pourquoi PERSPECTA est différent
+              Pourquoi PERSPECTA-COMPETENCES est différent
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Comparaison avec les solutions existantes
@@ -289,7 +289,7 @@ export default function NewHomePage() {
                   <th className="text-center p-4 font-semibold bg-primary/5">
                     <div className="flex items-center justify-center gap-2">
                       <Award className="h-5 w-5 text-primary" />
-                      PERSPECTA
+                      PERSPECTA-COMPETENCES
                     </div>
                   </th>
                 </tr>
@@ -691,7 +691,7 @@ export default function NewHomePage() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Ils ont trouvé leur voie avec PERSPECTA
+              Ils ont trouvé leur voie avec PERSPECTA-COMPETENCES
             </h2>
             <p className="text-lg text-muted-foreground">
               Cas d'usage réels

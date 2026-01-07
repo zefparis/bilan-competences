@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
 export const PageFooter: React.FC<PageFooterProps> = ({ profileId }) => {
   return (
     <View style={styles.container} fixed>
-      <Text style={styles.left}>© PERSPECTA {new Date().getFullYear()}</Text>
+      <Text style={styles.left}>© 2025 PERSPECTA-COMPETENCES by ia-solution</Text>
       {profileId && <Text style={styles.center}>Réf. {profileId}</Text>}
       <Text
         style={styles.right}

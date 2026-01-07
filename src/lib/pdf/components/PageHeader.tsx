@@ -46,7 +46,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 }) => {
   return (
     <View style={styles.container} fixed>
-      {showLogo && <Text style={styles.logo}>PERSPECTA</Text>}
+      {showLogo && <Text style={styles.logo}>PERSPECTA-COMPETENCES</Text>}
       {section && <Text style={styles.section}>{section}</Text>}
     </View>
   );

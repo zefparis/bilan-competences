@@ -133,7 +133,7 @@ export const CoverPage: React.FC<CoverPageProps> = ({ meta }) => {
     <Page size="A4" style={styles.page}>
       <View style={styles.container}>
         {/* Logo */}
-        <Text style={styles.logo}>PERSPECTA</Text>
+        <Text style={styles.logo}>PERSPECTA-COMPETENCES</Text>
 
         {/* Titre principal */}
         <Text style={styles.mainTitle}>BILAN COGNITIF</Text>
@@ -166,7 +166,7 @@ export const CoverPage: React.FC<CoverPageProps> = ({ meta }) => {
       {/* Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          © PERSPECTA {new Date().getFullYear()} - Document confidentiel
+          © 2025 PERSPECTA-COMPETENCES by ia-solution - Document confidentiel
         </Text>
       </View>
     </Page>

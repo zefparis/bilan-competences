@@ -12,25 +12,25 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
-    default: 'PERSPECTA - Bilan de Compétences & Évaluation Cognitive',
-    template: '%s | PERSPECTA'
+    default: 'PERSPECTA-COMPETENCES - Bilan de Compétences & Évaluation Cognitive',
+    template: '%s | PERSPECTA-COMPETENCES'
   },
   description: 'Plateforme premium d\'évaluation cognitive et de bilan de compétences. Découvrez votre signature cognitive unique, votre profil RIASEC et obtenez des recommandations personnalisées pour votre orientation professionnelle.',
   keywords: ['bilan de compétences', 'évaluation cognitive', 'orientation professionnelle', 'RIASEC', 'signature cognitive', 'reconversion'],
   authors: [{ name: 'ia-solution' }],
   creator: 'ia-solution',
-  publisher: 'PERSPECTA',
+  publisher: 'PERSPECTA-COMPETENCES',
   metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://perspecta.fr'),
   openGraph: {
     type: 'website',
     locale: 'fr_FR',
-    siteName: 'PERSPECTA',
-    title: 'PERSPECTA - Bilan de Compétences & Évaluation Cognitive',
+    siteName: 'PERSPECTA-COMPETENCES',
+    title: 'PERSPECTA-COMPETENCES - Bilan de Compétences & Évaluation Cognitive',
     description: 'Découvrez votre signature cognitive unique et obtenez des recommandations personnalisées pour votre orientation professionnelle.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PERSPECTA - Bilan de Compétences',
+    title: 'PERSPECTA-COMPETENCES - Bilan de Compétences',
     description: 'Plateforme premium d\'évaluation cognitive et de bilan de compétences.',
   },
   robots: {

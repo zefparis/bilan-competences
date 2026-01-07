@@ -41,7 +41,7 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
           Vérification de certificat
         </h1>
         <p className="text-muted-foreground">
-          Certificat professionnel PERSPECTA
+          Certificat professionnel PERSPECTA-COMPETENCES
         </p>
       </div>
 
@@ -139,7 +139,7 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
         </CardHeader>
         <CardContent className="space-y-3 text-sm text-muted-foreground">
           <p>
-            ✓ Ce certificat a été généré par PERSPECTA et authentifié via hash cryptographique SHA-256
+            ✓ Ce certificat a été généré par PERSPECTA-COMPETENCES et authentifié via hash cryptographique SHA-256
           </p>
           <p>
             ✓ Le hash garantit que les informations n'ont pas été modifiées depuis l'émission
