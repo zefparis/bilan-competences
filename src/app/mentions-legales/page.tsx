@@ -21,7 +21,7 @@ export default function MentionsLegales() {
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">1. Éditeur du site</h2>
             <p className="mb-2">
-              Le site PERSPECTA est édité par :
+              Le site PERSPECTA-COMPETENCES est édité par :
             </p>
             <ul className="list-none space-y-1 ml-4">
               <li><strong>Raison sociale :</strong> ia-solution</li>

@@ -22,7 +22,7 @@ export default function CGU() {
             <h2 className="text-xl font-semibold mb-4 text-primary">1. Objet</h2>
             <p>
               Les présentes Conditions Générales d'Utilisation (CGU) ont pour objet de définir les modalités 
-              et conditions d'utilisation des services proposés sur le site PERSPECTA, ainsi que de définir 
+              et conditions d'utilisation des services proposés sur le site PERSPECTA-COMPETENCES, ainsi que de définir 
               les droits et obligations des parties dans ce cadre.
             </p>
           </section>
@@ -30,7 +30,7 @@ export default function CGU() {
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">2. Mentions légales</h2>
             <p>
-              Le site PERSPECTA est édité par ia-solution, dont le siège social est situé à Alès, France. 
+              Le site PERSPECTA-COMPETENCES est édité par ia-solution, dont le siège social est situé à Alès, France. 
               Contact : <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">contact@ia-solution.fr</a>
             </p>
           </section>
@@ -67,7 +67,7 @@ export default function CGU() {
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">5. Description des services</h2>
             <p className="mb-4">
-              PERSPECTA propose des services d'évaluation cognitive et de bilan de compétences, incluant :
+              PERSPECTA-COMPETENCES propose des services d'évaluation cognitive et de bilan de compétences, incluant :
             </p>
             <ul className="list-disc ml-6 space-y-2">
               <li>Des tests d'évaluation cognitive personnalisés</li>
