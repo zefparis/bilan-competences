@@ -1,9 +1,18 @@
+"use client"
+
+import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { ModulePageHeader } from "@/components/module-page-header"
 import { LifePathForm } from "./LifePathForm"
 import { LifePathChart } from "./LifePathChart"
 
 export default function LifePathPage() {
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
+
+  const handleEventAdded = () => {
+    setRefreshTrigger(prev => prev + 1)
+  }
+
   return (
     <div className="space-y-6">
       <ModulePageHeader
@@ -13,12 +22,12 @@ export default function LifePathPage() {
       
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Ajouter un événement</h2>
-        <LifePathForm />
+        <LifePathForm onEventAdded={handleEventAdded} />
       </Card>
       
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Visualisation de mon parcours</h2>
-        <LifePathChart />
+        <LifePathChart key={refreshTrigger} />
       </Card>
     </div>
   )

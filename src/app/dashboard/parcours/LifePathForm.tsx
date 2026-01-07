@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { lifeEventSchema, LifeEventData } from "@/lib/schemas"
 import { addLifeEvent } from "@/app/actions"
 import { useActiveAssessment } from "@/lib/active-assessment"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -26,7 +27,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Slider } from "@/components/ui/slider"
 import { toast } from "sonner"
 
-export function LifePathForm() {
+interface LifePathFormProps {
+  onEventAdded?: () => void
+}
+
+export function LifePathForm({ onEventAdded }: LifePathFormProps) {
+  const router = useRouter()
   const { data: activeAssessment, isLoading: isLoadingAssessment } = useActiveAssessment()
   const form = useForm<LifeEventData>({
     resolver: zodResolver(lifeEventSchema),
@@ -47,10 +53,12 @@ export function LifePathForm() {
 
       const promise = addLifeEvent(activeAssessment.lifePathId, data)
       
-      toast.promise(promise, {
+      await toast.promise(promise, {
         loading: 'Enregistrement en cours...',
         success: () => {
           form.reset()
+          router.refresh()
+          onEventAdded?.()
           return 'Événement ajouté avec succès'
         },
         error: 'Une erreur est survenue lors de l\'enregistrement'
