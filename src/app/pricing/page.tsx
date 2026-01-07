@@ -49,13 +49,21 @@ export default function PricingPage() {
     }
   }
 
-  const features = [
-    "Analyse cognitive 4 dimensions (Forme, Couleur, Volume, Son)",
-    "Test RIASEC complet",
-    "Croisement cognition × intérêts professionnels",
-    "Synthèse stratégique personnalisée",
-    "Accès au rapport final dans l'espace personnel",
-    "Données privées, non revendues, non utilisées pour l'IA",
+  const freeFeatures = [
+    "✅ Parcours de vie interactif",
+    "✅ Expériences STAR (Situation, Tâche, Action, Résultat)",
+    "✅ Test RIASEC complet (6 dimensions Holland)",
+    "✅ Profil cognitif (Form, Color, Volume, Sound)",
+    "✅ Tri des valeurs professionnelles",
+  ]
+
+  const premiumFeatures = [
+    "🎯 Évaluation cognitive PERSPECTA (4 tests comportementaux)",
+    "🎓 Certification professionnelle avec blockchain",
+    "📊 Analyse IA Claude 3.5 (compétences transférables)",
+    "💼 Matching emploi + formations CPF",
+    "📄 Rapport PDF premium 50 pages",
+    "🔒 Données privées, conformes RGPD",
   ]
 
   return (
@@ -81,11 +89,11 @@ export default function PricingPage() {
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-            Accédez à une analyse complète de votre potentiel professionnel
+            Débloquez votre bilan complet et vos modules premium
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Une évaluation cognitive approfondie, structurée et actionnable, 
-            conçue pour révéler vos leviers invisibles de progression.
+            Accédez à l'évaluation cognitive PERSPECTA, la certification professionnelle,
+            l'analyse IA et votre rapport PDF personnalisé.
           </p>
         </div>
       </section>
@@ -103,7 +111,7 @@ export default function PricingPage() {
 
             {/* Title & Price */}
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              Bilan PERSPECTA-COMPETENCES — Analyse complète
+              Bilan PERSPECTA-COMPETENCES — Modules Premium
             </h2>
             <div className="flex items-baseline gap-2 mb-6">
               <span className="text-5xl font-bold text-primary">49 €</span>
@@ -113,15 +121,36 @@ export default function PricingPage() {
               Paiement unique • Accès illimité à votre rapport
             </p>
 
-            {/* Features */}
-            <ul className="space-y-4 mb-8">
-              {features.map((feature, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground">{feature}</span>
-                </li>
-              ))}
-            </ul>
+            {/* Free Features */}
+            <div className="mb-6">
+              <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide">
+                Déjà inclus gratuitement
+              </h3>
+              <ul className="space-y-2 text-sm">
+                {freeFeatures.map((feature, index) => (
+                  <li key={index} className="text-muted-foreground">
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="border-t border-border my-6"></div>
+
+            {/* Premium Features */}
+            <div className="mb-8">
+              <h3 className="text-sm font-semibold text-primary mb-3 uppercase tracking-wide">
+                Avec le pack premium (49€)
+              </h3>
+              <ul className="space-y-4">
+                {premiumFeatures.map((feature, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-foreground">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             {/* CTA */}
             <button
