@@ -1,3 +1,5 @@
+// FICHIER: src/app/dashboard/parcours/page.tsx
+
 "use client"
 
 import { useState } from "react"
@@ -10,6 +12,7 @@ export default function LifePathPage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   const handleEventAdded = () => {
+    console.log('✅ Événement ajouté, refresh trigger') // Debug
     setRefreshTrigger(prev => prev + 1)
   }
 
@@ -27,7 +30,8 @@ export default function LifePathPage() {
       
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Visualisation de mon parcours</h2>
-        <LifePathChart key={refreshTrigger} />
+        {/* ✅ Passer refreshKey comme prop au lieu de key */}
+        <LifePathChart refreshKey={refreshTrigger} />
       </Card>
     </div>
   )

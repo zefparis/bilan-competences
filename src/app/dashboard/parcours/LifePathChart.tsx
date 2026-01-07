@@ -1,3 +1,5 @@
+// FICHIER: src/app/dashboard/parcours/LifePathChart.tsx
+
 "use client"
 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot } from "recharts"
@@ -58,17 +60,24 @@ function interpolateData(data: ChartDataPoint[]): ChartDataPoint[] {
   return interpolated
 }
 
-export function LifePathChart() {
+// ✅ AJOUTER refreshKey comme prop
+interface LifePathChartProps {
+  refreshKey?: number
+}
+
+export function LifePathChart({ refreshKey }: LifePathChartProps) {
   const { data: activeAssessment, isLoading } = useActiveAssessment()
   const [events, setEvents] = useState<LifeEvent[]>([])
   const [chartData, setChartData] = useState<ChartDataPoint[]>([])
 
+  // ✅ AJOUTER refreshKey dans les dépendances
   useEffect(() => {
     async function fetchEvents() {
       if (!activeAssessment?.lifePathId) return
       
       try {
         const fetchedEvents = await getLifeEvents(activeAssessment.lifePathId)
+        console.log('📊 Événements chargés:', fetchedEvents.length) // Debug
         setEvents(fetchedEvents)
         
         let data: ChartDataPoint[] = fetchedEvents.map((event: LifeEvent) => ({
@@ -118,7 +127,7 @@ export function LifePathChart() {
     }
     
     fetchEvents()
-  }, [activeAssessment?.lifePathId])
+  }, [activeAssessment?.lifePathId, refreshKey]) // ✅ AJOUTER refreshKey
 
   if (isLoading) {
     return (
@@ -200,7 +209,7 @@ export function LifePathChart() {
               .filter(d => !d.isInterpolated)
               .map((event, idx) => (
                 <ReferenceDot
-                  key={idx}
+                  key={`${event.year}-${idx}`} // ✅ Clé unique
                   x={event.year}
                   y={event.satisfaction}
                   r={6}
