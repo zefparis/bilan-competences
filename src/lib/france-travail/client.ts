@@ -188,12 +188,14 @@ export async function fetchFormations(params: FormationParams): Promise<any[]> {
   const apiUrl = process.env.FRANCE_TRAVAIL_API_URL || 'https://api.francetravail.io';
 
   if (!process.env.FRANCE_TRAVAIL_CLIENT_ID || !process.env.FRANCE_TRAVAIL_CLIENT_SECRET) {
-    console.warn('[France Travail] API not configured, returning mock formations');
+    console.warn('[France Travail Formations] API not configured, returning mock formations');
     return getMockFormations(params);
   }
 
   try {
+    console.log('[France Travail Formations] Fetching token...');
     const token = await getFranceTravailToken();
+    console.log('[France Travail Formations] Token obtained successfully');
     
     const searchParams = new URLSearchParams();
     
@@ -217,26 +219,39 @@ export async function fetchFormations(params: FormationParams): Promise<any[]> {
       searchParams.append('range', `0-${params.limit - 1}`);
     }
 
-    const response = await fetch(
-      `${apiUrl}/partenaire/offresdemploi/v2/formations/search?${searchParams.toString()}`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json'
-        }
+    const url = `${apiUrl}/partenaire/offresdemploi/v2/formations/search?${searchParams.toString()}`;
+    console.log('[France Travail Formations] Calling API:', url);
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
       }
-    );
+    });
+
+    console.log('[France Travail Formations] API Response status:', response.status);
 
     if (!response.ok) {
-      console.warn(`[France Travail] Formation search failed: ${response.status}, using mock data`);
+      const errorText = await response.text();
+      console.warn(`[France Travail Formations] API error ${response.status}: ${errorText}`);
+      console.warn('[France Travail Formations] Using mock data as fallback');
       return getMockFormations(params);
     }
 
     const data = await response.json();
-    return data.resultats || [];
+    console.log('[France Travail Formations] API returned:', data.resultats?.length || 0, 'formations');
+    
+    // Si l'API ne retourne aucun résultat, utiliser les données mock
+    if (!data.resultats || data.resultats.length === 0) {
+      console.warn('[France Travail Formations] No results from API, using mock data');
+      return getMockFormations(params);
+    }
+    
+    return data.resultats;
   } catch (error) {
-    console.error('[France Travail] Formation fetch error:', error);
+    console.error('[France Travail Formations] Fetch error:', error);
+    console.warn('[France Travail Formations] Using mock data as fallback');
     return getMockFormations(params);
   }
 }
