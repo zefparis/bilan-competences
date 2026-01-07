@@ -75,10 +75,16 @@ export async function POST() {
     });
 
     if (existingReport) {
-      const currentCount = existingReport.generationCount || 1;
-      console.log(`📊 [API POST] Rapport existant - Génération #${currentCount}`);
-
+      // Si generationCount n'existe pas (ancien rapport avant migration), le traiter comme génération #1
+      const currentCount = existingReport.generationCount ?? 0;
+      console.log(`📊 [API POST] Rapport existant - Génération actuelle: ${currentCount}`);
+      
+      // Si c'est un ancien rapport sans generationCount, on le considère comme la 1ère génération
+      // Donc la régénération sera la 2ème (gratuite)
+      const nextCount = currentCount + 1;
+      
       // Vérifier si l'utilisateur peut régénérer
+      // Bloquer seulement si on a déjà fait 2 générations ET pas payé pour extra
       if (currentCount >= 2 && !existingReport.hasExtraGenerationPaid) {
         console.warn('⚠️ [API POST] Limite de 2 générations gratuites atteinte');
         return NextResponse.json(
@@ -93,8 +99,8 @@ export async function POST() {
         );
       }
 
-      // Autoriser la régénération (2ème fois gratuite ou payée)
-      console.log(`✅ [API POST] Régénération autorisée (${currentCount + 1}/2 gratuite ou payée)`);
+      // Autoriser la régénération
+      console.log(`✅ [API POST] Régénération autorisée - Prochaine génération: #${nextCount}/2`);
       
       // Supprimer l'ancien rapport pour le remplacer
       await (prisma as any).report.delete({
