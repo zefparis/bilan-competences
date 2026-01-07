@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { writeFile, mkdir } from "fs/promises"
-import { existsSync } from "fs"
-import path from "path"
 import { getUserIdFromRequest } from "@/lib/auth-user"
 import { prisma } from "@/lib/prisma"
+import { supabase } from "@/lib/supabase"
 
 export const dynamic = "force-dynamic"
 
@@ -65,38 +63,41 @@ export async function POST(req: NextRequest) {
     }
     console.log("[API/Upload/Avatar] ✅ File size valid:", file.size, "bytes")
 
-    // Step 6: Create uploads directory
-    console.log("[API/Upload/Avatar] Step 6: Creating uploads directory...")
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "avatars")
-    console.log("[API/Upload/Avatar] Upload directory path:", uploadsDir)
-    
-    if (!existsSync(uploadsDir)) {
-      console.log("[API/Upload/Avatar] Directory doesn't exist, creating...")
-      await mkdir(uploadsDir, { recursive: true })
-      console.log("[API/Upload/Avatar] ✅ Directory created")
-    } else {
-      console.log("[API/Upload/Avatar] ✅ Directory already exists")
-    }
-
-    // Step 7: Generate filename
-    console.log("[API/Upload/Avatar] Step 7: Generating filename...")
+    // Step 6: Generate filename
+    console.log("[API/Upload/Avatar] Step 6: Generating filename...")
     const emailHash = Buffer.from(user.email).toString('base64').replace(/[^a-zA-Z0-9]/g, '').substring(0, 10)
     const ext = file.name.split(".").pop() || "jpg"
     const filename = `${emailHash}-${Date.now()}.${ext}`
-    const filepath = path.join(uploadsDir, filename)
+    const filePath = `avatars/${filename}`
     console.log("[API/Upload/Avatar] Generated filename:", filename)
-    console.log("[API/Upload/Avatar] Full filepath:", filepath)
+    console.log("[API/Upload/Avatar] Storage path:", filePath)
 
-    // Step 8: Save file
-    console.log("[API/Upload/Avatar] Step 8: Saving file to disk...")
+    // Step 7: Upload to Supabase Storage
+    console.log("[API/Upload/Avatar] Step 7: Uploading to Supabase Storage...")
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    await writeFile(filepath, buffer)
-    console.log("[API/Upload/Avatar] ✅ File saved successfully")
+    
+    const { data, error } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, buffer, {
+        contentType: file.type,
+        upsert: true
+      })
 
-    // Step 9: Return URL
-    const imageUrl = `/uploads/avatars/${filename}`
-    console.log("[API/Upload/Avatar] Step 9: Returning URL:", imageUrl)
+    if (error) {
+      console.error("[API/Upload/Avatar] ❌ Supabase upload error:", error)
+      throw new Error(`Erreur Supabase: ${error.message}`)
+    }
+    console.log("[API/Upload/Avatar] ✅ File uploaded to Supabase:", data)
+
+    // Step 8: Get public URL
+    console.log("[API/Upload/Avatar] Step 8: Getting public URL...")
+    const { data: urlData } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath)
+
+    const imageUrl = urlData.publicUrl
+    console.log("[API/Upload/Avatar] Public URL:", imageUrl)
     console.log("[API/Upload/Avatar] ========== SUCCESS ==========")
 
     return NextResponse.json({ 
