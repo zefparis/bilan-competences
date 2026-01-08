@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { Home, User, LogOut, Sun, Moon } from "lucide-react"
+import { DashboardNav } from "@/components/dashboard-nav"
 
 export default function DashboardLayout({
   children,
@@ -97,5 +98,3 @@ export default function DashboardLayout({
     </div>
   )
 }
-
-import { DashboardNav } from "@/components/dashboard-nav"
