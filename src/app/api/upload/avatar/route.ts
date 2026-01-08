@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getUserIdFromRequest } from "@/lib/auth-user"
 import { prisma } from "@/lib/prisma"
-import { supabase } from "@/lib/supabase"
 
 export const dynamic = "force-dynamic"
 
@@ -54,7 +53,7 @@ export async function POST(req: NextRequest) {
     }
     console.log("[API/Upload/Avatar] ✅ File type valid:", file.type)
 
-    // Step 5: Validate file size
+    // Step 5: Validate file size (max 5MB)
     console.log("[API/Upload/Avatar] Step 5: Validating file size...")
     const maxSize = 5 * 1024 * 1024
     if (file.size > maxSize) {
@@ -63,55 +62,19 @@ export async function POST(req: NextRequest) {
     }
     console.log("[API/Upload/Avatar] ✅ File size valid:", file.size, "bytes")
 
-    // Step 6: Generate filename
-    console.log("[API/Upload/Avatar] Step 6: Generating filename...")
-    const emailHash = Buffer.from(user.email).toString('base64').replace(/[^a-zA-Z0-9]/g, '').substring(0, 10)
-    const ext = file.name.split(".").pop() || "jpg"
-    const filename = `${emailHash}-${Date.now()}.${ext}`
-    const filePath = `avatars/${filename}`
-    console.log("[API/Upload/Avatar] Generated filename:", filename)
-    console.log("[API/Upload/Avatar] Storage path:", filePath)
-
-    // Step 7: Upload to Supabase Storage
-    console.log("[API/Upload/Avatar] Step 7: Uploading to Supabase Storage...")
-    
-    // Check if Supabase is configured
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      console.error("[API/Upload/Avatar] ❌ Supabase not configured")
-      return NextResponse.json({ 
-        error: "Service de stockage non configuré. Contactez l'administrateur." 
-      }, { status: 500 })
-    }
-    
+    // Step 6: Convert to base64 data URL
+    console.log("[API/Upload/Avatar] Step 6: Converting to base64...")
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    
-    const { data, error } = await supabase.storage
-      .from('avatars')
-      .upload(filePath, buffer, {
-        contentType: file.type,
-        upsert: true
-      })
+    const base64 = buffer.toString('base64')
+    const dataUrl = `data:${file.type};base64,${base64}`
+    console.log("[API/Upload/Avatar] ✅ Converted to base64 (length:", dataUrl.length, ")")
 
-    if (error) {
-      console.error("[API/Upload/Avatar] ❌ Supabase upload error:", error)
-      throw new Error(`Erreur Supabase: ${error.message}`)
-    }
-    console.log("[API/Upload/Avatar] ✅ File uploaded to Supabase:", data)
-
-    // Step 8: Get public URL
-    console.log("[API/Upload/Avatar] Step 8: Getting public URL...")
-    const { data: urlData } = supabase.storage
-      .from('avatars')
-      .getPublicUrl(filePath)
-
-    const imageUrl = urlData.publicUrl
-    console.log("[API/Upload/Avatar] Public URL:", imageUrl)
     console.log("[API/Upload/Avatar] ========== SUCCESS ==========")
 
     return NextResponse.json({ 
       success: true, 
-      url: imageUrl 
+      url: dataUrl 
     })
 
   } catch (error) {
