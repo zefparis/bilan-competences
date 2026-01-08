@@ -81,17 +81,25 @@ function CertificateContent() {
     
     setDownloading(true);
     try {
+      console.log('[PDF Download] Starting download for certificate:', certificate.id);
+      
       const response = await fetch('/api/certification/certificate/pdf', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ certificateId: certificate.id })
       });
 
+      console.log('[PDF Download] Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Erreur lors de la génération du PDF');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('[PDF Download] Error response:', errorData);
+        throw new Error(errorData.error || 'Erreur lors de la génération du PDF');
       }
 
       const blob = await response.blob();
+      console.log('[PDF Download] Blob received, size:', blob.size);
+      
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -103,8 +111,8 @@ function CertificateContent() {
       
       toast.success('Certificat téléchargé avec succès');
     } catch (error) {
-      console.error('Error downloading PDF:', error);
-      toast.error('Erreur lors du téléchargement du certificat');
+      console.error('[PDF Download] Error:', error);
+      toast.error(error instanceof Error ? error.message : 'Erreur lors du téléchargement du certificat');
     } finally {
       setDownloading(false);
     }

@@ -6,14 +6,22 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 export const dynamic = "force-dynamic"
 
 export async function POST(req: NextRequest) {
+  console.log('[API/PDF] ========== START PDF GENERATION ==========')
   try {
+    console.log('[API/PDF] Step 1: Getting user ID...')
     const userId = await getUserIdFromRequest(req)
+    console.log('[API/PDF] User ID:', userId)
+    
     if (!userId) {
+      console.error('[API/PDF] ❌ No user ID - unauthorized')
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 })
     }
 
+    console.log('[API/PDF] Step 2: Parsing request body...')
     const { certificateId } = await req.json()
+    console.log('[API/PDF] Certificate ID:', certificateId)
 
+    console.log('[API/PDF] Step 3: Fetching certificate from database...')
     const certificate = await (prisma as any).certificate.findUnique({
       where: { id: certificateId },
       include: {
@@ -39,9 +47,19 @@ export async function POST(req: NextRequest) {
       }
     })
 
+    console.log('[API/PDF] Certificate found:', certificate ? 'YES' : 'NO')
+    if (certificate) {
+      console.log('[API/PDF] Certificate user ID:', certificate.userId)
+      console.log('[API/PDF] Request user ID:', userId)
+      console.log('[API/PDF] Session data:', certificate.session)
+    }
+
     if (!certificate || certificate.userId !== userId) {
+      console.error('[API/PDF] ❌ Certificate not found or unauthorized')
       return NextResponse.json({ error: "Certificat non trouvé" }, { status: 404 })
     }
+    
+    console.log('[API/PDF] ✅ Certificate validated')
 
     // Create PDF
     const pdfDoc = await PDFDocument.create()
@@ -258,13 +276,22 @@ export async function POST(req: NextRequest) {
       color: rgb(0.95, 0.98, 0.95),
     })
 
-    const blockchainTitle = "✓ Authentification Blockchain"
+    const blockchainTitle = "Authentification Blockchain"
     page.drawText(blockchainTitle, {
       x: 70,
       y: 155,
       size: 12,
       font: boldFont,
       color: greenColor,
+    })
+    
+    // Draw checkmark circle
+    page.drawCircle({
+      x: 60,
+      y: 158,
+      size: 6,
+      borderColor: greenColor,
+      borderWidth: 2,
     })
 
     const hashLabel = "Hash:"
@@ -307,8 +334,13 @@ export async function POST(req: NextRequest) {
     })
 
     // Generate PDF
+    console.log('[API/PDF] Step 4: Generating PDF document...')
     const pdfBytes = await pdfDoc.save()
+    console.log('[API/PDF] PDF bytes generated, size:', pdfBytes.length)
+    
     const buffer = Buffer.from(pdfBytes)
+    console.log('[API/PDF] Buffer created, size:', buffer.length)
+    console.log('[API/PDF] ========== PDF GENERATION SUCCESS ==========')
 
     return new NextResponse(buffer, {
       status: 200,
@@ -319,7 +351,12 @@ export async function POST(req: NextRequest) {
     })
 
   } catch (error) {
-    console.error("Error generating certificate PDF:", error)
+    console.error('[API/PDF] ========== ERROR ==========')
+    console.error('[API/PDF] Error type:', error instanceof Error ? error.constructor.name : typeof error)
+    console.error('[API/PDF] Error message:', error instanceof Error ? error.message : String(error))
+    console.error('[API/PDF] Error stack:', error instanceof Error ? error.stack : 'No stack')
+    console.error('[API/PDF] ========== END ERROR ==========')
+    
     return NextResponse.json({ 
       error: "Erreur lors de la génération du PDF",
       details: error instanceof Error ? error.message : String(error)
