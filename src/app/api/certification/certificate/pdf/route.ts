@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 
     const { certificateId } = await req.json()
 
-    const certificate = await (prisma as any).certificationCertificate.findUnique({
+    const certificate = await (prisma as any).certificate.findUnique({
       where: { id: certificateId },
       include: {
         user: {
