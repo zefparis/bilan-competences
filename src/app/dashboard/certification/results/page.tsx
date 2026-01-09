@@ -254,7 +254,7 @@ function CertificationResultsContent() {
       <div className="grid md:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Certificat officiel</CardTitle>
+            <CardTitle className="text-lg">Certificat professionnel</CardTitle>
             <CardDescription>
               Générez votre certificat blockchain infalsifiable
             </CardDescription>

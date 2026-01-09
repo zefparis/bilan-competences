@@ -322,7 +322,7 @@ export async function POST(req: NextRequest) {
     })
 
     // Footer
-    const footer = "PERSPECTA - Plateforme de Bilan de Compétences"
+    const footer = "PERSPECTA - Plateforme d'Évaluation Professionnelle"
     const footerSize = 9
     const footerWidth = regularFont.widthOfTextAtSize(footer, footerSize)
     page.drawText(footer, {
