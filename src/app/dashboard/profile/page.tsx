@@ -27,6 +27,9 @@ type UserProfile = {
   linkedin: string | null
   github: string | null
   portfolio: string | null
+  city: string | null
+  postalCode: string | null
+  department: string | null
   role: string
   createdAt: string
   hasPaid?: boolean
@@ -53,6 +56,9 @@ type FormData = {
   linkedin: string
   github: string
   portfolio: string
+  city: string
+  postalCode: string
+  department: string
 }
 
 export default function ProfilePage() {
@@ -91,6 +97,9 @@ export default function ProfilePage() {
           linkedin: data.linkedin || "",
           github: data.github || "",
           portfolio: data.portfolio || "",
+          city: data.city || "",
+          postalCode: data.postalCode || "",
+          department: data.department || "",
         })
       } catch (error) {
         console.error(error)
@@ -568,6 +577,39 @@ export default function ProfilePage() {
                     <CardDescription>Ces informations apparaîtront dans votre synthèse.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="city">Ville</Label>
+                      <Input
+                        id="city"
+                        {...register("city")}
+                        className="bg-background/50 border-primary/20 focus:border-primary transition-colors"
+                        placeholder="Ex: Montpellier"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        📍 Utilisé pour filtrer les formations et offres d'emploi près de chez vous
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="postalCode">Code postal</Label>
+                        <Input
+                          id="postalCode"
+                          {...register("postalCode")}
+                          className="bg-background/50 border-primary/20 focus:border-primary transition-colors"
+                          placeholder="Ex: 34000"
+                          maxLength={5}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="department">Département</Label>
+                        <Input
+                          id="department"
+                          {...register("department")}
+                          className="bg-background/50 border-primary/20 focus:border-primary transition-colors"
+                          placeholder="Ex: Hérault"
+                        />
+                      </div>
+                    </div>
                     <div className="space-y-2">
                       <Label htmlFor="title">Titre Professionnel</Label>
                       <Input

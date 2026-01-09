@@ -22,6 +22,10 @@ model User {
   linkedin          String?
   github            String?
   portfolio         String?
+  // Location for geographic filtering
+  city              String?
+  postalCode        String?
+  department        String?
   role              String    @default("BENEFICIAIRE")
   resetToken        String?   @unique
   resetTokenExpiry  DateTime?

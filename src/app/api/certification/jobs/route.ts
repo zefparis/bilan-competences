@@ -63,13 +63,25 @@ export async function GET(req: NextRequest) {
 
     const romeCodes = mapToROMECodes(certificate.session.primaryRole || '');
 
+    // Fetch user location for geographic filtering
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { postalCode: true, city: true }
+    });
+
     let offers = [];
     try {
       offers = await fetchJobOffers({
         romeCodes,
-        location: '30100',
+        location: user?.postalCode || undefined,
         distance: 50,
         limit: 20
+      });
+      
+      console.log('[Jobs API] Fetching with location:', {
+        postalCode: user?.postalCode,
+        city: user?.city,
+        distance: 50
       });
     } catch (error) {
       console.error("[Jobs API] France Travail API error:", error);

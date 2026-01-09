@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/auth"
 import { fetchFormations } from "@/lib/france-travail/client"
+import { prisma } from "@/lib/prisma"
 
 export const dynamic = 'force-dynamic'
 
@@ -15,13 +16,20 @@ async function getUserIdFromRequest(req: NextRequest): Promise<string> {
 
 export async function GET(req: NextRequest) {
   try {
-    await getUserIdFromRequest(req)
+    const userEmail = await getUserIdFromRequest(req)
+    
+    // Fetch user location from database
+    const user = await prisma.user.findUnique({
+      where: { email: userEmail },
+      select: { postalCode: true, city: true }
+    })
     
     const { searchParams } = new URL(req.url)
     const romeCodes = searchParams.get("romeCodes")?.split(",") || []
     const keywords = searchParams.get("keywords") || undefined
-    const location = searchParams.get("location") || undefined
-    const distance = searchParams.get("distance") ? parseInt(searchParams.get("distance")!) : undefined
+    // Use user's postal code if available, otherwise use query param
+    const location = searchParams.get("location") || user?.postalCode || undefined
+    const distance = searchParams.get("distance") ? parseInt(searchParams.get("distance")!) : 50
     const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : 20
     
     console.log('[Formations API] Fetching formations with params:', {
