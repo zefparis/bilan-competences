@@ -535,17 +535,20 @@ export default function HomePageV3() {
             <div>
               <h4 className="font-medium mb-3">Contact</h4>
               <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-                <p>ia-solution</p>
-                <p>Alès, France</p>
+                <p><strong>ia-solution</strong></p>
+                <p>Alès (30100), France</p>
                 <a href="mailto:contact@ia-solution.fr" className="hover:text-foreground transition-colors">
-                  contact@ia-solution.fr
+                  📧 contact@ia-solution.fr
+                </a>
+                <a href="tel:+33758060556" className="hover:text-foreground transition-colors">
+                  📱 07 58 06 05 56
                 </a>
               </div>
             </div>
           </div>
 
           <div className="pt-8 border-t text-center text-sm text-muted-foreground">
-            <p>© 2025 PERSPECTA-COMPETENCES by ia-solution. Tous droits réservés.</p>
+            <p>© 2025 PERSPECTA-COMPETENCES by ia-solution (SIRET 438 055 097). Tous droits réservés.</p>
           </div>
         </div>
       </footer>

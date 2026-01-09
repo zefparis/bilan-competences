@@ -116,13 +116,14 @@ export default function AIDisclosure() {
 
           <section className="bg-blue-100 dark:bg-blue-900 p-6 rounded-lg">
             <h2 className="text-2xl font-semibold mb-4">📞 Contact</h2>
-            <p className="mb-2">
+            <p className="mb-4">
               Pour toute question sur l'utilisation de l'IA dans PERSPECTA-COMPETENCES :
             </p>
             <ul className="space-y-2 text-sm">
-              <li>📧 Email : <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">contact@ia-solution.fr</a></li>
-              <li>📍 IA-SOLUTION, Alès, France</li>
-              <li>🕐 Réponse sous 48h (jours ouvrés)</li>
+              <li>📧 <strong>Email :</strong> <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">contact@ia-solution.fr</a></li>
+              <li>📱 <strong>Téléphone :</strong> <a href="tel:+33758060556" className="text-primary hover:underline">07 58 06 05 56</a></li>
+              <li>📍 <strong>Adresse :</strong> ia-solution, Alès (30100), France</li>
+              <li>🕐 <strong>Délai de réponse :</strong> 48h ouvrées</li>
             </ul>
           </section>
 

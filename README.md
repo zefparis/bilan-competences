@@ -130,11 +130,36 @@
 - 📊 **Progression à 100%** quand tous les modules sont terminés
 - 🔍 **Logs détaillés** pour chaque module dans la console
 
-#### 5. Corrections Techniques
+#### 5. Système de Thème Dark/Light Mode
+- 🌓 **Toggle dark/light mode** dans la navbar du dashboard
+- 💾 **Persistance** : Sauvegarde dans localStorage avec clé `perspecta-theme`
+- 🎨 **Icônes dynamiques** : Sun (☀️) pour mode clair, Moon (🌙) pour mode sombre
+- 🔄 **Détection automatique** : Utilise les préférences système par défaut
+- ✨ **Transitions fluides** : Animation CSS de 300ms
+
+#### 6. Upload Photo de Profil
+- 📸 **Upload d'image** : JPG, PNG, GIF, WebP (max 5 Mo)
+- 💾 **Stockage base64** : Images encodées directement en base de données
+- 🖼️ **Prévisualisation** : Affichage immédiat avant sauvegarde
+- ✅ **Validation** : Type et taille de fichier vérifiés côté client et serveur
+- 🔒 **Sécurisé** : Upload authentifié avec vérification utilisateur
+
+#### 7. Certificat Professionnel Amélioré
+- 🎨 **Design premium** : Dégradés dorés, animations, emojis décoratifs
+- 📄 **Téléchargement PDF** : Génération professionnelle avec pdf-lib
+- 🏆 **Certificat complet** : Bordure dorée, scores colorés, blockchain
+- 🔗 **Partage LinkedIn** : Bouton de partage avec texte pré-rempli
+- 📊 **4 domaines** : Développement, Data Science, Cybersécurité, Infrastructure
+- 🔐 **Authentification blockchain** : Hash et URL de vérification inclus
+- 💾 **Format A4** : PDF optimisé pour impression professionnelle
+
+#### 8. Corrections Techniques
 - 🐛 **Page Cognitive fixée** : Erreur React #310 résolue (hooks order)
 - 🔐 **Authentification robuste** : Migration vers NextAuth pour l'API cognitive
 - 🎯 **Types TypeScript** : Corrections des casts et enums Prisma
 - 📝 **Logs améliorés** : Meilleure traçabilité des erreurs
+- 🔧 **Import DashboardNav** : Déplacé en haut du fichier layout
+- 🎨 **Encodage PDF** : Caractères spéciaux remplacés pour compatibilité WinAnsi
 
 ### 🆕 Module Accessibilité & Handicap (v3.1)
 

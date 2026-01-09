@@ -200,16 +200,16 @@ export default function PricingPage() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-border">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>© 2025 PERSPECTA-COMPETENCES. Tous droits réservés.</p>
+          <p>© 2025 PERSPECTA-COMPETENCES by ia-solution (SIRET 438 055 097). Tous droits réservés.</p>
           <div className="flex gap-6">
             <Link href="/mentions-legales" className="hover:text-foreground transition-colors">
               Mentions légales
             </Link>
-            <Link href="/cgu" className="hover:text-foreground transition-colors">
-              CGU
-            </Link>
             <Link href="/politique-confidentialite" className="hover:text-foreground transition-colors">
               Confidentialité
+            </Link>
+            <Link href="/cgu" className="hover:text-foreground transition-colors">
+              CGU
             </Link>
           </div>
         </div>

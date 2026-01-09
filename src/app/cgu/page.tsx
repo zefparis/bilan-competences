@@ -28,11 +28,15 @@ export default function CGU() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">2. Mentions légales</h2>
-            <p>
-              Le site PERSPECTA-COMPETENCES est édité par ia-solution, dont le siège social est situé à Alès, France. 
-              Contact : <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">contact@ia-solution.fr</a>
+            <h2 className="text-xl font-semibold mb-4 text-primary">2. Éditeur</h2>
+            <p className="mb-4">
+              Le site PERSPECTA-COMPETENCES est édité par <strong>ia-solution</strong>, auto-entrepreneur.
             </p>
+            <ul className="list-none space-y-1 ml-4">
+              <li><strong>SIRET :</strong> 438 055 097</li>
+              <li><strong>Siège social :</strong> Alès (30100), France</li>
+              <li><strong>Contact :</strong> <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">contact@ia-solution.fr</a> | <a href="tel:+33758060556" className="text-primary hover:underline">07 58 06 05 56</a></li>
+            </ul>
           </section>
 
           <section>
@@ -141,8 +145,8 @@ export default function CGU() {
 
             <h3 className="text-lg font-semibold mb-3 mt-4">8.5 Information détaillée</h3>
             <p className="mb-4">
-              Pour une information complète sur notre usage de l'IA, consultez notre 
-              <Link href="/ai-disclosure" className="text-primary hover:underline ml-1">
+              Pour une information complète sur notre usage de l'IA, consultez notre{" "}
+              <Link href="/ai-disclosure" className="text-primary hover:underline">
                 page de divulgation IA
               </Link>.
             </p>
@@ -151,11 +155,10 @@ export default function CGU() {
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">9. Données personnelles</h2>
             <p>
-              Le traitement des données personnelles est régi par notre 
-              <Link href="/politique-confidentialite" className="text-primary hover:underline ml-1">
+              Le traitement des données personnelles est régi par notre{" "}
+              <Link href="/politique-confidentialite" className="text-primary hover:underline">
                 Politique de Confidentialité
-              </Link>
-              , conforme au RGPD.
+              </Link>, conforme au RGPD.
             </p>
           </section>
 
@@ -178,15 +181,18 @@ export default function CGU() {
 
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">12. Contact</h2>
-            <p>
-              Pour toute question concernant ces CGU : 
-              <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline ml-1">contact@ia-solution.fr</a>
+            <p className="mb-2">
+              Pour toute question concernant ces CGU :
             </p>
+            <ul className="list-none space-y-1 ml-4">
+              <li><strong>Email :</strong> <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">contact@ia-solution.fr</a></li>
+              <li><strong>Téléphone :</strong> <a href="tel:+33758060556" className="text-primary hover:underline">07 58 06 05 56</a></li>
+            </ul>
           </section>
         </div>
 
         <p className="mt-12 text-sm text-muted-foreground">
-          Dernière mise à jour : Décembre 2024
+          Dernière mise à jour : Janvier 2025
         </p>
       </div>
     </div>

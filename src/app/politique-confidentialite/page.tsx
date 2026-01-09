@@ -29,10 +29,12 @@ export default function PolitiqueConfidentialite() {
 
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">2. Responsable du traitement</h2>
+            <p className="mb-2"><strong>ia-solution</strong>, auto-entrepreneur</p>
             <ul className="list-none space-y-1 ml-4">
-              <li><strong>Raison sociale :</strong> ia-solution</li>
-              <li><strong>Siège social :</strong> Alès, France</li>
-              <li><strong>Email :</strong> <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">contact@ia-solution.fr</a></li>
+              <li><strong>SIRET :</strong> 438 055 097</li>
+              <li><strong>Siège social :</strong> Alès (30100), France</li>
+              <li><strong>Contact DPO :</strong> <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">contact@ia-solution.fr</a></li>
+              <li><strong>Téléphone :</strong> <a href="tel:+33758060556" className="text-primary hover:underline">07 58 06 05 56</a></li>
             </ul>
           </section>
 
@@ -118,21 +120,22 @@ export default function PolitiqueConfidentialite() {
             </ul>
 
             <h3 className="text-lg font-semibold mb-3 mt-4">9.2 Fournisseur IA</h3>
-            <p className="mb-2">
-              Nous utilisons Anthropic (Claude 3.5 Haiku) comme prestataire IA. Anthropic est conforme RGPD, 
-              héberge ses serveurs en Europe et a signé un Data Processing Agreement (DPA) garantissant :
+            <p className="mb-4">
+              Nous utilisons <strong>Anthropic (Claude 3.5 Haiku)</strong> comme prestataire IA.
             </p>
-            <ul className="list-disc ml-6 space-y-2 mb-4">
-              <li>Non-utilisation de vos données pour entraîner leurs modèles</li>
-              <li>Suppression des données après traitement</li>
-              <li>Chiffrement des communications</li>
-              <li>Respect du RGPD européen</li>
+            <p className="mb-2">Anthropic est conforme RGPD et garantit :</p>
+            <ul className="list-none ml-6 space-y-2 mb-4">
+              <li>✅ Non-utilisation de vos données pour entraîner leurs modèles</li>
+              <li>✅ Suppression des données après traitement (non-persistance)</li>
+              <li>✅ Chiffrement des communications (TLS 1.3)</li>
+              <li>✅ Hébergement serveurs en Europe</li>
+              <li>✅ Data Processing Agreement (DPA) signé</li>
             </ul>
 
             <h3 className="text-lg font-semibold mb-3 mt-4">9.3 Données sensibles</h3>
             <p className="mb-4">
-              Les données sensibles (handicap, santé) ne sont <strong>jamais</strong> 
-              transmises à l'IA sans votre consentement explicite et séparé.
+              Les données sensibles (handicap, santé mentale, origine ethnique) ne sont <strong>jamais transmises</strong> 
+              à l'IA sans votre consentement explicite et séparé.
             </p>
           </section>
 
@@ -148,41 +151,47 @@ export default function PolitiqueConfidentialite() {
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">11. Cookies</h2>
             <p className="mb-4">
-              Notre site utilise <strong>uniquement des cookies essentiels</strong> au fonctionnement du service :
+              Notre site utilise uniquement des cookies essentiels :
             </p>
             <ul className="list-disc ml-6 space-y-2 mb-4">
-              <li><strong>Cookies d'authentification</strong> : maintien de votre session de connexion</li>
-              <li><strong>Cookies de sécurité</strong> : protection contre les attaques CSRF</li>
+              <li><strong>Cookies d'authentification</strong> : maintien de session</li>
+              <li><strong>Cookies de sécurité</strong> : protection CSRF</li>
             </ul>
+            <p className="mb-2">
+              Nous n'utilisons <strong>aucun</strong> cookie de tracking, d'analyse ou publicitaire.
+            </p>
             <p>
-              Nous n'utilisons aucun cookie de tracking, d'analyse ou publicitaire. 
-              Pour plus d'informations, consultez notre{" "}
-              <Link href="/politique-cookies" className="text-primary hover:underline">
-                politique de cookies
-              </Link>.
+              Durée de conservation : session (suppression à la fermeture du navigateur) ou 30 jours (option "Se souvenir de moi").
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">11. Réclamation</h2>
-            <p>
+            <h2 className="text-xl font-semibold mb-4 text-primary">12. Réclamation</h2>
+            <p className="mb-4">
               Si vous estimez que le traitement de vos données ne respecte pas la réglementation, 
-              vous pouvez introduire une réclamation auprès de la CNIL (Commission Nationale de 
-              l'Informatique et des Libertés) : <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">www.cnil.fr</a>
+              vous pouvez introduire une réclamation auprès de la <strong>CNIL</strong> :
             </p>
+            <ul className="list-none space-y-1 ml-4">
+              <li><strong>Site :</strong> <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://www.cnil.fr</a></li>
+              <li><strong>Adresse :</strong> 3 Place de Fontenoy, TSA 80715, 75334 Paris Cedex 07</li>
+              <li><strong>Téléphone :</strong> 01 53 73 22 22</li>
+            </ul>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">13. Contact</h2>
-            <p>
-              Pour toute question concernant cette politique de confidentialité : 
-              <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline ml-1">contact@ia-solution.fr</a>
+            <p className="mb-2">
+              Pour toute question concernant cette politique de confidentialité :
             </p>
+            <ul className="list-none space-y-1 ml-4">
+              <li><strong>Email :</strong> <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">contact@ia-solution.fr</a></li>
+              <li><strong>Téléphone :</strong> <a href="tel:+33758060556" className="text-primary hover:underline">07 58 06 05 56</a></li>
+            </ul>
           </section>
         </div>
 
         <p className="mt-12 text-sm text-muted-foreground">
-          Dernière mise à jour : Décembre 2024
+          Dernière mise à jour : Janvier 2025
         </p>
       </div>
     </div>
