@@ -27,6 +27,9 @@ export default function HomePageV3() {
               <a href="#pour-qui" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Pour qui ?
               </a>
+              <Link href="/how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Comment ça marche
+              </Link>
               <a href="#modules" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Modules
               </a>
