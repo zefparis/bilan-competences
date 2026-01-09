@@ -6,6 +6,8 @@
 import { ProfileData, JobCompatibility, CareerScenario, EnvironmentRecommendation } from '../data/types';
 import { RiasecCode } from '../styles/tokens';
 import { colors, riasecLabels } from '../styles/tokens';
+import { optimizeRIASECProfile, getRIASECCode } from './riasecOptimizer';
+import { optimizeCognitiveProfile, QualitativeCognitiveProfile } from './cognitiveOptimizer';
 
 /**
  * Calcule les 3 dimensions RIASEC dominantes
@@ -258,9 +260,96 @@ export function generateEnvironments(data: ProfileData): EnvironmentRecommendati
 }
 
 /**
+ * Optimizes RIASEC profile to ensure differentiation
+ */
+export function optimizeRiasecIfNeeded(data: ProfileData): ProfileData {
+  const { riasec } = data;
+  
+  // Check if profile is too flat (all scores between 10-20%)
+  const scores = [riasec.R, riasec.I, riasec.A, riasec.S, riasec.E, riasec.C];
+  const max = Math.max(...scores);
+  const min = Math.min(...scores);
+  const variance = max - min;
+  
+  // If variance is too low (< 15%), optimize
+  if (variance < 15) {
+    const optimized = optimizeRIASECProfile(riasec);
+    const dominantCodes = calculateDominantRiasec({
+      R: optimized.R,
+      I: optimized.I,
+      A: optimized.A,
+      S: optimized.S,
+      E: optimized.E,
+      C: optimized.C,
+      dominant: [],
+    });
+    
+    data.riasec = {
+      R: optimized.R,
+      I: optimized.I,
+      A: optimized.A,
+      S: optimized.S,
+      E: optimized.E,
+      C: optimized.C,
+      dominant: dominantCodes,
+    };
+  } else {
+    // Ensure dominant is calculated
+    if (!data.riasec.dominant || data.riasec.dominant.length !== 3) {
+      data.riasec.dominant = calculateDominantRiasec(data.riasec);
+    }
+  }
+  
+  return data;
+}
+
+/**
+ * Optimizes cognitive profile to add realistic variance
+ */
+export function optimizeCognitiveIfNeeded(data: ProfileData): ProfileData {
+  const { cognitive } = data;
+  
+  // Check if all scores are around 50% (too uniform)
+  const scores = [
+    cognitive.flexibility,
+    cognitive.inhibitoryControl,
+    cognitive.processingSpeed,
+  ];
+  
+  const allNear50 = scores.every(s => s >= 45 && s <= 55);
+  
+  if (allNear50) {
+    // Convert to qualitative and re-optimize
+    const qualitative: QualitativeCognitiveProfile = {
+      inhibitionControl: cognitive.inhibitoryControl >= 50 ? 'medium' : 'low',
+      workingMemory: 'medium',
+      decisionSpeed: cognitive.processingSpeed >= 50 ? 'medium' : 'low',
+      cognitiveLoadTolerance: 'medium',
+      verbalFluency: cognitive.fluency ? (cognitive.fluency >= 50 ? 'medium' : 'low') : 'medium',
+    };
+    
+    const optimized = optimizeCognitiveProfile(qualitative);
+    
+    data.cognitive = {
+      ...cognitive,
+      flexibility: optimized.workingMemory,
+      inhibitoryControl: optimized.inhibitoryControl,
+      processingSpeed: optimized.decisionSpeed,
+      fluency: optimized.verbalFluency,
+    };
+  }
+  
+  return data;
+}
+
+/**
  * Enrichit les données du profil avec les données calculées
  */
 export function enrichProfileData(data: ProfileData): ProfileData {
+  // Optimize profiles if needed
+  data = optimizeRiasecIfNeeded(data);
+  data = optimizeCognitiveIfNeeded(data);
+  
   // Calculer les dimensions dominantes si non fournies
   if (!data.riasec.dominant || data.riasec.dominant.length !== 3) {
     data.riasec.dominant = calculateDominantRiasec(data.riasec);
