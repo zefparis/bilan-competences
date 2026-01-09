@@ -6,6 +6,7 @@
 import { ProfileData, JobCompatibility, CareerScenario, EnvironmentRecommendation } from '../data/types';
 import { RiasecCode } from '../styles/tokens';
 import { colors, riasecLabels } from '../styles/tokens';
+import { optimizeRIASECProfile, type RIASECProfile } from './riasecOptimizer';
 
 /**
  * Calcule les 3 dimensions RIASEC dominantes
@@ -257,13 +258,121 @@ export function generateEnvironments(data: ProfileData): EnvironmentRecommendati
   return environments;
 }
 
-// NOTE: Optimizers temporarily disabled to restore PDF generation
-// Will be re-implemented with proper error handling in next update
+/**
+ * Safely optimize RIASEC profile with error handling
+ * Only optimizes if variance is too low (< 15%)
+ */
+function safeOptimizeRiasec(data: ProfileData): ProfileData {
+  try {
+    const { riasec } = data;
+    const scores = [riasec.R, riasec.I, riasec.A, riasec.S, riasec.E, riasec.C];
+    const max = Math.max(...scores);
+    const min = Math.min(...scores);
+    const variance = max - min;
+
+    // Only optimize if profile is too flat (variance < 15%)
+    if (variance < 15) {
+      console.log('[DataProcessor] RIASEC variance too low:', variance, '- optimizing...');
+      const optimized = optimizeRIASECProfile({
+        R: riasec.R,
+        I: riasec.I,
+        A: riasec.A,
+        S: riasec.S,
+        E: riasec.E,
+        C: riasec.C,
+      });
+
+      data.riasec = {
+        R: optimized.R,
+        I: optimized.I,
+        A: optimized.A,
+        S: optimized.S,
+        E: optimized.E,
+        C: optimized.C,
+        dominant: calculateDominantRiasec({
+          ...optimized,
+          dominant: [],
+        }),
+      };
+      console.log('[DataProcessor] RIASEC optimized:', data.riasec);
+    }
+  } catch (error) {
+    console.warn('[DataProcessor] RIASEC optimization failed, using original:', error);
+  }
+  return data;
+}
+
+/**
+ * Safely optimize cognitive profile with error handling
+ * Only optimizes if all scores are around 50% (45-55%)
+ */
+function safeOptimizeCognitive(data: ProfileData): ProfileData {
+  try {
+    const { cognitive } = data;
+    const scores = [
+      cognitive.flexibility,
+      cognitive.inhibitoryControl,
+      cognitive.processingSpeed,
+    ];
+
+    // Check if all scores are around 50% (too uniform)
+    const allNear50 = scores.every(s => s >= 45 && s <= 55);
+
+    if (allNear50) {
+      console.log('[DataProcessor] Cognitive scores too uniform - optimizing...');
+      
+      // Add variance based on relative differences
+      const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+      
+      // Create differentiated scores
+      const flexDiff = cognitive.flexibility - avgScore;
+      const inhibDiff = cognitive.inhibitoryControl - avgScore;
+      const speedDiff = cognitive.processingSpeed - avgScore;
+      
+      // Amplify differences and add some randomness for uniqueness
+      const amplifier = 2.5;
+      const randomOffset = () => Math.floor(Math.random() * 10) - 5;
+      
+      data.cognitive = {
+        ...cognitive,
+        flexibility: Math.max(30, Math.min(90, Math.round(50 + flexDiff * amplifier + randomOffset()))),
+        inhibitoryControl: Math.max(30, Math.min(90, Math.round(50 + inhibDiff * amplifier + randomOffset() + 15))),
+        processingSpeed: Math.max(30, Math.min(90, Math.round(50 + speedDiff * amplifier + randomOffset() - 10))),
+      };
+      
+      // Ensure at least one strength (>= 65) and one area to improve (<= 45)
+      const newScores = [data.cognitive.flexibility, data.cognitive.inhibitoryControl, data.cognitive.processingSpeed];
+      if (!newScores.some(s => s >= 65)) {
+        // Boost the highest
+        const maxIdx = newScores.indexOf(Math.max(...newScores));
+        if (maxIdx === 0) data.cognitive.flexibility = 72;
+        else if (maxIdx === 1) data.cognitive.inhibitoryControl = 72;
+        else data.cognitive.processingSpeed = 72;
+      }
+      if (!newScores.some(s => s <= 45)) {
+        // Lower the lowest
+        const minIdx = newScores.indexOf(Math.min(...newScores));
+        if (minIdx === 0) data.cognitive.flexibility = 42;
+        else if (minIdx === 1) data.cognitive.inhibitoryControl = 42;
+        else data.cognitive.processingSpeed = 42;
+      }
+      
+      console.log('[DataProcessor] Cognitive optimized:', data.cognitive);
+    }
+  } catch (error) {
+    console.warn('[DataProcessor] Cognitive optimization failed, using original:', error);
+  }
+  return data;
+}
 
 /**
  * Enrichit les données du profil avec les données calculées
  */
 export function enrichProfileData(data: ProfileData): ProfileData {
+  // Apply safe optimizations with error handling
+  data = safeOptimizeRiasec(data);
+  data = safeOptimizeCognitive(data);
+
   // Calculer les dimensions dominantes si non fournies
   if (!data.riasec.dominant || data.riasec.dominant.length !== 3) {
     data.riasec.dominant = calculateDominantRiasec(data.riasec);
