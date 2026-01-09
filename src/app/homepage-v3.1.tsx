@@ -117,7 +117,7 @@ export default function HomePageV3() {
             </div>
 
             <p className="text-sm text-gray-300">
-              Modules 1-6 gratuits • Paiement uniquement pour certification + PDF
+              Modules 1-6 gratuits • Paiement pour certification + analyse IA + PDF
             </p>
 
             <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-6 max-w-2xl mx-auto">
