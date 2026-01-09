@@ -1,6 +1,6 @@
-# PERSPECTA-COMPETENCES v3.2 🎯
+# PERSPECTA-COMPETENCES v3.3 🎯
 
-![Version](https://img.shields.io/badge/version-3.2.0-blue) ![Status](https://img.shields.io/badge/status-Production-success) ![License](https://img.shields.io/badge/license-Proprietary-red) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue) ![Prisma](https://img.shields.io/badge/Prisma-5.22-green)
+![Version](https://img.shields.io/badge/version-3.3.0-blue) ![Status](https://img.shields.io/badge/status-Production-success) ![License](https://img.shields.io/badge/license-Proprietary-red) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue) ![Prisma](https://img.shields.io/badge/Prisma-5.22-green)
 
 **Plateforme universelle de reconversion professionnelle et bilan de compétences**
 
@@ -96,9 +96,33 @@
 
 ---
 
-## 🎯 Nouveautés v3.2 - Qualité & Stabilité (Janvier 2026)
+## 🎯 Nouveautés v3.3 - Optimisation & Localisation (Janvier 2026)
 
-### 🆕 Améliorations Majeures (v3.2)
+### 🆕 Améliorations Majeures (v3.3)
+
+#### 1. Optimisation Profils PDF - Différenciation Intelligente
+- 🎯 **RIASEC Optimisé** : Amplification variance automatique (6-32% au lieu de 7-8%)
+  - Détection profils plats (variance < 15%)
+  - Dominant garanti ≥ 25%, Faible ≤ 10%
+  - Algorithme d'amplification 1.5x avec renormalisation
+- 🧠 **Cognitif Optimisé** : Scores différenciés (30-90% au lieu de 50%)
+  - Détection uniformité (tous scores 45-55%)
+  - Au moins 1 force (≥ 65%) et 1 zone vigilance (≤ 45%)
+  - Amplification 2.5x + variance aléatoire pour unicité
+- ✅ **Sécurité** : Try-catch avec fallback gracieux sur données originales
+- 📊 **Logs** : Console détaillée pour debugging optimisations
+
+#### 2. Localisation Géographique - Filtrage Intelligent
+- 📍 **Profil Utilisateur** : Nouveaux champs (ville, code postal, département)
+- 🎯 **Formations Localisées** : Rayon 50km autour du code postal utilisateur
+- 💼 **Offres d'Emploi Localisées** : Matching géographique automatique
+- 🔄 **Migration Base** : `add_user_location` appliquée en production
+- ⚠️ **Fallback** : Recherche nationale si pas de localisation
+- 🗺️ **API France Travail** : Paramètres `location` et `distance` utilisés
+
+**Impact** : Résultats pertinents géographiquement, évite formations/emplois dans d'autres régions
+
+### 🆕 Améliorations v3.2 - Qualité & Stabilité
 
 #### 1. Système de Réinitialisation des Modules Gratuits
 - ✅ **Boutons de reset** sur tous les modules gratuits (Parcours, Expériences, RIASEC, Cognitif)
@@ -428,6 +452,13 @@ src/
 │   │   ├── templates/          # Pages PDF (Cover, ExecutiveSummary, Part1-4)
 │   │   ├── styles/             # Design tokens, typography, layouts
 │   │   ├── utils/              # Validation, enrichissement, generation textes
+│   │   │   ├── dataProcessor.ts      # Enrichissement + optimisations profils 🆕
+│   │   │   ├── riasecOptimizer.ts    # Amplification variance RIASEC 🆕
+│   │   │   ├── cognitiveOptimizer.ts # Différenciation scores cognitifs 🆕
+│   │   │   ├── careerAnalyzer.ts     # Analyse parcours professionnel 🆕
+│   │   │   ├── recommendationEngine.ts # Formations personnalisées 🆕
+│   │   │   ├── marketData.ts         # Statistiques marché emploi 🆕
+│   │   │   └── profileOptimizer.ts   # Orchestrateur optimisations 🆕
 │   │   ├── data/               # Types et donnees sample
 │   │   └── generator.tsx       # Point d'entree generation PDF
 │   ├── auth.ts                 # Configuration NextAuth
@@ -661,6 +692,39 @@ pnpm db:migrate       # Appliquer migrations
 ---
 
 ## Mises à jour récentes
+
+### v3.3.0 (Janvier 2026) - 🎯 Optimisation & Localisation
+**Amélioration qualité** : Profils PDF différenciés et filtrage géographique intelligent
+
+- **Optimiseurs Profils PDF** 🆕
+  - Module `riasecOptimizer.ts` : Amplification variance RIASEC (6-32%)
+  - Module `cognitiveOptimizer.ts` : Différenciation scores cognitifs (30-90%)
+  - Module `careerAnalyzer.ts` : Analyse parcours avec cohérence
+  - Module `recommendationEngine.ts` : TOP 3-5 formations personnalisées
+  - Module `marketData.ts` : Statistiques marché emploi
+  - Module `profileOptimizer.ts` : Orchestrateur optimisations
+  - Intégration dans `dataProcessor.ts` avec try-catch sécurisé
+  
+- **Localisation Géographique** 🆕
+  - Champs utilisateur : ville, code postal, département
+  - Formations filtrées rayon 50km (API France Travail)
+  - Offres d'emploi localisées automatiquement
+  - Migration base : `add_user_location`
+  - Fallback recherche nationale si pas de localisation
+  
+- **Impact Utilisateur**
+  - Bilans PDF ultra-personnalisés (valeur perçue x4)
+  - Résultats géographiquement pertinents
+  - Évite formations/emplois dans autres régions
+
+### v3.2.0 (Janvier 2026) - 🔧 Qualité & Stabilité
+- Système réinitialisation modules gratuits
+- Graphique parcours de vie amélioré (échelle 0-10)
+- Score IA dynamique (4 dimensions)
+- Compteur modules corrigé (7/7)
+- Dark/Light mode avec persistance
+- Upload photo de profil (base64)
+- Certificat professionnel amélioré (PDF premium)
 
 ### v3.1.0 (Janvier 2025) - ♿ Accessibilité Universelle
 **Impact social** : PERSPECTA-COMPETENCES devient la première plateforme de reconversion inclusive
