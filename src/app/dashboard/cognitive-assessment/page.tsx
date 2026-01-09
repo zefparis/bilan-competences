@@ -10,22 +10,25 @@ import Link from "next/link"
 
 import { 
   StroopTest, 
-  ReactionTimeTest, 
+  ComplexReactionTest,
   TrailMakingTest, 
   RanVisualTest,
+  DigitSpanTest,
   type StroopTestData,
-  type ReactionTimeTestData,
+  type ComplexReactionTestData,
   type TrailMakingTestData,
   type RanVisualTestData,
+  type DigitSpanTestData,
 } from "@/components/cognitive-tests"
 
-type TestStep = "intro" | "stroop" | "reaction" | "trail" | "ran" | "processing" | "complete"
+type TestStep = "intro" | "stroop" | "complexReaction" | "trail" | "ran" | "digitSpan" | "processing" | "complete"
 
 interface TestResults {
   stroop?: StroopTestData
-  reactionTime?: ReactionTimeTestData
+  complexReaction?: ComplexReactionTestData
   trailMaking?: TrailMakingTestData
   ranVisual?: RanVisualTestData
+  digitSpan?: DigitSpanTestData
 }
 
 export default function CognitiveAssessmentPage() {
@@ -80,14 +83,14 @@ export default function CognitiveAssessmentPage() {
       })
     }
     
-    setCurrentStep("reaction")
+    setCurrentStep("complexReaction")
   }, [sessionId])
 
-  const handleReactionComplete = useCallback(async (data: ReactionTimeTestData) => {
-    setResults(prev => ({ ...prev, reactionTime: data }))
+  const handleComplexReactionComplete = useCallback(async (data: ComplexReactionTestData) => {
+    setResults(prev => ({ ...prev, complexReaction: data }))
     
     if (sessionId) {
-      await fetch("/api/cognitive/session/reaction", {
+      await fetch("/api/cognitive/session/complex-reaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionId, data }),
@@ -113,18 +116,31 @@ export default function CognitiveAssessmentPage() {
 
   const handleRanComplete = useCallback(async (data: RanVisualTestData) => {
     setResults(prev => ({ ...prev, ranVisual: data }))
+    
+    if (sessionId) {
+      await fetch("/api/cognitive/session/ran", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, data }),
+      })
+    }
+    
+    setCurrentStep("digitSpan")
+  }, [sessionId])
+
+  const handleDigitSpanComplete = useCallback(async (data: DigitSpanTestData) => {
+    setResults(prev => ({ ...prev, digitSpan: data }))
     setCurrentStep("processing")
     setSaving(true)
     
     try {
       if (sessionId) {
-        await fetch("/api/cognitive/session/ran", {
+        await fetch("/api/cognitive/session/digit-span", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId, data }),
         })
         
-        // Compute signature
         console.log('🧮 [Assessment] Calling completion API for session:', sessionId);
         const completeResponse = await fetch("/api/cognitive/session/complete", {
           method: "POST",
@@ -153,10 +169,11 @@ export default function CognitiveAssessmentPage() {
   const getProgress = () => {
     switch (currentStep) {
       case "intro": return 0
-      case "stroop": return 25
-      case "reaction": return 50
-      case "trail": return 75
-      case "ran": return 90
+      case "stroop": return 20
+      case "complexReaction": return 40
+      case "trail": return 60
+      case "ran": return 75
+      case "digitSpan": return 90
       case "processing": return 95
       case "complete": return 100
     }
@@ -218,7 +235,7 @@ export default function CognitiveAssessmentPage() {
               Évaluation Cognitive PERSPECTA
             </h1>
             <p className="text-muted-foreground">
-              Cette batterie de tests mesure vos capacités cognitives à travers 4 épreuves comportementales.
+              Batterie cognitive professionnelle de 5 tests comportementaux.
             </p>
           </div>
         </div>
@@ -228,7 +245,7 @@ export default function CognitiveAssessmentPage() {
             <Brain className="w-8 h-8 text-primary" />
           </div>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Cette batterie de tests mesure vos capacités cognitives à travers 4 épreuves comportementales. 
+            Cette batterie de 5 tests mesure vos capacités cognitives à travers des épreuves comportementales. 
             Les résultats produiront votre signature cognitive personnalisée.
           </p>
         </div>
@@ -236,14 +253,15 @@ export default function CognitiveAssessmentPage() {
         <Card>
           <CardHeader>
             <CardTitle>Batterie de tests</CardTitle>
-            <CardDescription>Durée estimée : 15-20 minutes</CardDescription>
+            <CardDescription>Durée estimée : 19 minutes</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {[
               { num: 1, title: "Test de Stroop", desc: "Contrôle inhibiteur", duration: "3 min" },
-              { num: 2, title: "Temps de Réaction", desc: "Vitesse de traitement", duration: "3 min" },
+              { num: 2, title: "Temps de Réaction Complexe", desc: "Vitesse + Flexibilité", duration: "4 min" },
               { num: 3, title: "Trail Making", desc: "Flexibilité cognitive", duration: "5 min" },
-              { num: 4, title: "RAN Visuel", desc: "Accès cognitif rapide", duration: "3 min" },
+              { num: 4, title: "RAN Visuel", desc: "Fluence d'accès", duration: "3 min" },
+              { num: 5, title: "Empan de Chiffres", desc: "Mémoire à court terme", duration: "4 min" },
             ].map(test => (
               <div key={test.num} className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
@@ -348,14 +366,17 @@ export default function CognitiveAssessmentPage() {
       {currentStep === "stroop" && (
         <StroopTest onComplete={handleStroopComplete} />
       )}
-      {currentStep === "reaction" && (
-        <ReactionTimeTest onComplete={handleReactionComplete} />
+      {currentStep === "complexReaction" && (
+        <ComplexReactionTest onComplete={handleComplexReactionComplete} />
       )}
       {currentStep === "trail" && (
         <TrailMakingTest onComplete={handleTrailComplete} />
       )}
       {currentStep === "ran" && (
         <RanVisualTest onComplete={handleRanComplete} />
+      )}
+      {currentStep === "digitSpan" && (
+        <DigitSpanTest onComplete={handleDigitSpanComplete} />
       )}
     </div>
   )

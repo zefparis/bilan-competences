@@ -260,12 +260,16 @@ model CognitiveTestSession {
   reactionTimeCompleted Boolean @default(false)
   trailMakingCompleted  Boolean @default(false)
   ranVisualCompleted    Boolean @default(false)
+  complexReactionCompleted Boolean @default(false)
+  digitSpanCompleted    Boolean @default(false)
   
   // Raw test data (JSON)
   stroopData       Json?
   reactionTimeData Json?
   trailMakingData  Json?
   ranVisualData    Json?
+  complexReactionData Json?
+  digitSpanData    Json?
   
   // Computed signature
   signature   CognitiveSignature?
@@ -288,10 +292,12 @@ model CognitiveSignature {
   processingSpeed     Float
   cognitiveFlexibility Float
   accessFluency       Float
+  workingMemory       Float?
   
   // Stability metrics
   reactionVariance    Float
   attentionDrift      Float
+  switchCost          Float?
   
   // Error profile
   conflictErrors      Float

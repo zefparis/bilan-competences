@@ -44,6 +44,22 @@ interface RanMetrics {
   rhythmicityScore: number
 }
 
+interface ComplexReactionMetrics {
+  score: number
+  accuracy: number
+  meanRT: number
+  switchCost: number
+  phase1RT: number
+  phase2RT: number
+  phase3RT: number
+}
+
+interface DigitSpanMetrics {
+  maxSpan: number
+  totalCorrect: number
+  score: number
+}
+
 function normalizeScore(value: number, min: number, max: number, invert: boolean = false): number {
   const normalized = Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100))
   return invert ? 100 - normalized : normalized
@@ -53,7 +69,9 @@ function computeSignature(
   stroop: { metrics: StroopMetrics },
   reaction: { metrics: ReactionMetrics },
   trail: { metrics: TrailMetrics },
-  ran: { metrics: RanMetrics }
+  ran: { metrics: RanMetrics },
+  complexReaction: { metrics: ComplexReactionMetrics },
+  digitSpan: { metrics: DigitSpanMetrics }
 ) {
   // Inhibitory Control: based on Stroop interference effect and error rates
   // Lower interference = better control
@@ -75,9 +93,13 @@ function computeSignature(
   const ranSpeedScore = normalizeScore(ran.metrics.meanInterItemTime, 100, 500, true)
   const accessFluency = (ranSpeedScore * 0.5 + ran.metrics.rhythmicityScore * 0.5)
 
+  // Working Memory: based on digit span max span
+  const workingMemory = normalizeScore(digitSpan.metrics.maxSpan, 3, 9, false)
+
   // Stability metrics
   const reactionVariance = normalizeScore(reaction.metrics.standardDeviation, 20, 150, true)
   const attentionDrift = normalizeScore(Math.abs(reaction.metrics.attentionDrift), 0, 100, true)
+  const switchCost = normalizeScore(complexReaction.metrics.switchCost, -100, 300, true)
 
   // Error profile
   const conflictErrors = stroop.metrics.errorRateIncongruent * 100
@@ -88,8 +110,10 @@ function computeSignature(
     processingSpeed: Math.round(processingSpeed * 10) / 10,
     cognitiveFlexibility: Math.round(cognitiveFlexibility * 10) / 10,
     accessFluency: Math.round(accessFluency * 10) / 10,
+    workingMemory: Math.round(workingMemory * 10) / 10,
     reactionVariance: Math.round(reactionVariance * 10) / 10,
     attentionDrift: Math.round(attentionDrift * 10) / 10,
+    switchCost: Math.round(switchCost * 10) / 10,
     conflictErrors: Math.round(conflictErrors * 10) / 10,
     sequencingErrors,
     rawMetrics: {
@@ -97,6 +121,8 @@ function computeSignature(
       reaction: reaction.metrics,
       trail: trail.metrics,
       ran: ran.metrics,
+      complexReaction: complexReaction.metrics,
+      digitSpan: digitSpan.metrics,
     },
   }
 }
@@ -184,6 +210,24 @@ function generateInterpretation(signature: ReturnType<typeof computeSignature>):
     )
   }
 
+  // Working Memory interpretation
+  if (signature.workingMemory >= 70) {
+    sections.push(
+      "Votre mémoire de travail est particulièrement développée, vous permettant de maintenir et manipuler efficacement plusieurs informations simultanément. " +
+      "Cette capacité est un atout majeur pour les tâches complexes nécessitant une gestion mentale de multiples éléments."
+    )
+  } else if (signature.workingMemory >= 40) {
+    sections.push(
+      "Votre mémoire de travail se situe dans la moyenne, vous permettant de gérer efficacement les tâches courantes. " +
+      "Les situations très complexes peuvent nécessiter des stratégies de segmentation ou de prise de notes."
+    )
+  } else {
+    sections.push(
+      "Votre profil suggère une capacité de mémoire de travail limitée. " +
+      "L'utilisation d'outils externes (notes, listes) et la décomposition des tâches complexes peuvent optimiser votre efficacité."
+    )
+  }
+
   return sections.join("\n\n")
 }
 
@@ -212,7 +256,8 @@ export async function POST(req: NextRequest) {
 
     // Verify all tests are completed
     if (!session.stroopCompleted || !session.reactionTimeCompleted || 
-        !session.trailMakingCompleted || !session.ranVisualCompleted) {
+        !session.trailMakingCompleted || !session.ranVisualCompleted ||
+        !session.complexReactionCompleted || !session.digitSpanCompleted) {
       return NextResponse.json({ message: "Tests incomplets" }, { status: 400 })
     }
 
@@ -221,7 +266,9 @@ export async function POST(req: NextRequest) {
       session.stroopData,
       session.reactionTimeData,
       session.trailMakingData,
-      session.ranVisualData
+      session.ranVisualData,
+      session.complexReactionData,
+      session.digitSpanData
     )
 
     // Generate interpretation
@@ -235,8 +282,10 @@ export async function POST(req: NextRequest) {
         processingSpeed: signature.processingSpeed,
         cognitiveFlexibility: signature.cognitiveFlexibility,
         accessFluency: signature.accessFluency,
+        workingMemory: signature.workingMemory,
         reactionVariance: signature.reactionVariance,
         attentionDrift: signature.attentionDrift,
+        switchCost: signature.switchCost,
         conflictErrors: signature.conflictErrors,
         sequencingErrors: signature.sequencingErrors,
         rawMetrics: signature.rawMetrics,
