@@ -122,6 +122,18 @@
 
 **Impact** : Résultats pertinents géographiquement, évite formations/emplois dans d'autres régions
 
+#### 3. Page "Comment ça marche" - Guide Utilisateur
+- 📖 **Nouvelle page** : `/how-it-works` avec guide complet
+- 🎯 **Parcours en 4 étapes** : Inscription, Modules gratuits, Premium, Action
+- 🆓 **Comparaison Gratuit vs Premium** : Tableau détaillé des fonctionnalités
+- 📍 **Importance Localisation** : Section dédiée avec exemples concrets
+- ⚠️ **Alerte visible** : Rappel d'ajouter ville, code postal, département
+- 📝 **Guide pas-à-pas** : Instructions pour renseigner sa localisation
+- 🎨 **Design cohérent** : Cards, badges, alerts avec shadcn/ui
+- 🔗 **Navigation** : Lien ajouté dans menu homepage
+
+**Impact** : Utilisateurs comprennent le fonctionnement, gratuit/payant, et ajoutent leur localisation
+
 ### 🆕 Améliorations v3.2 - Qualité & Stabilité
 
 #### 1. Système de Réinitialisation des Modules Gratuits
@@ -711,11 +723,20 @@ pnpm db:migrate       # Appliquer migrations
   - Offres d'emploi localisées automatiquement
   - Migration base : `add_user_location`
   - Fallback recherche nationale si pas de localisation
+
+- **Page "Comment ça marche"** 🆕
+  - Nouvelle page `/how-it-works` avec guide complet
+  - Parcours en 4 étapes : Inscription → Gratuit → Premium → Action
+  - Comparaison détaillée Gratuit vs Premium
+  - Section dédiée importance localisation géographique
+  - Guide pas-à-pas pour renseigner ville/code postal
+  - Lien ajouté dans navigation homepage
   
 - **Impact Utilisateur**
   - Bilans PDF ultra-personnalisés (valeur perçue x4)
   - Résultats géographiquement pertinents
   - Évite formations/emplois dans autres régions
+  - Utilisateurs comprennent le fonctionnement de l'app
 
 ### v3.2.0 (Janvier 2026) - 🔧 Qualité & Stabilité
 - Système réinitialisation modules gratuits
