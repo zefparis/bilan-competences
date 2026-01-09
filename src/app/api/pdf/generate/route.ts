@@ -37,6 +37,9 @@ export async function POST(req: NextRequest) {
         name: true,
         email: true,
         hasPaid: true,
+        city: true,
+        postalCode: true,
+        department: true,
       },
     });
 
@@ -86,6 +89,9 @@ export async function POST(req: NextRequest) {
         date: new Date().toISOString().split('T')[0],
         userName: user.name || 'Utilisateur',
         userEmail: user.email || undefined,
+        city: user.city || undefined,
+        postalCode: user.postalCode || undefined,
+        department: user.department || undefined,
       },
       cognitive: cognitiveSession?.signature ? {
         flexibility: cognitiveSession.signature.cognitiveFlexibility ?? 50,

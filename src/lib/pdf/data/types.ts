@@ -10,6 +10,9 @@ export interface ProfileMeta {
   date: string;
   userName: string;
   userEmail?: string;
+  city?: string;
+  postalCode?: string;
+  department?: string;
 }
 
 export interface CognitiveProfile {

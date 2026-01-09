@@ -149,6 +149,13 @@ export const CoverPage: React.FC<CoverPageProps> = ({ meta }) => {
         <View style={styles.userSection}>
           <Text style={styles.userLabel}>Analyse personnalisée pour</Text>
           <Text style={styles.userName}>{meta.userName}</Text>
+          {(meta.city || meta.department) && (
+            <Text style={[styles.userLabel, { fontSize: fontSizes.sm, marginTop: -spacing.md }]}>
+              {meta.city && meta.department 
+                ? `${meta.city} (${meta.department})`
+                : meta.city || meta.department}
+            </Text>
+          )}
         </View>
 
         {/* Métadonnées */}
