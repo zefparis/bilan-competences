@@ -6,8 +6,22 @@
 import { ProfileData, JobCompatibility, CareerScenario, EnvironmentRecommendation } from '../data/types';
 import { RiasecCode } from '../styles/tokens';
 import { colors, riasecLabels } from '../styles/tokens';
-import { optimizeRIASECProfile, getRIASECCode } from './riasecOptimizer';
-import { optimizeCognitiveProfile, QualitativeCognitiveProfile } from './cognitiveOptimizer';
+
+// Optional optimizers - gracefully handle if not available
+let optimizeRIASECProfile: any;
+let optimizeCognitiveProfile: any;
+let QualitativeCognitiveProfile: any;
+
+try {
+  const riasecOptimizer = require('./riasecOptimizer');
+  optimizeRIASECProfile = riasecOptimizer.optimizeRIASECProfile;
+  
+  const cognitiveOptimizer = require('./cognitiveOptimizer');
+  optimizeCognitiveProfile = cognitiveOptimizer.optimizeCognitiveProfile;
+  QualitativeCognitiveProfile = cognitiveOptimizer.QualitativeCognitiveProfile;
+} catch (error) {
+  console.warn('[DataProcessor] Optimizers not available, using fallback mode');
+}
 
 /**
  * Calcule les 3 dimensions RIASEC dominantes
@@ -272,27 +286,35 @@ export function optimizeRiasecIfNeeded(data: ProfileData): ProfileData {
   const variance = max - min;
   
   // If variance is too low (< 15%), optimize
-  if (variance < 15) {
-    const optimized = optimizeRIASECProfile(riasec);
-    const dominantCodes = calculateDominantRiasec({
-      R: optimized.R,
-      I: optimized.I,
-      A: optimized.A,
-      S: optimized.S,
-      E: optimized.E,
-      C: optimized.C,
-      dominant: [],
-    });
-    
-    data.riasec = {
-      R: optimized.R,
-      I: optimized.I,
-      A: optimized.A,
-      S: optimized.S,
-      E: optimized.E,
-      C: optimized.C,
-      dominant: dominantCodes,
-    };
+  if (variance < 15 && optimizeRIASECProfile) {
+    try {
+      const optimized = optimizeRIASECProfile(riasec);
+      const dominantCodes = calculateDominantRiasec({
+        R: optimized.R,
+        I: optimized.I,
+        A: optimized.A,
+        S: optimized.S,
+        E: optimized.E,
+        C: optimized.C,
+        dominant: [],
+      });
+      
+      data.riasec = {
+        R: optimized.R,
+        I: optimized.I,
+        A: optimized.A,
+        S: optimized.S,
+        E: optimized.E,
+        C: optimized.C,
+        dominant: dominantCodes,
+      };
+    } catch (error) {
+      console.warn('[DataProcessor] RIASEC optimization failed, using original data:', error);
+      // Ensure dominant is calculated even if optimization fails
+      if (!data.riasec.dominant || data.riasec.dominant.length !== 3) {
+        data.riasec.dominant = calculateDominantRiasec(data.riasec);
+      }
+    }
   } else {
     // Ensure dominant is calculated
     if (!data.riasec.dominant || data.riasec.dominant.length !== 3) {
@@ -307,6 +329,11 @@ export function optimizeRiasecIfNeeded(data: ProfileData): ProfileData {
  * Optimizes cognitive profile to add realistic variance
  */
 export function optimizeCognitiveIfNeeded(data: ProfileData): ProfileData {
+  // Skip if optimizer not available
+  if (!optimizeCognitiveProfile) {
+    return data;
+  }
+  
   const { cognitive } = data;
   
   // Check if all scores are around 50% (too uniform)
@@ -319,24 +346,28 @@ export function optimizeCognitiveIfNeeded(data: ProfileData): ProfileData {
   const allNear50 = scores.every(s => s >= 45 && s <= 55);
   
   if (allNear50) {
-    // Convert to qualitative and re-optimize
-    const qualitative: QualitativeCognitiveProfile = {
-      inhibitionControl: cognitive.inhibitoryControl >= 50 ? 'medium' : 'low',
-      workingMemory: 'medium',
-      decisionSpeed: cognitive.processingSpeed >= 50 ? 'medium' : 'low',
-      cognitiveLoadTolerance: 'medium',
-      verbalFluency: cognitive.fluency ? (cognitive.fluency >= 50 ? 'medium' : 'low') : 'medium',
-    };
-    
-    const optimized = optimizeCognitiveProfile(qualitative);
-    
-    data.cognitive = {
-      ...cognitive,
-      flexibility: optimized.workingMemory,
-      inhibitoryControl: optimized.inhibitoryControl,
-      processingSpeed: optimized.decisionSpeed,
-      fluency: optimized.verbalFluency,
-    };
+    try {
+      // Convert to qualitative and re-optimize
+      const qualitative = {
+        inhibitionControl: cognitive.inhibitoryControl >= 50 ? 'medium' : 'low',
+        workingMemory: 'medium',
+        decisionSpeed: cognitive.processingSpeed >= 50 ? 'medium' : 'low',
+        cognitiveLoadTolerance: 'medium',
+        verbalFluency: cognitive.fluency ? (cognitive.fluency >= 50 ? 'medium' : 'low') : 'medium',
+      };
+      
+      const optimized = optimizeCognitiveProfile(qualitative);
+      
+      data.cognitive = {
+        ...cognitive,
+        flexibility: optimized.workingMemory,
+        inhibitoryControl: optimized.inhibitoryControl,
+        processingSpeed: optimized.decisionSpeed,
+        fluency: optimized.verbalFluency,
+      };
+    } catch (error) {
+      console.warn('[DataProcessor] Cognitive optimization failed, using original data:', error);
+    }
   }
   
   return data;
