@@ -96,20 +96,13 @@ export default function PricingPage() {
             l'analyse IA et votre rapport PDF personnalisé.
           </p>
 
-          {/* Disclaimer réglementaire */}
-          <div className="bg-amber-50 dark:bg-amber-950 border-l-4 border-amber-400 p-4 rounded-r-lg max-w-2xl mx-auto mt-8">
-            <div className="flex items-start gap-3">
-              <svg className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              <div>
-                <p className="text-sm text-amber-900 dark:text-amber-100">
-                  <strong>Information importante :</strong> PERSPECTA est un outil d'auto-évaluation professionnelle. 
-                  Il ne constitue pas un bilan de compétences au sens des articles L6313-1 et suivants du Code du travail 
-                  et n'est pas éligible au financement CPF.
-                </p>
-              </div>
-            </div>
+          <div className="text-center mt-8 mb-4">
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+              ⚠️ Outil d'auto-évaluation professionnelle. Non éligible CPF. 
+              <a href="/mentions-legales" className="underline hover:text-gray-700 dark:hover:text-gray-300 ml-1">
+                Mentions légales
+              </a>
+            </p>
           </div>
         </div>
       </section>

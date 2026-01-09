@@ -90,8 +90,86 @@ export default function MentionsLegales() {
             </p>
           </section>
 
+          <section className="mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              5. Nature du service et distinction réglementaire
+            </h2>
+            
+            <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-6 mb-6">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+                ⚖️ Clarification réglementaire importante
+              </h3>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
+                PERSPECTA-COMPETENCES est un <strong>outil d'auto-évaluation professionnelle et d'orientation</strong>. 
+                Il ne constitue <strong>pas un bilan de compétences</strong> au sens des articles L6313-1 et suivants 
+                du Code du travail.
+              </p>
+            </div>
+
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+              Différences avec un bilan de compétences certifié
+            </h3>
+            
+            <div className="overflow-x-auto mb-6">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-800">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                      Critère
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                      PERSPECTA
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                      Bilan certifié
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  <tr>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-medium">Certification</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">❌ Non certifié Qualiopi</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">✅ Certifié Qualiopi obligatoire</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-medium">Financement CPF</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">❌ Non éligible</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">✅ Éligible (jusqu'à 3 000€)</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-medium">Accompagnement</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">🤖 Analyse IA + support humain</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">👤 Conseiller certifié obligatoire</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-medium">Durée</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">⚡ Immédiat (1-2h)</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">📅 24h réglementaires minimum</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-medium">Prix</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">💰 49€</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">💰💰 1 500 - 3 000€</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p className="text-gray-700 dark:text-gray-300">
+              Pour accéder à un bilan de compétences certifié et éligible CPF, consultez la plateforme officielle 
+              <a 
+                href="https://www.moncompteformation.gouv.fr" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400 hover:underline ml-1"
+              >
+                Mon Compte Formation
+              </a>.
+            </p>
+          </section>
+
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">5. Conformité AI Act (UE 2024/1689)</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">6. Conformité AI Act (UE 2024/1689)</h2>
             <p className="mb-4">
               Les systèmes d'IA utilisés sur cette plateforme sont développés conformément au <strong>Règlement 
               européen sur l'Intelligence Artificielle</strong>.
@@ -106,7 +184,7 @@ export default function MentionsLegales() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">6. Cookies et traceurs</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">7. Cookies et traceurs</h2>
             <p className="mb-2">
               Ce site utilise uniquement des cookies techniques essentiels au fonctionnement :
             </p>
@@ -120,7 +198,7 @@ export default function MentionsLegales() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">7. Responsabilité</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">8. Responsabilité</h2>
             <p className="mb-4">
               <strong>Exactitude des informations :</strong> ia-solution met en œuvre tous les moyens raisonnables 
               pour assurer la fiabilité des informations publiées. Toutefois, nous ne garantissons pas l'exactitude, 
@@ -137,7 +215,7 @@ export default function MentionsLegales() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">8. Liens hypertextes</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">9. Liens hypertextes</h2>
             <p className="mb-4">
               Les liens vers des sites tiers sont fournis à titre informatif. ia-solution n'exerce aucun contrôle 
               sur ces sites et décline toute responsabilité quant à leur contenu.
@@ -149,7 +227,7 @@ export default function MentionsLegales() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">9. Médiation de la consommation</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">10. Médiation de la consommation</h2>
             <p className="mb-4">
               Conformément à l'article L.612-1 du Code de la Consommation, en cas de litige vous pouvez recourir 
               gratuitement à un médiateur de la consommation :
@@ -164,7 +242,7 @@ export default function MentionsLegales() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">10. Droit applicable</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">11. Droit applicable</h2>
             <p>
               Les présentes mentions légales sont régies par le droit français. En cas de litige, les tribunaux 
               français seront seuls compétents.
@@ -172,7 +250,7 @@ export default function MentionsLegales() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 text-primary">11. Contact</h2>
+            <h2 className="text-xl font-semibold mb-4 text-primary">12. Contact</h2>
             <p>
               Pour toute question concernant ces mentions légales, vous pouvez nous contacter :
             </p>
