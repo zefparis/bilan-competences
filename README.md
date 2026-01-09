@@ -2,97 +2,95 @@
 
 ![Version](https://img.shields.io/badge/version-3.3.0-blue) ![Status](https://img.shields.io/badge/status-Production-success) ![License](https://img.shields.io/badge/license-Proprietary-red) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue) ![Prisma](https://img.shields.io/badge/Prisma-5.22-green)
 
-**Plateforme universelle de reconversion professionnelle et bilan de compétences**
+**Outil d'orientation professionnelle et d'analyse de compétences**
 
 ---
 
 ## 🚀 En 30 secondes
 
-- ✅ **Bilan de compétences universel** : 287 métiers français (codes ROME)
-- 🤖 **Analyse IA Claude 3.5** : Compétences transférables + gap identifié
-- 💼 **Matching emploi + formations** : API France Travail intégrée
-- 🏆 **Certificat blockchain** : Validation infalsifiable de vos compétences
-- 📄 **PDF Premium personnalisé** : Rapport complet avec recommandations
-- ♿ **Accessibilité handicap** : Matching adapté + aides AGEFIPH
-- 💰 **49€ = Solution concrète garantie** : Valeur marché ~2000€
+- ✅ **Analyse de compétences** : Couverture de 287 métiers français (codes ROME)
+- 🤖 **Analyse IA Claude 3.5** : Identification des compétences transférables
+- 💼 **Recherche emploi + formations** : API France Travail intégrée
+- 🏆 **Certificat numérique** : Hash blockchain de vos résultats
+- 📄 **Rapport PDF** : Document structuré avec recommandations
+- ♿ **Module accessibilité** : Prise en compte des besoins spécifiques
+- 💰 **Modèle freemium** : Modules 1-6 gratuits, 7-11 payants (49€)
 
 **URL Production** : [perspecta.fr](https://perspecta.fr)
 
 ---
 
-## � Cas d'Usage Avancés
+## 💡 Comment l'outil fonctionne
 
-### Pour les Cabinets RH
-- **API Enterprise** (sur devis) : Intégration dans votre SIRH
-- **White-label** : PERSPECTA-COMPETENCES à vos couleurs
-- **Licences volume** : -30% dès 50 bilans/an
+### Exemple : Reconversion depuis métier manuel
 
-### Pour France Travail / Cap Emploi
-- **Partenariat institutionnel** : Tarif négocié
-- **SSO** : Connexion unique conseillers
-- **Dashboard admin** : Suivi cohortes bénéficiaires
+**Entrées utilisateur** :
+- Parcours professionnel (ex: 20 ans plomberie)
+- Tests cognitifs (Stroop, RAN, Trail Making, Réaction)
+- Profil RIASEC (préférences Réaliste/Conventionnel)
+- Localisation (ville, code postal, département)
 
-### Pour les Organismes de Formation
-- **Matching formations** : Votre catalogue priorisé
-- **Commission affiliation** : Revenus complémentaires
-- **Badge "Partenaire PERSPECTA"** : Visibilité accrue
+**Traitement automatisé** :
+- Analyse IA identifie compétences transférables (diagnostic, plans, autonomie)
+- Matching codes ROME compatibles (I1304, I1302)
+- Calcul gap technique (électricité, automatismes)
+- Recherche formations CPF dans rayon 50km
+- Recherche offres France Travail géolocalisées
 
----
+**Sortie (PDF)** :
+- 3-5 pistes métiers avec scores de compatibilité
+- Liste formations accessibles géographiquement
+- Plan d'action avec temps estimé
+- Offres France Travail à titre indicatif
 
-## �💡 Cas d'usage réels
-
-### Scénario 1 : Plombier → Technicien de maintenance
-**Jean, 45 ans, 20 ans d'expérience en plomberie, problèmes de dos**
-
-**Résultats PERSPECTA-COMPETENCES** :
-- ✅ Score compatibilité : **78/100**
-- 🎯 Compétences transférables : Lecture de plans, Diagnostic panne, Relation client, Autonomie
-- 📊 Gap : Électricité industrielle, Automatismes
-- 🎓 Solution : Titre Pro Technicien Maintenance (6 mois, finançable CPF)
-- 💼 **5 offres** à Alès (1800-2200€/mois)
-
-### Scénario 2 : Développeur Junior → Data Analyst
-**Marie, 2 ans en dev web, veut pivoter vers la data**
-
-**Résultats PERSPECTA-COMPETENCES** :
-- ✅ Score compatibilité : **85/100**
-- 🎯 Compétences transférables : Python, SQL, Logique algorithmique, Git
-- 📊 Gap : Machine Learning, Statistiques avancées, Visualisation données
-- 🎓 Solution : Bootcamp Data Science (3 mois, OpenClassrooms)
-- 💼 **8 offres** Data Analyst Junior à Montpellier (35-40K€)
-
-### Scénario 3 : Assistant RH → Conseiller Insertion (Handicap)
-**Sophie, RQTH, 5 ans en RH, souhaite accompagner personnes handicapées**
-
-**Résultats PERSPECTA-COMPETENCES** :
-- ✅ Score compatibilité : **92/100**
-- 🎯 Compétences transférables : Écoute active, Gestion administrative, Connaissance droit social
-- 📊 Gap : Législation handicap, Techniques d'accompagnement
-- 🎓 Solution : Formation Conseiller Cap Emploi (4 mois, AGEFIPH)
-- 💼 **3 offres** adaptées avec télétravail partiel (2000-2400€)
+**Important** : Les offres affichées sont publiques (API France Travail). Nous ne garantissons pas l'obtention de ces postes.
 
 ---
 
-## 💰 Pourquoi 49€ ?
+## ⚠️ Cadre d'utilisation
 
-### Ce que vous recevez
+### Ce que PERSPECTA fait ✅
+- Analyse votre profil cognitif via tests scientifiques
+- Identifie vos compétences transférables par IA
+- Calcule la compatibilité avec 287 métiers français
+- Propose des formations financées (CPF)
+- Génère un rapport structuré exploitable
 
-| Prestation | Valeur marché | PERSPECTA-COMPETENCES |
-|------------|---------------|-----------|
-| Bilan de compétences classique | 1500-3000€ | ✅ Inclus |
-| Test RIASEC professionnel | 150€ | ✅ Inclus |
-| Évaluation cognitive (4 tests) | 200€ | ✅ Inclus |
-| Analyse IA Claude 3.5 personnalisée | 100€ | ✅ Inclus |
-| Recherche formations + emplois | 10h × 50€ | ✅ Automatisé |
-| Certificat blockchain | N/A | ✅ Unique |
-| PDF premium personnalisé | 80€ | ✅ Inclus |
-| Module accessibilité handicap | N/A | ✅ Inclus |
-| **TOTAL VALEUR** | **~2000€** | **49€** |
+### Ce que PERSPECTA ne fait PAS ❌
+- Garantir l'obtention d'un emploi ou entretien
+- Remplacer un conseiller en évolution professionnelle
+- Contacter les employeurs/organismes à votre place
+- Assurer l'acceptation dans une formation
+- Fournir un accompagnement humain personnalisé
 
-### Garantie satisfaction
-- ❌ Aucune offre/formation trouvée ? **Remboursement intégral sous 7 jours**
-- 📧 Support email illimité pendant 6 mois
-- 🔄 Mises à jour gratuites (v3.x)
+**Recommandation** : Utilisez PERSPECTA comme complément à un accompagnement humain (France Travail, Cap Emploi, mission locale).
+
+---
+
+## 💰 Tarification
+
+**49€ TTC** - Paiement unique, accès à vie
+
+### Inclus dans le paiement
+
+| Fonctionnalité | Coût réel estimé |
+|----------------|------------------|
+| 4 tests cognitifs scientifiques | ~200€ (prestation psy) |
+| Analyse IA Claude 3.5 personnalisée | ~3€ (coût API réel) |
+| Profil RIASEC professionnel | ~150€ |
+| Matching 287 codes ROME | Développement propriétaire |
+| Rapport PDF 40+ pages | ~100€ (prestation) |
+| Certificat blockchain | Technologie unique |
+
+### Politique commerciale
+
+- ✅ Accès immédiat après paiement
+- ✅ Pas d'abonnement, accès à vie
+- 📧 Support technique : support@ia-solution.fr (48-72h)
+- 🔄 Mises à jour et correctifs inclus
+- ⚠️ **Vente finale** : Aucun remboursement sauf bug bloquant avéré
+
+**Limitation de responsabilité** : PERSPECTA est un outil d'orientation, pas un service de placement. Nous ne garantissons pas l'obtention d'un emploi, d'une formation, ou la réussite de votre reconversion.
 
 ---
 
@@ -199,18 +197,14 @@
 
 ### 🆕 Module Accessibilité & Handicap (v3.1)
 
-PERSPECTA-COMPETENCES v3.1 devient la **première plateforme de reconversion inclusive** avec un module dédié aux 2,8 millions de travailleurs handicapés en France.
-
-### 🆕 Module Accessibilité & Handicap (v3.1)
-
-**Impact** : 2,8 millions de travailleurs handicapés en France
+Module optionnel pour les travailleurs en situation de handicap.
 
 - ♿ **Déclaration confidentielle** : 7 types de handicap (moteur, visuel, auditif, cognitif, psychique, invisible, multiple)
 - 🏅 **RQTH** : Reconnaissance Travailleur Handicapé avec suivi validité
 - 🛠️ **Besoins d'aménagement** : Poste de travail, horaires flexibles, télétravail, transport accessible, technologies d'assistance
 - 💪 **Compétences compensatoires** : Résilience, adaptation, créativité, empathie, organisation
-- 🎯 **Matching adapté** : Offres entreprises engagées handicap (>6% TH)
-- 💰 **Aides AGEFIPH** : Jusqu'à 4 000€ insertion, 10 000€ aménagement poste
+- 🎯 **Matching adapté** : Filtrage offres compatibles avec besoins déclarés
+- 💰 **Information aides AGEFIPH** : Liens vers ressources officielles
 - 🔒 **RGPD strict** : Partage avec employeurs uniquement sur consentement explicite
 
 ### 🆕 Modules Universels (v3.0)
@@ -655,51 +649,16 @@ pnpm db:migrate       # Appliquer migrations
 
 ---
 
-## 📊 Métriques & Confiance
-
-### Statistiques Réelles (Décembre 2024)
-- 🎯 **1 247 utilisateurs** inscrits
-- 📊 **892 bilans** complétés
-- 💰 **67%** taux conversion gratuit → payant
-- ⭐ **4.8/5** satisfaction moyenne
-- 🔄 **42%** trouvent emploi dans 3 mois
-
-### Plateforme
-- 🎯 **98%** de taux de satisfaction utilisateurs
-- ⚡ **7 minutes** temps moyen par module
-- 🔒 **Zéro** fuite de données depuis création
-- 🏆 **4.8/5** note moyenne utilisateurs
-- ♿ **2,8M** travailleurs handicapés ciblés (v3.1)
-
-### Reconversions réussies
-- 📈 **67%** des utilisateurs trouvent une formation adaptée
-- 💼 **42%** décrochent un entretien dans les 3 mois
-- 🎓 **89%** terminent la formation commencée
-- 🎯 **287 codes ROME** couvrent 95% des métiers français
-
----
-
 ## 🗺️ Roadmap
 
-### v3.2 (T1 2025) - Extensions Accessibilité
-- [ ] API AGEFIPH : Aides en temps réel
-- [ ] Partenariat Cap Emploi
-- [ ] Score accessibilité entreprises
-- [ ] Export PDF profil handicap
-- [ ] Extension 531 codes ROME complets
+### Améliorations envisagées
+- [ ] Extension codes ROME (531 codes complets)
+- [ ] Amélioration algorithmes de matching
+- [ ] Optimisation performance PDF
+- [ ] Tests automatisés (couverture 80%)
+- [ ] Documentation API publique
 
-### v3.3 (T2 2025) - IA Avancée
-- [ ] Analyse vidéo soft skills (webcam)
-- [ ] Matching mentor/mentoré
-- [ ] Chatbot conversationnel orientation
-- [ ] Recommandations métiers IA prédictive
-
-### v4.0 (T3 2025) - Marketplace
-- [ ] Marketplace formations partenaires
-- [ ] Financement CPF intégré (paiement direct)
-- [ ] Suivi post-reconversion (6 mois)
-- [ ] Communauté entraide utilisateurs
-- [ ] Label "Entreprise Inclusive PERSPECTA-COMPETENCES"
+**Note** : Roadmap indicative, sans engagement de délai ou de livraison.
 
 ---
 
@@ -731,12 +690,6 @@ pnpm db:migrate       # Appliquer migrations
   - Section dédiée importance localisation géographique
   - Guide pas-à-pas pour renseigner ville/code postal
   - Lien ajouté dans navigation homepage
-  
-- **Impact Utilisateur**
-  - Bilans PDF ultra-personnalisés (valeur perçue x4)
-  - Résultats géographiquement pertinents
-  - Évite formations/emplois dans autres régions
-  - Utilisateurs comprennent le fonctionnement de l'app
 
 ### v3.2.0 (Janvier 2026) - 🔧 Qualité & Stabilité
 - Système réinitialisation modules gratuits
@@ -747,16 +700,16 @@ pnpm db:migrate       # Appliquer migrations
 - Upload photo de profil (base64)
 - Certificat professionnel amélioré (PDF premium)
 
-### v3.1.0 (Janvier 2025) - ♿ Accessibilité Universelle
-**Impact social** : PERSPECTA-COMPETENCES devient la première plateforme de reconversion inclusive
+### v3.1.0 (Janvier 2025) - ♿ Accessibilité
+Module optionnel pour travailleurs en situation de handicap
 
 - **Module 8.5 - Accessibilité & Handicap** 🆕
   - Déclaration confidentielle (7 types de handicap)
   - RQTH : Reconnaissance + suivi validité
   - Besoins d'aménagement personnalisés
   - Compétences compensatoires valorisées
-  - Matching entreprises engagées handicap
-  - Aides AGEFIPH (jusqu'à 10 000€)
+  - Filtrage offres compatibles
+  - Information aides AGEFIPH
   - RGPD strict : consentement explicite requis
   
 - **Extension API France Travail** 🆕
@@ -776,11 +729,11 @@ pnpm db:migrate       # Appliquer migrations
   - Migration `add_accessibility_module`
   - Chiffrement données sensibles
 
-### v3.0.0 (Janvier 2025) - 🎯 Plateforme Universelle
-**Transformation majeure** : Extension au-delà du secteur tech
+### v3.0.0 (Janvier 2025) - 🎯 Extension Codes ROME
+Extension au-delà du secteur tech (287 codes ROME)
 
 - **Module 8 - Projet Professionnel** 🆕
-  - 287 codes ROME prioritaires (95% métiers)
+  - 287 codes ROME prioritaires
   - Recherche métier avec autocomplétion
   - Gap de compétences automatique
   - Statuts : DRAFT, ACTIVE, COMPLETED, ARCHIVED
@@ -894,19 +847,19 @@ PERSPECTA-COMPETENCES est **propriétaire** mais nous envisageons d'ouvrir certa
 - 📍 Alès, France
 - 📧 contact@ia-solution.fr
 - 🌐 [ia-solution.fr](https://ia-solution.fr)
-- **Version** : 3.2.0
-- **Statut** : ✅ Production Ready
+- **Version** : 3.3.0
+- **Statut** : Production
 
-**Support utilisateurs**
-- 📧 Email : support@ia-solution.fr
+**Support technique**
+- 📧 Email : support@ia-solution.fr (délai 48-72h)
 - 🐛 Issues : [GitHub](https://github.com/zefparis/bilan-competences/issues)
-- 📚 Documentation : Voir `ACCESSIBILITY_MODULE.md` pour module handicap
-- ⏱️ Réponse sous 24h (jours ouvrés)
+- 📚 Documentation : Voir fichiers `.md` dans le repository
 
-**Ressources handicap**
-- AGEFIPH : 0 800 11 10 09
+**Ressources externes orientation professionnelle**
+- France Travail : 3949
+- AGEFIPH (handicap) : 0 800 11 10 09
 - Cap Emploi : [cap-emploi.fr](https://www.cap-emploi.fr)
-- MDPH : [mdph.fr](https://www.mdph.fr)
+- APEC (cadres) : [apec.fr](https://www.apec.fr)
 
 ---
 
@@ -931,19 +884,6 @@ PERSPECTA-COMPETENCES est conforme au Règlement européen sur l'Intelligence Ar
 ✅ Contrôle final garanti  
 
 **Page dédiée** : [/ai-disclosure](https://perspecta.fr/ai-disclosure)
-
----
-
-## 🏆 Engagement Social
-
-PERSPECTA-COMPETENCES s'engage à :
-1. **Inclusion** : Rendre la reconversion accessible à tous
-2. **Non-discrimination** : Garantir égalité des chances
-3. **Valorisation** : Mettre en avant les compétences compensatoires
-4. **Accompagnement** : Orienter vers les bonnes ressources
-
-> "Le handicap n'est pas une limite, c'est une différence qui enrichit."
-> — PERSPECTA-COMPETENCES, plateforme universelle de reconversion professionnelle
 
 ---
 

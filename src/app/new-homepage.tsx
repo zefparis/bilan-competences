@@ -862,7 +862,7 @@ export default function NewHomePage() {
               </Link>
               
               <p className="text-xs text-center text-muted-foreground mt-4">
-                ✓ Garantie satisfait ou remboursé 14 jours
+                ✓ Vente finale • Support technique 48-72h
               </p>
             </CardContent>
           </Card>

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   keywords: "reconversion professionnelle, évaluation professionnelle, handicap RQTH, formation CPF, analyse IA, AGEFIPH, orientation professionnelle, compétences transférables, France Travail",
   openGraph: {
     title: "PERSPECTA-COMPETENCES - Votre reconversion, étape par étape",
-    description: "Plateforme universelle avec module handicap. 287 métiers • Analyse IA • 49€ • Garantie satisfaction",
+    description: "Outil d'orientation professionnelle avec module handicap. 287 métiers • Analyse IA • 49€",
     type: "website",
     locale: "fr_FR",
     url: "https://perspecta.ia-solution.fr",

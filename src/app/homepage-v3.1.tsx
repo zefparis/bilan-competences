@@ -93,12 +93,12 @@ export default function HomePageV3() {
                 <div className="text-sm text-gray-300">Métiers français</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-primary">98%</div>
-                <div className="text-sm text-gray-300">Satisfaction</div>
+                <div className="text-3xl md:text-4xl font-bold text-primary">11</div>
+                <div className="text-sm text-gray-300">Modules</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-primary">49€</div>
-                <div className="text-sm text-gray-300">Valeur 2000€</div>
+                <div className="text-sm text-gray-300">Paiement unique</div>
               </div>
             </div>
 
@@ -374,67 +374,46 @@ export default function HomePageV3() {
               Un seul tarif, tout inclus
             </h2>
             <p className="text-lg text-muted-foreground">
-              Valeur marché ~2000€ • Prix PERSPECTA-COMPETENCES : 49€
+              Paiement unique • Accès à vie aux modules premium
             </p>
           </div>
 
-          <div className="overflow-x-auto mb-8">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b-2">
-                  <th className="text-left p-4 font-semibold">Prestation</th>
-                  <th className="text-right p-4 font-semibold">Valeur marché</th>
-                  <th className="text-center p-4 font-semibold">PERSPECTA-COMPETENCES</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="p-4">Évaluation professionnelle classique</td>
-                  <td className="text-right p-4">1500-3000€</td>
-                  <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4">Test RIASEC professionnel</td>
-                  <td className="text-right p-4">150€</td>
-                  <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4">Évaluation cognitive (4 tests)</td>
-                  <td className="text-right p-4">200€</td>
-                  <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4">Analyse IA Claude 3.5 personnalisée</td>
-                  <td className="text-right p-4">100€</td>
-                  <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4">Recherche formations + emplois</td>
-                  <td className="text-right p-4">10h × 50€</td>
-                  <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4">Certificat blockchain</td>
-                  <td className="text-right p-4">N/A</td>
-                  <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4">PDF premium personnalisé</td>
-                  <td className="text-right p-4">80€</td>
-                  <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4">Module accessibilité handicap</td>
-                  <td className="text-right p-4">N/A</td>
-                  <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
-                </tr>
-                <tr className="font-bold text-lg">
-                  <td className="p-4">TOTAL VALEUR</td>
-                  <td className="text-right p-4">~2000€</td>
-                  <td className="text-center p-4 text-primary">49€</td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="space-y-4 mb-8">
+            <Card>
+              <CardContent className="pt-6">
+                <h3 className="font-semibold mb-4">Modules Premium inclus (49€)</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Certification professionnelle avec blockchain</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Projet professionnel (287 codes ROME)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Analyse IA Claude 3.5 (compétences transférables)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Catalogue formations CPF localisées</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Matching offres d'emploi (API France Travail)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Rapport PDF premium personnalisé (40+ pages)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Module accessibilité handicap (optionnel)</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
           </div>
 
           <Card className="max-w-2xl mx-auto border-2 border-primary">
@@ -452,45 +431,49 @@ export default function HomePageV3() {
               </Button>
 
               <p className="text-xs text-muted-foreground">
-                Garantie satisfait ou remboursé 7 jours
+                Vente finale • Support technique 48-72h
               </p>
             </CardContent>
           </Card>
         </div>
       </section>
 
-      {/* Métriques & Confiance */}
+      {/* Sécurité & Conformité */}
       <section className="py-20 px-4 md:px-6 bg-background">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Métriques & Confiance
+              Sécurité & Conformité
             </h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card>
               <CardContent className="pt-6 text-center">
-                <div className="text-4xl font-bold text-primary mb-2">98%</div>
-                <p className="text-sm text-muted-foreground">Taux de satisfaction</p>
+                <Shield className="h-8 w-8 text-primary mx-auto mb-2" />
+                <p className="text-sm font-medium">Paiement sécurisé</p>
+                <p className="text-xs text-muted-foreground mt-1">Stripe</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="pt-6 text-center">
-                <div className="text-4xl font-bold text-primary mb-2">67%</div>
-                <p className="text-sm text-muted-foreground">Trouvent une formation</p>
+                <FileText className="h-8 w-8 text-primary mx-auto mb-2" />
+                <p className="text-sm font-medium">Conforme RGPD</p>
+                <p className="text-xs text-muted-foreground mt-1">Données EU</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="pt-6 text-center">
-                <div className="text-4xl font-bold text-primary mb-2">42%</div>
-                <p className="text-sm text-muted-foreground">Entretien sous 3 mois</p>
+                <Brain className="h-8 w-8 text-primary mx-auto mb-2" />
+                <p className="text-sm font-medium">IA transparente</p>
+                <p className="text-xs text-muted-foreground mt-1">Claude 3.5</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="pt-6 text-center">
-                <div className="text-4xl font-bold text-primary mb-2">89%</div>
-                <p className="text-sm text-muted-foreground">Terminent la formation</p>
+                <Award className="h-8 w-8 text-primary mx-auto mb-2" />
+                <p className="text-sm font-medium">Certificat blockchain</p>
+                <p className="text-xs text-muted-foreground mt-1">Hash SHA-256</p>
               </CardContent>
             </Card>
           </div>
@@ -504,7 +487,7 @@ export default function HomePageV3() {
             Prêt à changer de vie professionnelle ?
           </h2>
           <p className="text-xl mb-8 text-blue-100">
-            Rejoignez les centaines de personnes qui ont réussi leur reconversion avec PERSPECTA-COMPETENCES
+            Commencez votre bilan de compétences dès aujourd'hui avec PERSPECTA-COMPETENCES
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" asChild>

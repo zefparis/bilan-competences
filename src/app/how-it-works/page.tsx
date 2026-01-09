@@ -202,7 +202,7 @@ export default function HowItWorksPage() {
                 </div>
                 <CardTitle className="text-2xl">Déblocage Premium - 49€</CardTitle>
                 <CardDescription className="text-base">
-                  Accès aux modules avancés (valeur 2000€)
+                  Accès aux modules avancés
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -233,7 +233,7 @@ export default function HowItWorksPage() {
                 <Alert className="mt-4 bg-primary/5 border-primary/20">
                   <Sparkles className="h-4 w-4 text-primary" />
                   <AlertDescription className="text-sm">
-                    <strong>Garantie satisfait ou remboursé</strong> sous 7 jours
+                    <strong>Vente finale</strong> • Support technique 48-72h
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -374,7 +374,7 @@ export default function HowItWorksPage() {
                     <Badge variant="outline" className="text-lg px-3 py-1 border-primary text-primary">
                       49€
                     </Badge>
-                    <p className="text-xs text-muted-foreground mt-1">Valeur 2000€</p>
+                    <p className="text-xs text-muted-foreground mt-1">Paiement unique</p>
                   </div>
                 </div>
                 <CardDescription className="text-base">
@@ -427,8 +427,8 @@ export default function HowItWorksPage() {
                 <div className="flex items-start gap-3">
                   <Star className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium">Support prioritaire</p>
-                    <p className="text-sm text-muted-foreground">Email illimité 6 mois</p>
+                    <p className="font-medium">Support technique</p>
+                    <p className="text-sm text-muted-foreground">Email 48-72h</p>
                   </div>
                 </div>
               </CardContent>
