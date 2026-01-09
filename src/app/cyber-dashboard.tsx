@@ -216,7 +216,7 @@ export default function CyberDashboard() {
               </h3>
               <CyberBadge variant="neon">{userStats.completionRate}%</CyberBadge>
             </div>
-            <CyberProgress value={userStats.completionRate} label="Bilan de Compétences" />
+            <CyberProgress value={userStats.completionRate} label="Évaluation Professionnelle" />
           </CyberCard>
         </motion.section>
 

@@ -2,9 +2,9 @@ import { Metadata } from 'next'
 import HomePageV3 from './homepage-v3.1'
 
 export const metadata: Metadata = {
-  title: "PERSPECTA-COMPETENCES - Reconversion Professionnelle & Bilan de Compétences",
+  title: "PERSPECTA-COMPETENCES - Reconversion Professionnelle & Évaluation Professionnelle",
   description: "287 métiers français • Analyse IA Claude 3.5 • Module handicap inclusif • Matching emploi + formations CPF • Certification blockchain • 49€",
-  keywords: "reconversion professionnelle, bilan de compétences, handicap RQTH, formation CPF, analyse IA, AGEFIPH, orientation professionnelle, compétences transférables, France Travail",
+  keywords: "reconversion professionnelle, évaluation professionnelle, handicap RQTH, formation CPF, analyse IA, AGEFIPH, orientation professionnelle, compétences transférables, France Travail",
   openGraph: {
     title: "PERSPECTA-COMPETENCES - Votre reconversion, étape par étape",
     description: "Plateforme universelle avec module handicap. 287 métiers • Analyse IA • 49€ • Garantie satisfaction",

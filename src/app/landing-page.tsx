@@ -151,7 +151,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto relative z-10">
           <div className="space-y-8">
             <p className="text-xs md:text-sm uppercase tracking-[0.2em] font-bold" style={{ color: theme.accent }}>
-              Bilan de compétences cognitif
+              Évaluation professionnelle cognitive
             </p>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-light leading-tight tracking-tight" style={{ color: theme.text }}>
@@ -497,7 +497,7 @@ export default function LandingPage() {
             <div>
               <span className="font-semibold text-lg" style={{ color: theme.text }}>PERSPECTA</span>
               <p className="mt-2 text-sm" style={{ color: theme.textMuted }}>
-                Plateforme d'évaluation cognitive et de bilan de compétences.
+                Plateforme d'évaluation cognitive et professionnelle.
               </p>
             </div>
 

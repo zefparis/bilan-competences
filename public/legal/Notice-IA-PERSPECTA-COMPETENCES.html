@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notice d'Utilisation de l'Intelligence Artificielle - PERSPECTA-COMPETENCES</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #1e40af;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+        }
+        h2 {
+            color: #1e40af;
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            page-break-after: avoid;
+        }
+        h3 {
+            color: #333;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+        }
+        .metadata {
+            text-align: center;
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .metadata p {
+            margin: 5px 0;
+            font-weight: 600;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #1e40af;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .checkmark {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .cross {
+            color: #ef4444;
+            font-weight: bold;
+        }
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        .important {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 20px 0;
+            font-weight: 600;
+            page-break-inside: avoid;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #e5e7eb;
+            margin: 30px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+    <h1>NOTICE D'UTILISATION<br>DE L'INTELLIGENCE ARTIFICIELLE</h1>
+    <h2 style="text-align: center; color: #1e40af; margin-top: 0;">PERSPECTA-COMPETENCES</h2>
+
+    <div class="metadata">
+        <p><strong>Éditeur :</strong> ia-solution (SIRET 438 055 097)</p>
+        <p><strong>Version :</strong> 1.0</p>
+        <p><strong>Date :</strong> Janvier 2025</p>
+        <p><strong>Conformité :</strong> Règlement UE 2024/1689 (AI Act)</p>
+    </div>
+
+    <p style="text-align: center; font-style: italic; margin: 30px 0;">
+        Ce document décrit l'utilisation des systèmes d'intelligence artificielle dans la plateforme 
+        PERSPECTA-COMPETENCES, conformément aux obligations de transparence du 
+        Règlement européen sur l'Intelligence Artificielle.
+    </p>
+
+    <hr>
+
+    <div class="page-break"></div>
+
+    <h2>1. Classification du système IA</h2>
+
+    <h3>Article 13 - Obligations de transparence</h3>
+
+    <p><strong>Système d'IA :</strong> PERSPECTA-COMPETENCES<br>
+    <strong>Classification :</strong> Risque limité (Article 52, AI Act)</p>
+
+    <h3>Raison de la classification</h3>
+
+    <ul>
+        <li><span class="checkmark">✓</span> Outil d'orientation professionnelle avec impact sur la vie des personnes</li>
+        <li><span class="checkmark">✓</span> Utilisation d'IA générative pour analyse et recommandations</li>
+        <li><span class="cross">✗</span> PAS de décision automatisée d'embauche (donc pas "risque élevé")</li>
+        <li><span class="cross">✗</span> PAS de notation sociale ou surveillance biométrique</li>
+        <li><span class="cross">✗</span> PAS de manipulation comportementale</li>
+    </ul>
+
+    <p>En tant que système à risque limité, nous respectons nos obligations de transparence et 
+    vous garantissons le contrôle final sur toutes décisions vous concernant.</p>
+
+    <hr>
+
+    <div class="page-break"></div>
+
+    <h2>2. Modèles d'IA utilisés</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Composant</th>
+                <th>Modèle IA</th>
+                <th>Version</th>
+                <th>Fournisseur</th>
+                <th>Hébergement</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Analyse compétences</td>
+                <td>Claude 3.5 Haiku</td>
+                <td>20241022</td>
+                <td>Anthropic</td>
+                <td>Europe (AWS)</td>
+            </tr>
+            <tr>
+                <td>Génération rapports</td>
+                <td>Claude 3.5 Haiku</td>
+                <td>20241022</td>
+                <td>Anthropic</td>
+                <td>Europe (AWS)</td>
+            </tr>
+            <tr>
+                <td>Matching emploi</td>
+                <td>Algorithme propriétaire</td>
+                <td>v2.1</td>
+                <td>ia-solution</td>
+                <td>France (LWS)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <div class="page-break"></div>
+
+    <h2>3. Données traitées et garanties</h2>
+
+    <h3>Données transmises à l'IA</h3>
+    <ul>
+        <li>Expériences professionnelles (intitulés, durées)</li>
+        <li>Compétences déclarées (liste textuelle)</li>
+        <li>Objectifs professionnels (texte libre)</li>
+        <li>Résultats tests cognitifs (scores numériques)</li>
+        <li>Type RIASEC (6 lettres)</li>
+    </ul>
+
+    <h3>Données JAMAIS transmises</h3>
+    <ul>
+        <li><span class="cross">✗</span> Nom, prénom, identité</li>
+        <li><span class="cross">✗</span> Adresse email</li>
+        <li><span class="cross">✗</span> Numéro de téléphone</li>
+        <li><span class="cross">✗</span> Données bancaires</li>
+        <li><span class="cross">✗</span> Données sensibles (santé, handicap, origine)</li>
+    </ul>
+
+    <h3>Garanties de confidentialité</h3>
+    <ul>
+        <li><span class="checkmark">✓</span> Vos données personnelles ne sont jamais utilisées pour entraîner les modèles IA</li>
+        <li><span class="checkmark">✓</span> Anthropic respecte des accords de confidentialité stricts (DPA signé)</li>
+        <li><span class="checkmark">✓</span> Hébergement serveurs en Europe (conformité RGPD)</li>
+        <li><span class="checkmark">✓</span> Chiffrement des communications (TLS 1.3)</li>
+        <li><span class="checkmark">✓</span> Suppression des données après traitement (non-persistance)</li>
+    </ul>
+
+    <hr>
+
+    <div class="page-break"></div>
+
+    <h2>4. Finalités et limitations</h2>
+
+    <h3>Ce que l'IA fait</h3>
+    <ul>
+        <li><span class="checkmark">✓</span> Identifie les compétences transférables entre métiers</li>
+        <li><span class="checkmark">✓</span> Calcule des scores de compatibilité (0-100)</li>
+        <li><span class="checkmark">✓</span> Génère des recommandations personnalisées</li>
+        <li><span class="checkmark">✓</span> Rédige des synthèses de profil professionnel</li>
+    </ul>
+
+    <h3>Ce que l'IA ne fait PAS</h3>
+    <ul>
+        <li><span class="cross">✗</span> Ne prend aucune décision automatisée définitive</li>
+        <li><span class="cross">✗</span> Ne garantit pas d'embauche ou de succès professionnel</li>
+        <li><span class="cross">✗</span> Ne remplace pas un conseiller humain qualifié</li>
+        <li><span class="cross">✗</span> Ne stocke pas vos données après génération du rapport</li>
+    </ul>
+
+    <h3>Limites et précautions</h3>
+    <div class="warning">
+        <p><strong>⚠️ L'IA peut commettre des erreurs d'interprétation ou produire des "hallucinations"</strong></p>
+        <ul>
+            <li>Les recommandations sont indicatives, jamais prescriptives</li>
+            <li>Aucune garantie d'embauche, de succès professionnel ou de résultat</li>
+            <li>L'IA est un complément, pas un remplacement d'un accompagnement humain</li>
+            <li>Les données sectorielles peuvent ne pas être à jour en temps réel</li>
+            <li>Le score de compatibilité est une estimation probabiliste, pas une certitude</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <div class="page-break"></div>
+
+    <h2>5. Vos droits (AI Act - UE 2024/1689)</h2>
+
+    <ol>
+        <li><strong>Droit à l'information</strong> : Vous êtes informé de l'utilisation de l'IA (cette notice)</li>
+        <li><strong>Droit de refus</strong> : Vous pouvez demander une analyse manuelle sans IA (contact@ia-solution.fr)</li>
+        <li><strong>Droit de contestation</strong> : Vous pouvez contester tout résultat généré par l'IA via le formulaire support</li>
+        <li><strong>Droit d'accès</strong> : Vous pouvez obtenir une copie des données transmises à l'IA</li>
+        <li><strong>Supervision humaine</strong> : Support disponible sous 48h (contact@ia-solution.fr / 07 58 06 05 56)</li>
+    </ol>
+
+    <h3>Contrôle final</h3>
+    <div class="important">
+        <p><strong>IMPORTANT :</strong> Aucune décision automatisée définitive n'est prise par l'IA. Vous restez 
+        maître de vos choix professionnels. Les recommandations de PERSPECTA sont des 
+        suggestions d'orientation, pas des obligations.</p>
+    </div>
+
+    <hr>
+
+    <div class="page-break"></div>
+
+    <h2>6. Procédure de contestation</h2>
+
+    <p>Si vous contestez un résultat généré par l'IA, suivez cette procédure :</p>
+
+    <ol>
+        <li><strong>Signaler</strong> : Envoyez un email à contact@ia-solution.fr avec l'objet "Contestation IA"</li>
+        <li><strong>Délai</strong> : Réponse garantie sous 48 heures ouvrées</li>
+        <li><strong>Analyse humaine</strong> : Vérification manuelle par Benjamin (Fondateur & CTO)</li>
+        <li><strong>Correction</strong> : Régénération du rapport si erreur avérée par l'IA</li>
+        <li><strong>Escalade</strong> : Médiation CNPM en cas de désaccord persistant</li>
+    </ol>
+
+    <h3>Informations à fournir</h3>
+    <ul>
+        <li>Votre email utilisé sur PERSPECTA</li>
+        <li>Date de l'évaluation contestée</li>
+        <li>Élément précis contesté (score, recommandation, analyse)</li>
+        <li>Justification de votre contestation</li>
+    </ul>
+
+    <hr>
+
+    <div class="page-break"></div>
+
+    <h2>7. Contact et support</h2>
+
+    <h3>Support technique IA</h3>
+    <ul>
+        <li><strong>Email :</strong> contact@ia-solution.fr</li>
+        <li><strong>Téléphone :</strong> 07 58 06 05 56</li>
+        <li><strong>Délai de réponse :</strong> 48 heures ouvrées</li>
+    </ul>
+
+    <h3>Conformité et réclamations</h3>
+    <ul>
+        <li><strong>CNIL (RGPD) :</strong> www.cnil.fr</li>
+        <li><strong>DGCCRF (AI Act) :</strong> www.economie.gouv.fr</li>
+        <li><strong>Médiateur consommation :</strong> CNPM - https://cnpm-mediation-consommation.eu</li>
+    </ul>
+
+    <h3>Éditeur du document</h3>
+    <table>
+        <tr>
+            <td><strong>Raison sociale</strong></td>
+            <td>ia-solution</td>
+        </tr>
+        <tr>
+            <td><strong>Statut</strong></td>
+            <td>Auto-entrepreneur</td>
+        </tr>
+        <tr>
+            <td><strong>SIRET</strong></td>
+            <td>438 055 097</td>
+        </tr>
+        <tr>
+            <td><strong>Siège social</strong></td>
+            <td>Alès (30100), Occitanie, France</td>
+        </tr>
+        <tr>
+            <td><strong>Contact</strong></td>
+            <td>contact@ia-solution.fr</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <hr>
+        <p><strong>Document contractuel annexe aux CGU PERSPECTA-COMPETENCES</strong></p>
+        <p>© 2025 ia-solution - Tous droits réservés</p>
+    </div>
+
+</body>
+</html>

@@ -180,7 +180,7 @@ export default function CyberHomePage() {
               <span className="text-cyber-blue">Bilan</span>
               <br />
               <span className="text-4xl md:text-6xl text-cyber-silver font-mono">
-                Bilan de Compétences 2030
+                Évaluation Professionnelle 2030
               </span>
             </motion.h1>
 

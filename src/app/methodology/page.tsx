@@ -11,9 +11,9 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
-  title: "Méthodologie - PERSPECTA | Approche scientifique du bilan de compétences",
+  title: "Méthodologie - PERSPECTA | Approche scientifique de l'évaluation professionnelle",
   description: "Découvrez les fondements scientifiques de PERSPECTA : tests cognitifs validés, profil RIASEC, certification technique blockchain. Méthodologie transparente et éthique.",
-  keywords: "méthodologie, tests cognitifs, RIASEC, certification blockchain, psychométrie, neurosciences cognitives, bilan compétences"
+  keywords: "méthodologie, tests cognitifs, RIASEC, certification blockchain, psychométrie, neurosciences cognitives, évaluation professionnelle"
 }
 
 export default function MethodologyPage() {
@@ -34,8 +34,8 @@ export default function MethodologyPage() {
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
             PERSPECTA combine neurosciences cognitives, psychométrie validée 
-            et validation technique objective pour créer le bilan de compétences 
-            le plus complet du marché.
+            et validation technique objective pour créer l'évaluation professionnelle 
+            la plus complète du marché.
           </p>
         </div>
       </section>

@@ -266,10 +266,10 @@ export default function DashboardPage() {
         <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-4xl font-bold text-primary mb-2">
-              Dashboard - Bilan de Compétences
+              Dashboard - Évaluation Professionnelle
             </h1>
             <p className="text-muted-foreground">
-              Bienvenue dans votre espace de bilan de compétences
+              Bienvenue dans votre espace d'évaluation professionnelle
             </p>
             {summary?.lastActivity && (
               <p className="text-xs text-muted-foreground mt-2">Dernière activité: {summary.lastActivity}</p>

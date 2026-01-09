@@ -79,7 +79,7 @@ export default function MentionsLegales() {
             </p>
             <ul className="list-none space-y-1 ml-4 mb-4">
               <li><strong>Responsable du traitement :</strong> ia-solution (SIRET 438 055 097)</li>
-              <li><strong>Finalités :</strong> Gestion des bilans de compétences, authentification, relations commerciales</li>
+              <li><strong>Finalités :</strong> Gestion des évaluations professionnelles, authentification, relations commerciales</li>
               <li><strong>Droits :</strong> Accès, rectification, effacement, limitation, portabilité, opposition</li>
             </ul>
             <p>

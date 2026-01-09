@@ -50,7 +50,7 @@ export default function AIDisclosure() {
               <h3 className="text-xl font-semibold mb-3">📄 3. Génération de Rapports</h3>
               <ul className="space-y-2 text-sm">
                 <li><strong>Technologie :</strong> Anthropic Claude 3.5 Haiku</li>
-                <li><strong>Usage :</strong> Synthèse personnalisée de votre bilan de compétences</li>
+                <li><strong>Usage :</strong> Synthèse personnalisée de votre évaluation professionnelle</li>
                 <li><strong>Résultat :</strong> Rapport PDF personnalisé avec recommandations stratégiques</li>
               </ul>
             </div>
@@ -111,6 +111,38 @@ export default function AIDisclosure() {
             <p className="text-sm">
               En tant que système à risque limité, nous respectons nos <strong>obligations de transparence</strong> 
               et vous garantissons le <strong>contrôle final</strong> sur toutes décisions vous concernant.
+            </p>
+          </section>
+
+          <section className="bg-green-50 dark:bg-green-950 p-6 rounded-lg border border-green-200 dark:border-green-800">
+            <h2 className="text-2xl font-semibold mb-4">📄 Notice d'Utilisation de l'IA (PDF)</h2>
+            <p className="mb-4">
+              Conformément à l'article 13 de l'AI Act, vous pouvez télécharger la notice complète 
+              d'utilisation de l'intelligence artificielle dans PERSPECTA-COMPETENCES.
+            </p>
+            <p className="text-sm mb-4">
+              <strong>Ce document contient :</strong>
+            </p>
+            <ul className="list-disc ml-6 space-y-1 text-sm mb-4">
+              <li>Classification du système IA (risque limité)</li>
+              <li>Modèles IA utilisés et leurs fournisseurs</li>
+              <li>Données traitées et garanties de confidentialité</li>
+              <li>Vos droits (information, refus, contestation, accès)</li>
+              <li>Procédure de contestation détaillée</li>
+              <li>Contacts support et conformité</li>
+            </ul>
+            <a 
+              href="/legal/Notice-IA-PERSPECTA-COMPETENCES.pdf" 
+              download
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:opacity-90 transition-opacity"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Télécharger la Notice IA (PDF)
+            </a>
+            <p className="text-xs text-muted-foreground mt-3">
+              Version 1.0 - Janvier 2025 - Conforme AI Act (UE 2024/1689)
             </p>
           </section>
 

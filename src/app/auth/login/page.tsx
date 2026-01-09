@@ -62,7 +62,7 @@ function LoginForm() {
 
       toast({
         title: "Connexion réussie",
-        description: "Bienvenue sur Bilan de Compétences",
+        description: "Bienvenue sur PERSPECTA-COMPETENCES",
       })
 
       // Le middleware protège /dashboard via NextAuth: on force une navigation propre.

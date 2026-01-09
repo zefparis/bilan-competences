@@ -13,11 +13,11 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
-    default: 'PERSPECTA-COMPETENCES - Bilan de Compétences & Évaluation Cognitive',
+    default: 'PERSPECTA-COMPETENCES - Évaluation Professionnelle & Évaluation Cognitive',
     template: '%s | PERSPECTA-COMPETENCES'
   },
-  description: 'Plateforme premium d\'évaluation cognitive et de bilan de compétences. Découvrez votre signature cognitive unique, votre profil RIASEC et obtenez des recommandations personnalisées pour votre orientation professionnelle.',
-  keywords: ['bilan de compétences', 'évaluation cognitive', 'orientation professionnelle', 'RIASEC', 'signature cognitive', 'reconversion'],
+  description: 'Plateforme premium d\'évaluation cognitive et professionnelle. Découvrez votre signature cognitive unique, votre profil RIASEC et obtenez des recommandations personnalisées pour votre orientation professionnelle.',
+  keywords: ['évaluation professionnelle', 'évaluation cognitive', 'orientation professionnelle', 'RIASEC', 'signature cognitive', 'reconversion'],
   authors: [{ name: 'ia-solution' }],
   creator: 'ia-solution',
   publisher: 'PERSPECTA-COMPETENCES',
@@ -26,13 +26,13 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'fr_FR',
     siteName: 'PERSPECTA-COMPETENCES',
-    title: 'PERSPECTA-COMPETENCES - Bilan de Compétences & Évaluation Cognitive',
+    title: 'PERSPECTA-COMPETENCES - Évaluation Professionnelle & Évaluation Cognitive',
     description: 'Découvrez votre signature cognitive unique et obtenez des recommandations personnalisées pour votre orientation professionnelle.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PERSPECTA-COMPETENCES - Bilan de Compétences',
-    description: 'Plateforme premium d\'évaluation cognitive et de bilan de compétences.',
+    title: 'PERSPECTA-COMPETENCES - Évaluation Professionnelle',
+    description: 'Plateforme premium d\'évaluation cognitive et professionnelle.',
   },
   robots: {
     index: true,

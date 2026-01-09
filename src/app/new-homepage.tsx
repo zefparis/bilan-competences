@@ -78,7 +78,7 @@ export default function NewHomePage() {
             </Badge>
             
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-              Bilan de compétences +<br />
+              Évaluation professionnelle +<br />
               <span className="text-primary">Certification professionnelle</span><br />
               + Emploi
             </h1>
@@ -973,7 +973,7 @@ export default function NewHomePage() {
                 <span className="font-bold text-xl">PERSPECTA</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Plateforme d'évaluation cognitive et de bilan de compétences avec certification blockchain.
+                Plateforme d'évaluation cognitive et professionnelle avec certification blockchain.
               </p>
             </div>
 

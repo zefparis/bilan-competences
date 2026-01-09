@@ -53,7 +53,7 @@ export default function PolitiqueConfidentialite() {
             <h2 className="text-xl font-semibold mb-4 text-primary">4. Finalités du traitement</h2>
             <p className="mb-4">Vos données sont collectées pour :</p>
             <ul className="list-disc ml-6 space-y-2">
-              <li>Fournir nos services d'évaluation cognitive et de bilan de compétences</li>
+              <li>Fournir nos services d'évaluation cognitive et d'évaluation professionnelle</li>
               <li>Gérer votre compte utilisateur</li>
               <li>Améliorer nos services et l'expérience utilisateur</li>
               <li>Assurer la sécurité de la plateforme</li>

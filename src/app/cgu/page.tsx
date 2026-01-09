@@ -71,7 +71,7 @@ export default function CGU() {
           <section>
             <h2 className="text-xl font-semibold mb-4 text-primary">5. Description des services</h2>
             <p className="mb-4">
-              PERSPECTA-COMPETENCES propose des services d'évaluation cognitive et de bilan de compétences, incluant :
+              PERSPECTA-COMPETENCES propose des services d'évaluation cognitive et d'évaluation professionnelle, incluant :
             </p>
             <ul className="list-disc ml-6 space-y-2">
               <li>Des tests d'évaluation cognitive personnalisés</li>

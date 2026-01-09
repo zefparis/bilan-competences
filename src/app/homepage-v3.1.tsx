@@ -80,7 +80,7 @@ export default function HomePageV3() {
             </h1>
             
             <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto">
-              Bilan de compétences universel avec analyse IA, matching emploi et formations. 
+              Évaluation professionnelle universelle avec analyse IA, matching emploi et formations. 
               <strong className="text-white"> 287 métiers français couverts.</strong>
             </p>
 
@@ -102,7 +102,7 @@ export default function HomePageV3() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
               <Link href="/auth/register">
                 <Button size="lg" className="text-lg px-8">
-                  Démarrer mon bilan gratuit
+                  Démarrer mon évaluation gratuite
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -116,6 +116,22 @@ export default function HomePageV3() {
             <p className="text-sm text-gray-300">
               Modules 1-6 gratuits • Paiement uniquement pour certification + PDF
             </p>
+
+            {/* Disclaimer réglementaire */}
+            <div className="bg-amber-50 dark:bg-amber-950 border-l-4 border-amber-400 p-4 rounded-r-lg max-w-3xl mx-auto mt-8">
+              <div className="flex items-start gap-3">
+                <svg className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <p className="text-sm text-amber-900 dark:text-amber-100">
+                    <strong>Information importante :</strong> PERSPECTA est un outil d'auto-évaluation professionnelle. 
+                    Il ne constitue pas un bilan de compétences au sens des articles L6313-1 et suivants du Code du travail 
+                    et n'est pas éligible au financement CPF.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -378,7 +394,7 @@ export default function HomePageV3() {
               </thead>
               <tbody>
                 <tr className="border-b">
-                  <td className="p-4">Bilan de compétences classique</td>
+                  <td className="p-4">Évaluation professionnelle classique</td>
                   <td className="text-right p-4">1500-3000€</td>
                   <td className="text-center p-4"><CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" /></td>
                 </tr>
@@ -517,7 +533,7 @@ export default function HomePageV3() {
             <div>
               <span className="font-semibold text-lg">PERSPECTA-COMPETENCES</span>
               <p className="mt-2 text-sm text-muted-foreground">
-                Plateforme universelle de reconversion professionnelle et bilan de compétences.
+                Plateforme universelle de reconversion professionnelle et d'évaluation professionnelle.
               </p>
             </div>
 
