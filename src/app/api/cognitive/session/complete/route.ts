@@ -67,7 +67,6 @@ function normalizeScore(value: number, min: number, max: number, invert: boolean
 
 function computeSignature(
   stroop: { metrics: StroopMetrics },
-  reaction: { metrics: ReactionMetrics },
   trail: { metrics: TrailMetrics },
   ran: { metrics: RanMetrics },
   complexReaction: { metrics: ComplexReactionMetrics },
@@ -79,9 +78,9 @@ function computeSignature(
   const stroopErrorScore = normalizeScore(stroop.metrics.errorRateIncongruent * 100, 0, 50, true)
   const inhibitoryControl = (interferenceScore * 0.6 + stroopErrorScore * 0.4)
 
-  // Processing Speed: based on reaction time
+  // Processing Speed: based on complex reaction time
   // Lower time = faster processing
-  const processingSpeed = normalizeScore(reaction.metrics.meanReactionTime, 150, 500, true)
+  const processingSpeed = normalizeScore(complexReaction.metrics.meanRT, 300, 800, true)
 
   // Cognitive Flexibility: based on Trail Making B/A ratio
   // Lower ratio = better flexibility
@@ -97,8 +96,9 @@ function computeSignature(
   const workingMemory = normalizeScore(digitSpan.metrics.maxSpan, 3, 9, false)
 
   // Stability metrics
-  const reactionVariance = normalizeScore(reaction.metrics.standardDeviation, 20, 150, true)
-  const attentionDrift = normalizeScore(Math.abs(reaction.metrics.attentionDrift), 0, 100, true)
+  // Use accuracy as proxy for consistency (higher accuracy = more stable)
+  const reactionVariance = normalizeScore(complexReaction.metrics.accuracy * 100, 50, 100, false)
+  const attentionDrift = normalizeScore(complexReaction.metrics.accuracy * 100, 50, 100, false)
   const switchCost = normalizeScore(complexReaction.metrics.switchCost, -100, 300, true)
 
   // Error profile
@@ -118,7 +118,6 @@ function computeSignature(
     sequencingErrors,
     rawMetrics: {
       stroop: stroop.metrics,
-      reaction: reaction.metrics,
       trail: trail.metrics,
       ran: ran.metrics,
       complexReaction: complexReaction.metrics,
@@ -255,16 +254,15 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify all tests are completed
-    if (!session.stroopCompleted || !session.reactionTimeCompleted || 
+    if (!session.stroopCompleted || !session.complexReactionCompleted || 
         !session.trailMakingCompleted || !session.ranVisualCompleted ||
-        !session.complexReactionCompleted || !session.digitSpanCompleted) {
+        !session.digitSpanCompleted) {
       return NextResponse.json({ message: "Tests incomplets" }, { status: 400 })
     }
 
     // Compute signature
     const signature = computeSignature(
       session.stroopData,
-      session.reactionTimeData,
       session.trailMakingData,
       session.ranVisualData,
       session.complexReactionData,
