@@ -29,7 +29,7 @@ export default function MentionsLegales() {
             <ul className="list-none space-y-1 ml-4">
               <li><strong>SIRET :</strong> 438 055 097</li>
               <li><strong>Siège social :</strong> Alès (30100), Occitanie, France</li>
-              <li><strong>Responsable de la publication :</strong> Benjamin, Fondateur</li>
+              <li><strong>Responsable de la publication :</strong> Benjamin Barrere, Fondateur</li>
               <li><strong>Contact :</strong> <a href="mailto:contact@ia-solution.fr" className="text-primary hover:underline">contact@ia-solution.fr</a></li>
               <li><strong>Téléphone :</strong> <a href="tel:+33758060556" className="text-primary hover:underline">07 58 06 05 56</a></li>
             </ul>
