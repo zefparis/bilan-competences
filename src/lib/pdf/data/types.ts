@@ -13,6 +13,8 @@ export interface ProfileMeta {
   city?: string;
   postalCode?: string;
   department?: string;
+  title?: string;
+  bio?: string;
 }
 
 export interface CognitiveProfile {

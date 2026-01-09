@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
         city: true,
         postalCode: true,
         department: true,
+        title: true,
+        bio: true,
       },
     });
 
@@ -92,6 +94,8 @@ export async function POST(req: NextRequest) {
         city: user.city || undefined,
         postalCode: user.postalCode || undefined,
         department: user.department || undefined,
+        title: user.title || undefined,
+        bio: user.bio || undefined,
       },
       cognitive: cognitiveSession?.signature ? {
         flexibility: cognitiveSession.signature.cognitiveFlexibility ?? 50,

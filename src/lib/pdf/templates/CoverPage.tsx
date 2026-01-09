@@ -149,8 +149,13 @@ export const CoverPage: React.FC<CoverPageProps> = ({ meta }) => {
         <View style={styles.userSection}>
           <Text style={styles.userLabel}>Analyse personnalisée pour</Text>
           <Text style={styles.userName}>{meta.userName}</Text>
+          {meta.title && (
+            <Text style={[styles.userLabel, { fontSize: fontSizes.md, color: colors.primary.blue, fontFamily: fonts.primaryBold, marginTop: -spacing.md, marginBottom: spacing.xs }]}>
+              {meta.title}
+            </Text>
+          )}
           {(meta.city || meta.department) && (
-            <Text style={[styles.userLabel, { fontSize: fontSizes.sm, marginTop: -spacing.md }]}>
+            <Text style={[styles.userLabel, { fontSize: fontSizes.sm, marginTop: meta.title ? 0 : -spacing.md }]}>
               {meta.city && meta.department 
                 ? `${meta.city} (${meta.department})`
                 : meta.city || meta.department}

@@ -544,37 +544,11 @@ export default function ProfilePage() {
                     </div>
                   </CardContent>
                 </Card>
-              </TabsContent>
-
-              <TabsContent value="pro" className="mt-6 space-y-6">
-                {/* Résumé des accomplissements */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                  <Card className="bg-primary/5 border-primary/20">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Profil RIASEC</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-primary">
-                        {user?.assessments?.[0]?.riasecResult?.topCode || "À compléter"}
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card className="bg-emerald-500/5 border-emerald-500/20">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Code Cognitif</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-emerald-500">
-                        {user?.cognitiveProfile?.profile_code ? user.cognitiveProfile.profile_code.split('|')[0] : "À compléter"}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
 
                 <Card className="bg-card/50 border-primary/20 backdrop-blur-sm">
                   <CardHeader>
-                    <CardTitle>Détails Professionnels</CardTitle>
-                    <CardDescription>Ces informations apparaîtront dans votre synthèse.</CardDescription>
+                    <CardTitle>Localisation</CardTitle>
+                    <CardDescription>Utilisée pour filtrer les formations et offres d'emploi près de chez vous.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
@@ -610,6 +584,41 @@ export default function ProfilePage() {
                         />
                       </div>
                     </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="pro" className="mt-6 space-y-6">
+                {/* Résumé des accomplissements */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                  <Card className="bg-primary/5 border-primary/20">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Profil RIASEC</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-primary">
+                        {user?.assessments?.[0]?.riasecResult?.topCode || "À compléter"}
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-emerald-500/5 border-emerald-500/20">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Code Cognitif</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-emerald-500">
+                        {user?.cognitiveProfile?.profile_code ? user.cognitiveProfile.profile_code.split('|')[0] : "À compléter"}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="bg-card/50 border-primary/20 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle>Détails Professionnels</CardTitle>
+                    <CardDescription>Ces informations apparaîtront dans votre synthèse.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="title">Titre Professionnel</Label>
                       <Input
