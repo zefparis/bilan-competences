@@ -27,8 +27,7 @@ export interface DigitSpanTestData {
   }
 }
 
-const MIN_SPAN = 3
-const MAX_SPAN = 9
+const SPAN_LEVELS = [3, 4, 5, 6, 7]
 const TRIALS_PER_LEVEL = 2
 const DIGIT_DISPLAY_DURATION = 1000
 
@@ -42,8 +41,9 @@ function generateSequence(length: number): number[] {
 
 function calculateMetrics(trials: Trial[]): DigitSpanTestData["metrics"] {
   const totalCorrect = trials.filter(t => t.correct).length
-  const maxSpan = Math.max(...trials.filter(t => t.correct).map(t => t.level), MIN_SPAN)
-  const score = ((maxSpan - MIN_SPAN) / (MAX_SPAN - MIN_SPAN)) * 100
+  const correctLevels = trials.filter(t => t.correct).map(t => t.level)
+  const maxSpan = correctLevels.length > 0 ? Math.max(...correctLevels) : SPAN_LEVELS[0]
+  const score = ((maxSpan - SPAN_LEVELS[0]) / (SPAN_LEVELS[SPAN_LEVELS.length - 1] - SPAN_LEVELS[0])) * 100
   
   return {
     maxSpan,
@@ -53,8 +53,9 @@ function calculateMetrics(trials: Trial[]): DigitSpanTestData["metrics"] {
 }
 
 export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
-  const [testPhase, setTestPhase] = useState<"instructions" | "showing" | "input" | "feedback" | "complete">("instructions")
-  const [level, setLevel] = useState(MIN_SPAN)
+  const [testPhase, setTestPhase] = useState<"instructions" | "ready" | "showing" | "input" | "feedback" | "complete">("instructions")
+  const [levelIndex, setLevelIndex] = useState(0)
+  const level = SPAN_LEVELS[levelIndex]
   const [sequence, setSequence] = useState<number[]>([])
   const [currentDigitIndex, setCurrentDigitIndex] = useState(0)
   const [userInput, setUserInput] = useState("")
@@ -63,7 +64,6 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
   const [trialInLevel, setTrialInLevel] = useState(0)
   const [lastResult, setLastResult] = useState<boolean | null>(null)
   
-  const inputRef = useRef<HTMLInputElement>(null)
   const digitTimeoutRef = useRef<NodeJS.Timeout>()
   const feedbackTimeoutRef = useRef<NodeJS.Timeout>()
 
@@ -73,8 +73,12 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
     setCurrentDigitIndex(0)
     setUserInput("")
     setLastResult(null)
-    setTestPhase("showing")
+    setTestPhase("ready")
   }, [level])
+
+  const startSequence = useCallback(() => {
+    setTestPhase("showing")
+  }, [])
 
   useEffect(() => {
     if (testPhase === "showing" && currentDigitIndex < sequence.length) {
@@ -83,9 +87,6 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
           setCurrentDigitIndex(prev => prev + 1)
         } else {
           setTestPhase("input")
-          setTimeout(() => {
-            inputRef.current?.focus()
-          }, 100)
         }
       }, DIGIT_DISPLAY_DURATION)
     }
@@ -118,10 +119,10 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
         setConsecutiveFails(0)
         
         if (trialInLevel + 1 >= TRIALS_PER_LEVEL) {
-          if (level >= MAX_SPAN) {
+          if (levelIndex >= SPAN_LEVELS.length - 1) {
             setTestPhase("complete")
           } else {
-            setLevel(prev => prev + 1)
+            setLevelIndex(prev => prev + 1)
             setTrialInLevel(0)
             startNewTrial()
           }
@@ -136,10 +137,10 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
         if (newConsecutiveFails >= TRIALS_PER_LEVEL) {
           setTestPhase("complete")
         } else if (trialInLevel + 1 >= TRIALS_PER_LEVEL) {
-          if (level >= MAX_SPAN) {
+          if (levelIndex >= SPAN_LEVELS.length - 1) {
             setTestPhase("complete")
           } else {
-            setLevel(prev => prev + 1)
+            setLevelIndex(prev => prev + 1)
             setTrialInLevel(0)
             setConsecutiveFails(0)
             startNewTrial()
@@ -150,7 +151,7 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
         }
       }
     }, 1500)
-  }, [userInput, level, sequence, trialInLevel, consecutiveFails, startNewTrial])
+  }, [userInput, level, sequence, trialInLevel, consecutiveFails, levelIndex, startNewTrial])
 
   useEffect(() => {
     if (testPhase === "complete" && trials.length > 0) {
@@ -166,21 +167,21 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
     }
   }, [])
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, "")
-    if (value.length <= level) {
-      setUserInput(value)
+  const handleDigitClick = useCallback((digit: number) => {
+    if (userInput.length < level) {
+      setUserInput(prev => prev + digit.toString())
     }
-  }
+  }, [userInput.length, level])
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && userInput.length === level) {
-      handleSubmit()
-    }
-  }
+  const handleClear = useCallback(() => {
+    setUserInput("")
+  }, [])
+
+  const handleBackspace = useCallback(() => {
+    setUserInput(prev => prev.slice(0, -1))
+  }, [])
 
   const startTest = () => {
-    setTestPhase("showing")
     startNewTrial()
   }
 
@@ -202,7 +203,7 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
                 <p className="font-medium mb-2">Déroulement</p>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   <li>Des chiffres s'affichent un par un (1 seconde chacun)</li>
-                  <li>Après l'affichage, saisissez la séquence dans l'ordre</li>
+                  <li>Utilisez le pavé numérique pour saisir la séquence</li>
                   <li>Le test commence avec 3 chiffres</li>
                   <li>Si vous réussissez 2 essais, la séquence s'allonge</li>
                   <li>Le test s'arrête après 2 échecs consécutifs</li>
@@ -237,7 +238,7 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
     return null
   }
 
-  const totalPossibleTrials = (MAX_SPAN - MIN_SPAN + 1) * TRIALS_PER_LEVEL
+  const totalPossibleTrials = SPAN_LEVELS.length * TRIALS_PER_LEVEL
   const progress = (trials.length / totalPossibleTrials) * 100
 
   return (
@@ -255,6 +256,26 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
+          {testPhase === "ready" && (
+            <div className="min-h-[200px] flex flex-col items-center justify-center gap-6">
+              <div className="text-center space-y-2">
+                <p className="text-2xl font-bold text-foreground">
+                  Niveau {level} chiffres
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Essai {trialInLevel + 1} sur {TRIALS_PER_LEVEL}
+                </p>
+              </div>
+              <Button
+                onClick={startSequence}
+                size="lg"
+                className="px-12"
+              >
+                Commencer la séquence
+              </Button>
+            </div>
+          )}
+
           {testPhase === "showing" && (
             <div className="min-h-[200px] flex items-center justify-center">
               <div className="text-9xl font-bold text-foreground animate-pulse">
@@ -270,11 +291,11 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
                   Saisissez les {level} chiffres dans l'ordre
                 </p>
                 
-                <div className="flex justify-center gap-2 mb-4">
+                <div className="flex flex-wrap justify-center gap-2 mb-6">
                   {Array.from({ length: level }).map((_, i) => (
                     <div
                       key={i}
-                      className={`w-12 h-12 border-2 rounded-lg flex items-center justify-center text-xl font-bold ${
+                      className={`w-14 h-14 border-2 rounded-lg flex items-center justify-center text-2xl font-bold ${
                         i < userInput.length
                           ? "border-primary bg-primary/10 text-foreground"
                           : "border-muted bg-muted/30 text-muted-foreground"
@@ -285,27 +306,64 @@ export function DigitSpanTest({ onComplete }: DigitSpanTestProps) {
                   ))}
                 </div>
 
-                <Input
-                  ref={inputRef}
-                  type="text"
-                  inputMode="numeric"
-                  value={userInput}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
-                  maxLength={level}
-                  className="text-center text-2xl font-bold h-16 max-w-md mx-auto"
-                  placeholder="Tapez les chiffres..."
-                  autoFocus
-                />
+                {/* Pavé numérique visuel */}
+                <div className="max-w-xs mx-auto space-y-3">
+                  <div className="grid grid-cols-3 gap-3">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
+                      <Button
+                        key={digit}
+                        onClick={() => handleDigitClick(digit)}
+                        disabled={userInput.length >= level}
+                        variant="outline"
+                        size="lg"
+                        className="h-16 text-2xl font-bold hover:bg-primary hover:text-primary-foreground transition-colors"
+                        aria-label={`Chiffre ${digit}`}
+                      >
+                        {digit}
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <Button
+                      onClick={handleClear}
+                      variant="outline"
+                      size="lg"
+                      className="h-16 text-lg font-medium hover:bg-destructive hover:text-destructive-foreground"
+                      aria-label="Effacer tout"
+                    >
+                      Effacer
+                    </Button>
+                    <Button
+                      onClick={() => handleDigitClick(0)}
+                      disabled={userInput.length >= level}
+                      variant="outline"
+                      size="lg"
+                      className="h-16 text-2xl font-bold hover:bg-primary hover:text-primary-foreground transition-colors"
+                      aria-label="Chiffre 0"
+                    >
+                      0
+                    </Button>
+                    <Button
+                      onClick={handleBackspace}
+                      disabled={userInput.length === 0}
+                      variant="outline"
+                      size="lg"
+                      className="h-16 text-lg font-medium hover:bg-secondary"
+                      aria-label="Supprimer dernier chiffre"
+                    >
+                      ←
+                    </Button>
+                  </div>
+                </div>
               </div>
 
               <Button
                 onClick={handleSubmit}
                 disabled={userInput.length !== level}
-                className="w-full"
+                className="w-full mt-6"
                 size="lg"
               >
-                Valider
+                Valider ({userInput.length}/{level})
               </Button>
             </div>
           )}

@@ -14,6 +14,9 @@ CREATE TABLE "User" (
     "linkedin" TEXT,
     "github" TEXT,
     "portfolio" TEXT,
+    "city" TEXT,
+    "postalCode" TEXT,
+    "department" TEXT,
     "role" TEXT NOT NULL DEFAULT 'BENEFICIAIRE',
     "resetToken" TEXT,
     "resetTokenExpiry" TIMESTAMP(3),
@@ -232,10 +235,14 @@ CREATE TABLE "CognitiveTestSession" (
     "reactionTimeCompleted" BOOLEAN NOT NULL DEFAULT false,
     "trailMakingCompleted" BOOLEAN NOT NULL DEFAULT false,
     "ranVisualCompleted" BOOLEAN NOT NULL DEFAULT false,
+    "complexReactionCompleted" BOOLEAN NOT NULL DEFAULT false,
+    "digitSpanCompleted" BOOLEAN NOT NULL DEFAULT false,
     "stroopData" JSONB,
     "reactionTimeData" JSONB,
     "trailMakingData" JSONB,
     "ranVisualData" JSONB,
+    "complexReactionData" JSONB,
+    "digitSpanData" JSONB,
     "generatedReport" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -252,8 +259,10 @@ CREATE TABLE "CognitiveSignature" (
     "processingSpeed" DOUBLE PRECISION NOT NULL,
     "cognitiveFlexibility" DOUBLE PRECISION NOT NULL,
     "accessFluency" DOUBLE PRECISION NOT NULL,
+    "workingMemory" DOUBLE PRECISION,
     "reactionVariance" DOUBLE PRECISION NOT NULL,
     "attentionDrift" DOUBLE PRECISION NOT NULL,
+    "switchCost" DOUBLE PRECISION,
     "conflictErrors" DOUBLE PRECISION NOT NULL,
     "sequencingErrors" DOUBLE PRECISION NOT NULL,
     "rawMetrics" JSONB NOT NULL,
@@ -273,6 +282,8 @@ CREATE TABLE "Report" (
     "generatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "version" TEXT NOT NULL DEFAULT '2.0',
     "tokensCost" INTEGER,
+    "generationCount" INTEGER NOT NULL DEFAULT 1,
+    "hasExtraGenerationPaid" BOOLEAN NOT NULL DEFAULT false,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Report_pkey" PRIMARY KEY ("id")
@@ -350,6 +361,31 @@ CREATE TABLE "CareerProject" (
     CONSTRAINT "CareerProject_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Accessibility" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "hasDisability" BOOLEAN NOT NULL DEFAULT false,
+    "disabilityType" TEXT,
+    "hasRQTH" BOOLEAN NOT NULL DEFAULT false,
+    "rqthNumber" TEXT,
+    "rqthExpiryDate" TIMESTAMP(3),
+    "needsWorkstationAdaptation" BOOLEAN NOT NULL DEFAULT false,
+    "needsScheduleFlexibility" BOOLEAN NOT NULL DEFAULT false,
+    "needsRemoteWork" BOOLEAN NOT NULL DEFAULT false,
+    "needsAccessibleTransport" BOOLEAN NOT NULL DEFAULT false,
+    "needsAssistiveTechnology" BOOLEAN NOT NULL DEFAULT false,
+    "otherNeeds" TEXT,
+    "compensatorySkills" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "preferDisabilityFriendlyCompanies" BOOLEAN NOT NULL DEFAULT false,
+    "interestedInAGEFIPHAid" BOOLEAN NOT NULL DEFAULT false,
+    "shareWithEmployers" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Accessibility_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -422,6 +458,12 @@ CREATE INDEX "CareerProject_userId_idx" ON "CareerProject"("userId");
 -- CreateIndex
 CREATE INDEX "CareerProject_targetRomeCode_idx" ON "CareerProject"("targetRomeCode");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Accessibility_userId_key" ON "Accessibility"("userId");
+
+-- CreateIndex
+CREATE INDEX "Accessibility_userId_idx" ON "Accessibility"("userId");
+
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -490,3 +532,6 @@ ALTER TABLE "JobMatch" ADD CONSTRAINT "JobMatch_certificateId_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "CareerProject" ADD CONSTRAINT "CareerProject_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Accessibility" ADD CONSTRAINT "Accessibility_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

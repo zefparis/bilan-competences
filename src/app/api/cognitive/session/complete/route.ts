@@ -93,7 +93,7 @@ function computeSignature(
   const accessFluency = (ranSpeedScore * 0.5 + ran.metrics.rhythmicityScore * 0.5)
 
   // Working Memory: based on digit span max span
-  const workingMemory = normalizeScore(digitSpan.metrics.maxSpan, 3, 9, false)
+  const workingMemory = normalizeScore(digitSpan.metrics.maxSpan, 3, 7, false)
 
   // Stability metrics
   // Use accuracy as proxy for consistency (higher accuracy = more stable)
