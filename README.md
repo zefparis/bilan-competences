@@ -387,6 +387,8 @@ pnpm dev
 
 *Si non configuré, le système utilise des données mock pour les offres d'emploi et formations
 
+**Note v3.4** : Les credentials Supabase ont changé suite à la migration. Si vous avez cloné avant janvier 2026, mettez à jour vos variables d'environnement avec les nouvelles valeurs du projet `perspecta-prod`.
+
 ---
 
 ## Structure du projet
@@ -664,6 +666,40 @@ pnpm db:migrate       # Appliquer migrations
 
 ## Mises à jour récentes
 
+### v3.4.0 (Janvier 2026) - 🔐 Migration Infrastructure & Sécurité
+**Séparation complète base de données** : Nouvelle infrastructure Supabase dédiée
+
+- **Nouveau Projet Supabase** 🆕
+  - Projet dédié : `perspecta-prod` (séparé de HCS-U7)
+  - Région : Europe West (Ireland) - Conformité RGPD
+  - URL : `https://kqpiapefovhisqghxyvg.supabase.co` 
+  - Base PostgreSQL : 24 tables PERSPECTA migrées
+  
+- **Row Level Security (RLS)** 🔒
+  - RLS activé sur toutes les 24 tables + `_prisma_migrations` 
+  - Policies configurées : Utilisateurs accèdent uniquement à leurs données
+  - Protection tokens sensibles : Account, VerificationToken
+  - Security Advisor Supabase : 0 erreurs critiques
+  - Certificats : Lecture publique par hash (vérification blockchain)
+  
+- **Storage Supabase** 🆕
+  - Bucket `avatars` configuré (public, 5MB limit)
+  - Compatible environnements serverless (Vercel)
+  - Upload sécurisé avec authentification
+  
+- **Séparation Projets** ✅
+  - HCS-U7 : Base intacte (`db.animktcvgoyzmccbxvvo`)
+  - PERSPECTA : Nouvelle base (`db.kqpiapefovhisqghxyvg`)
+  - Aucune contamination entre projets
+  - Variables d'environnement Vercel synchronisées
+
+- **Migrations Prisma**
+  - Migration initiale : `20260112171924_init` 
+  - Schema complet PERSPECTA déployé
+  - Client Prisma régénéré (v5.22.0)
+
+**Impact** : Infrastructure sécurisée, données isolées, conformité RGPD renforcée
+
 ### v3.3.0 (Janvier 2026) - 🎯 Optimisation & Localisation
 **Amélioration qualité** : Profils PDF différenciés et filtrage géographique intelligent
 
@@ -810,6 +846,39 @@ Extension au-delà du secteur tech (287 codes ROME)
 - Authentification JWT via NextAuth.js
 - Paiements securises via Stripe Checkout
 - Base de donnees PostgreSQL avec SSL
+
+---
+
+## 🗄️ Configuration Base de Données
+
+### Supabase Production (v3.4+)
+
+**Projet** : `perspecta-prod` 
+- **Région** : Europe West (eu-west-1)
+- **Compute** : Micro (1GB RAM, 2-core ARM)
+- **Plan** : Free tier (évolutif vers Pro)
+
+**Sécurité RLS**
+```sql
+-- Toutes les tables ont RLS activé
+ALTER TABLE "User" ENABLE ROW LEVEL SECURITY;
+-- ... (24 tables au total)
+
+-- Exemple de policy utilisateur
+CREATE POLICY "Users can manage own assessments"
+  ON "Assessment" FOR ALL
+  USING (auth.uid()::text = "userId");
+```
+
+**Storage**
+- Bucket `avatars` : Public, 5MB max
+- Types acceptés : JPG, PNG, GIF, WebP
+- Stockage : Base64 en PostgreSQL (champ User.image)
+
+**Monitoring**
+- Security Advisor : Supabase Dashboard
+- Query logs : LogFlare via Supabase
+- Performance : Vercel Analytics + Supabase Insights
 
 ---
 

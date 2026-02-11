@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Script from 'next/script'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { Toaster as SonnerToaster } from 'sonner'
@@ -16,28 +17,8 @@ export const metadata: Metadata = {
     default: 'PERSPECTA-COMPETENCES - Évaluation Professionnelle & Évaluation Cognitive',
     template: '%s | PERSPECTA-COMPETENCES'
   },
-  description: 'Plateforme premium d\'évaluation cognitive et professionnelle. Découvrez votre signature cognitive unique, votre profil RIASEC et obtenez des recommandations personnalisées pour votre orientation professionnelle.',
-  keywords: ['évaluation professionnelle', 'évaluation cognitive', 'orientation professionnelle', 'RIASEC', 'signature cognitive', 'reconversion'],
-  authors: [{ name: 'ia-solution' }],
-  creator: 'ia-solution',
-  publisher: 'PERSPECTA-COMPETENCES',
+  description: 'Plateforme premium d\'évaluation cognitive et professionnelle.',
   metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://perspecta.fr'),
-  openGraph: {
-    type: 'website',
-    locale: 'fr_FR',
-    siteName: 'PERSPECTA-COMPETENCES',
-    title: 'PERSPECTA-COMPETENCES - Évaluation Professionnelle & Évaluation Cognitive',
-    description: 'Découvrez votre signature cognitive unique et obtenez des recommandations personnalisées pour votre orientation professionnelle.',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PERSPECTA-COMPETENCES - Évaluation Professionnelle',
-    description: 'Plateforme premium d\'évaluation cognitive et professionnelle.',
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
 }
 
 export default function RootLayout({
@@ -55,12 +36,23 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthSessionProvider>
-            <ReactQueryProvider>{children}</ReactQueryProvider>
+            <ReactQueryProvider>
+              {children}
+            </ReactQueryProvider>
           </AuthSessionProvider>
+
           <Toaster />
           <SonnerToaster richColors />
           <CookieBanner />
           <AIConsentBanner />
+
+          {/* HCS-U7 Widget v3 */}
+          <Script
+            src="https://widget.hcs-u7.online/v3/hcs-widget.js"
+            data-widget="HYtUigkEXGYU1cu8gzgTadzm2HjaOF7k"
+            strategy="afterInteractive"
+          />
+
         </ThemeProvider>
       </body>
     </html>
