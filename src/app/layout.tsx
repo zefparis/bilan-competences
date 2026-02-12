@@ -31,7 +31,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className="dark" suppressHydrationWarning>
-      <body className={inter.className}>
+      <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -40,12 +40,13 @@ export default function RootLayout({
   s.src='https://hcs-widget-mvp.vercel.app/widget/v3/hcs-widget.js';
   s.async=true;
   s.setAttribute('data-widget','HYtUigkEXGYU1cu8gzgTadzm2HjaOF7k');
-  s.setAttribute('data-debug','true');
   document.head.appendChild(s);
 })();
 `
           }}
         />
+      </head>
+      <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
