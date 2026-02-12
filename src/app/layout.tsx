@@ -35,7 +35,7 @@ export default function RootLayout({
         <script
           src="/hcs-widget.js"
           async
-          data-widget="qPtZJHNXf9CuP2LCLHNX8nkOlaFWq8tC"
+          data-widget="HYtUigkEXGYU1cu8gzgTadzm2HjaOF7k"
         />
       </head>
       <body className={inter.className}>
