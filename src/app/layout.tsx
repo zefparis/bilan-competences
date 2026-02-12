@@ -31,14 +31,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className="dark" suppressHydrationWarning>
-      <head>
-        <script
-          src="/hcs-widget.js"
-          async
-          data-widget="HYtUigkEXGYU1cu8gzgTadzm2HjaOF7k"
-        />
-      </head>
       <body className={inter.className}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+(function(){
+  var s=document.createElement('script');
+  s.src='https://hcs-widget-mvp.vercel.app/widget/v3/hcs-widget.js';
+  s.async=true;
+  s.setAttribute('data-widget','HYtUigkEXGYU1cu8gzgTadzm2HjaOF7k');
+  s.setAttribute('data-debug','true');
+  document.head.appendChild(s);
+})();
+`
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
