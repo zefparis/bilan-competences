@@ -33,7 +33,7 @@ export default function RootLayout({
     <html lang="fr" className="dark" suppressHydrationWarning>
       <head>
         <script
-          src="https://hcs-widget-mvp.vercel.app/widget/v3/hcs-widget.js"
+          src="/hcs-widget.js"
           async
           data-widget="qPtZJHNXf9CuP2LCLHNX8nkOlaFWq8tC"
         />
