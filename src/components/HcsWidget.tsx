@@ -5,10 +5,10 @@ import Script from 'next/script'
 export function HcsWidget() {
   return (
     <Script
-      src="https://widget.hcs-u7.online/v3/hcs-widget.js"
+      src="https://hcs-widget-mvp.vercel.app/widget/v3/hcs-widget.js"
       strategy="afterInteractive"
       async
-      data-widget="HYtUigkEXGYU1cu8gzgTadzm2HjaOF7k"
+      data-widget="qPtZJHNXf9CuP2LCLHNX8nkOlaFWq8tC"
     />
   )
 }
