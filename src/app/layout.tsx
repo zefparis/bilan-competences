@@ -8,7 +8,7 @@ import { AuthSessionProvider } from '@/components/session-provider'
 import { ReactQueryProvider } from '@/components/query-provider'
 import { CookieBanner } from '@/components/cookie-banner'
 import { AIConsentBanner } from '@/components/ai-consent-banner'
-import { HcsWidget } from '@/components/HcsWidget'
+import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -31,6 +31,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className="dark" suppressHydrationWarning>
+      <head>
+        <script
+          src="https://hcs-widget-mvp.vercel.app/widget/v3/hcs-widget.js"
+          async
+          data-widget="qPtZJHNXf9CuP2LCLHNX8nkOlaFWq8tC"
+        />
+      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
@@ -49,7 +56,6 @@ export default function RootLayout({
           <CookieBanner />
           <AIConsentBanner />
 
-          <HcsWidget />
         </ThemeProvider>
       </body>
     </html>
