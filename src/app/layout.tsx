@@ -8,7 +8,6 @@ import { AuthSessionProvider } from '@/components/session-provider'
 import { ReactQueryProvider } from '@/components/query-provider'
 import { CookieBanner } from '@/components/cookie-banner'
 import { AIConsentBanner } from '@/components/ai-consent-banner'
-import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -34,15 +33,14 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-(function(){
+            __html: `(function(){
+  if(document.querySelector('script[data-widget]'))return;
   var s=document.createElement('script');
   s.src='https://hcs-widget-mvp.vercel.app/widget/v3/hcs-widget.js';
   s.async=true;
   s.setAttribute('data-widget','HYtUigkEXGYU1cu8gzgTadzm2HjaOF7k');
   document.head.appendChild(s);
-})();
-`
+})()`
           }}
         />
       </head>
