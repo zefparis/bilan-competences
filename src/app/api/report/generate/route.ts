@@ -32,8 +32,8 @@ export async function GET() {
     console.log('📥 [API GET] Database query result:', !!report);
 
     if (!report) {
-      console.log('❌ [API GET] Aucun rapport trouvé');
-      return NextResponse.json({ error: "Aucun rapport trouvé" }, { status: 404 });
+      console.log('📥 [API GET] Aucun rapport trouvé (état initial)');
+      return NextResponse.json({ exists: false, sections: null, generatedAt: null });
     }
 
     console.log('✅ [API GET] Rapport trouvé, généré le:', report.generatedAt);

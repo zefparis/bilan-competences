@@ -77,7 +77,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!certSession) {
-      return NextResponse.json({ error: "Aucune session trouvée" }, { status: 404 });
+      return NextResponse.json({ exists: false, isCompleted: false, hasCertificate: false, answersCount: 0 });
     }
 
     const answersCount = Object.keys(certSession.answers || {}).length;

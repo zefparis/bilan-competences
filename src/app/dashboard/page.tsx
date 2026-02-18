@@ -68,8 +68,8 @@ import { signOut } from "next-auth/react"
 export default function DashboardPage() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null)
   const [loading, setLoading] = useState(true)
-  const [cognitiveSession, setCognitiveSession] = useState<any>(null)
   const [cognitiveAssessmentCompleted, setCognitiveAssessmentCompleted] = useState(false)
+  const [cognitiveTestsCompleted, setCognitiveTestsCompleted] = useState(0)
   const [reportGenerated, setReportGenerated] = useState(false)
   const [reportGeneratedAt, setReportGeneratedAt] = useState<string | null>(null)
 
@@ -79,147 +79,70 @@ export default function DashboardPage() {
   useEffect(() => {
     let cancelled = false
 
-    async function load() {
+    async function loadAll() {
       try {
         setLoading(true)
-        const res = await fetch("/api/dashboard/summary", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        })
 
-        if (!res.ok) {
-          throw new Error(`Erreur ${res.status}`)
+        const [summaryRes, cognitiveRes, reportRes, certRes, aiRes] = await Promise.allSettled([
+          fetch("/api/dashboard/summary", { headers: { "Content-Type": "application/json" } }),
+          fetch('/api/cognitive/session'),
+          fetch('/api/report/generate'),
+          fetch('/api/certification/session'),
+          fetch('/api/dashboard/ai-score'),
+        ])
+
+        if (cancelled) return
+
+        // 1. Dashboard summary
+        if (summaryRes.status === 'fulfilled' && summaryRes.value.ok) {
+          const json = (await summaryRes.value.json()) as DashboardSummary
+          setSummary(json)
         }
 
-        const json = (await res.json()) as DashboardSummary
-        if (!cancelled) setSummary(json)
-      } catch {
-        if (!cancelled) setSummary(null)
+        // 2. Cognitive assessment
+        if (cognitiveRes.status === 'fulfilled' && cognitiveRes.value.ok) {
+          const data = await cognitiveRes.value.json()
+          setCognitiveAssessmentCompleted(!!(data.allTestsCompleted && data.hasSignature))
+          const tests = [data.stroopCompleted, data.reactionTimeCompleted, data.trailMakingCompleted, data.ranVisualCompleted].filter(Boolean).length
+          setCognitiveTestsCompleted(tests)
+        }
+
+        // 3. Report
+        if (reportRes.status === 'fulfilled' && reportRes.value.ok) {
+          const data = await reportRes.value.json()
+          const generated = !!data.generatedAt
+          setReportGenerated(generated)
+          if (generated) setReportGeneratedAt(data.generatedAt)
+        }
+
+        // 4. Certification
+        if (certRes.status === 'fulfilled' && certRes.value.ok) {
+          const data = await certRes.value.json()
+          setCertificationCompleted(!!(data.isCompleted && data.hasCertificate))
+        }
+
+        // 5. AI Score
+        if (aiRes.status === 'fulfilled' && aiRes.value.ok) {
+          const data = await aiRes.value.json()
+          setAiScore(data.percentage)
+        }
+      } catch (error) {
+        console.error('❌ Erreur chargement dashboard:', error)
       } finally {
         if (!cancelled) setLoading(false)
       }
     }
 
-    load()
-    return () => {
-      cancelled = true
-    }
+    loadAll()
+    return () => { cancelled = true }
   }, [])
 
-  useEffect(() => {
-    async function checkCognitiveAssessment() {
-      try {
-        const res = await fetch('/api/cognitive/session')
-
-        if (res.ok) {
-          const data = await res.json()
-
-          // ✅ Vérifier que les 4 tests sont complétés + signature existe
-          const completed = data.allTestsCompleted && data.hasSignature
-
-          console.log('🧠 Évaluation Cognitive:', {
-            testsCompleted: data.testsCompleted,
-            allCompleted: data.allTestsCompleted,
-            hasSignature: data.hasSignature,
-            status: completed ? '✅' : '❌'
-          })
-
-          setCognitiveAssessmentCompleted(completed)
-        }
-      } catch (error) {
-        console.error('❌ Erreur vérification évaluation cognitive:', error)
-      }
-    }
-
-    checkCognitiveAssessment()
-  }, [])
-
-  useEffect(() => {
-    async function checkReport() {
-      try {
-        const res = await fetch('/api/report/generate')
-
-        if (res.ok) {
-          const data = await res.json()
-          setReportGenerated(true)
-          setReportGeneratedAt(data.generatedAt)
-
-          console.log('📄 Rapport:', {
-            generated: true,
-            date: data.generatedAt
-          })
-        } else {
-          setReportGenerated(false)
-        }
-      } catch (error) {
-        console.error('❌ Erreur vérification rapport:', error)
-      }
-    }
-
-    checkReport()
-  }, [])
-
-  useEffect(() => {
-    async function checkCertification() {
-      try {
-        const res = await fetch('/api/certification/session')
-
-        if (res.ok) {
-          const data = await res.json()
-          const completed = data.isCompleted && data.hasCertificate
-
-          console.log('🎓 Certification:', {
-            isCompleted: data.isCompleted,
-            hasCertificate: data.hasCertificate,
-            status: completed ? '✅' : '❌'
-          })
-
-          setCertificationCompleted(completed)
-        }
-      } catch (error) {
-        console.error('❌ Erreur vérification certification:', error)
-      }
-    }
-
-    checkCertification()
-  }, [])
-
-  useEffect(() => {
-    async function fetchAiScore() {
-      try {
-        const res = await fetch('/api/dashboard/ai-score')
-
-        if (res.ok) {
-          const data = await res.json()
-          setAiScore(data.percentage)
-
-          console.log('🤖 Score IA:', {
-            score: data.percentage,
-            breakdown: data.breakdown
-          })
-        }
-      } catch (error) {
-        console.error('❌ Erreur calcul score IA:', error)
-      }
-    }
-
-    fetchAiScore()
-  }, [])
-
-  // ✅ Calculer le statut de l'évaluation cognitive
-  const cognitiveCompleted = cognitiveSession?.allTestsCompleted && cognitiveSession?.hasSignature
-
-  const testsCompleted = [
-    cognitiveSession?.stroopCompleted,
-    cognitiveSession?.reactionTimeCompleted,
-    cognitiveSession?.trailMakingCompleted,
-    cognitiveSession?.ranVisualCompleted
-  ].filter(Boolean).length
-
+  const cognitiveCompleted = cognitiveAssessmentCompleted
+  const testsCompleted = cognitiveTestsCompleted
   const totalTests = 4
 
-  // ✅ TOUS les modules du bilan
-  const modules = [
+  // ✅ TOUS les modules du bilan (stable reference via useMemo)
+  const modules = useMemo(() => [
     { name: 'Parcours de Vie', completed: summary?.modules.parcours.status === 'completed' },
     { name: 'Expériences STAR', completed: summary?.modules.experiences.status === 'completed' },
     { name: 'Tri des Valeurs', completed: summary?.modules.valeurs.status === 'completed' },
@@ -227,17 +150,14 @@ export default function DashboardPage() {
     { name: 'Profil Cognitif', completed: summary?.modules.cognitive.status === 'completed' },
     { name: 'Évaluation Cognitive', completed: cognitiveAssessmentCompleted },
     { name: 'Certification Professionnelle', completed: certificationCompleted }
-  ]
+  ], [summary, cognitiveAssessmentCompleted, certificationCompleted])
 
   const modulesTermines = modules.filter(m => m.completed).length
   const totalModules = modules.length // 7
 
-  console.log('📊 Modules terminés:', modulesTermines, '/', totalModules)
-  console.log('Détail:', modules.map(m => `${m.name}: ${m.completed ? '✅' : '❌'}`))
-
   // Progression globale (pondérée selon la difficulté)
   const progressionWeighted = useMemo(() => {
-    const weights = {
+    const weights: Record<string, number> = {
       'Parcours de Vie': 10,
       'Expériences STAR': 20,
       'Tri des Valeurs': 10,
@@ -252,7 +172,7 @@ export default function DashboardPage() {
     let completedWeight = 0
     modules.forEach(module => {
       if (module.completed) {
-        completedWeight += weights[module.name as keyof typeof weights]
+        completedWeight += weights[module.name] || 0
       }
     })
 

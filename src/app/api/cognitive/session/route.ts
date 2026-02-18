@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!cognitiveSession) {
-      return NextResponse.json({ error: "Aucune session trouvée" }, { status: 404 });
+      return NextResponse.json({ exists: false, allTestsCompleted: false, hasSignature: false, testsCompleted: 0, totalTests: 4 });
     }
 
     // Calculer le statut de complétion
