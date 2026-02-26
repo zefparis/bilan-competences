@@ -13,6 +13,7 @@ coverage
 # Env & secrets
 .env*
 !.env.example
+ops/.env
 
 # Logs
 npm-debug.log*
